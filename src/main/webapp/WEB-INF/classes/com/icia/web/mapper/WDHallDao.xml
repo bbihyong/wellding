@@ -158,64 +158,98 @@ SELECT
     H_FOOD,
     H_MIN,
     H_MAX,
+    WH_CONTENT,
     H_CONTENT,
     H_IMGNAME,
     REZCOUNT,
     H_DISCOUNT,
     H_SUBIMG
-FROM 
-    (SELECT
-        ROWNUM RNUM,
-        WH_CODE,
-        H_CODE,
-        H_NAME,
-        WH_NAME,
-        WH_LOCATION,
-        WH_NUMBER,
-        H_PRICE,
-        H_FOOD,
-        H_MIN,
-        H_MAX,
-        H_CONTENT,
-        H_IMGNAME,
-        REZCOUNT,
-        H_DISCOUNT,
-        H_SUBIMG
-    FROM 
+FROM
         (SELECT
-            A.WH_CODE WH_CODE,
-            A.H_CODE H_CODE,
-            NVL(A.H_NAME, '') H_NAME,
-            NVL(B.WH_NAME, '') WH_NAME,
-            NVL(B.WH_LOCATION, '') WH_LOCATION,
-            NVL(B.WH_NUMBER, '') WH_NUMBER,
-            NVL(A.H_PRICE, 0) H_PRICE,
-            NVL(A.H_FOOD, 0) H_FOOD,
-            NVL(A.H_MIN, 0) H_MIN,
-            NVL(A.H_MAX, 0) H_MAX,
-            NVL(A.H_CONTENT, '') H_CONTENT,
-            NVL(A.H_IMGNAME, '') H_IMGNAME,
-            NVL(A.REZCOUNT, 0) REZCOUNT,
-            NVL(A.H_DISCOUNT, 0) H_DISCOUNT,
-            NVL(A.H_SUBIMG, 0) H_SUBIMG
+            ROWNUM AS RNUM,
+            WH_CODE,
+            H_CODE,
+            H_NAME,
+            WH_NAME,
+            WH_LOCATION,
+            WH_NUMBER,
+            H_PRICE,
+            H_FOOD,
+            H_MIN,
+            H_MAX,
+            WH_CONTENT,
+            H_CONTENT,
+            H_IMGNAME,
+            REZCOUNT,
+            H_DISCOUNT,
+            H_SUBIMG
         FROM
-			WD_HALL A, WD_WEDDINGHALL B
-
-        WHERE 
-			A.WH_CODE = B.WH_CODE
-<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>	
-   <choose>                
-      <when test='searchType == "1"'> 		
-        AND
-            B.WH_NAME LIKE '%' || #{searchValue} || '%'
-      </when>
-      <when test='searchType == "2"'>
-        AND
-        	A.H_NAME LIKE '%' || #{searchValue} || '%'
-		</when>
-	</choose>            
-</if>             
-        ORDER BY WH_CODE ASC, H_CODE ASC))
+            (SELECT
+                WH_CODE,
+                H_CODE,
+                H_NAME,
+                WH_NAME,
+                WH_LOCATION,
+                WH_NUMBER,
+                H_PRICE,
+                H_FOOD,
+                H_MIN,
+                H_MAX,
+                WH_CONTENT,
+                H_CONTENT,
+                H_IMGNAME,
+                REZCOUNT,
+                H_DISCOUNT,
+                H_SUBIMG
+            FROM
+                    (SELECT
+                                A.WH_CODE WH_CODE,
+                                A.H_CODE H_CODE,
+                                NVL(A.H_NAME, '') H_NAME,
+                                NVL(B.WH_NAME, '') WH_NAME,
+                                NVL(B.WH_LOCATION, '') WH_LOCATION,
+                                NVL(B.WH_NUMBER, '') WH_NUMBER,
+                                NVL(A.H_PRICE, 0) H_PRICE,
+                                NVL(A.H_FOOD, 0) H_FOOD,
+                                NVL(A.H_MIN, 0) H_MIN,
+                                NVL(A.H_MAX, 0) H_MAX,
+                                NVL(B.WH_CONTENT, '') WH_CONTENT,
+                                NVL(A.H_CONTENT, '') H_CONTENT,
+                                NVL(A.H_IMGNAME, '') H_IMGNAME,
+                                NVL(A.REZCOUNT, 0) REZCOUNT,
+                                NVL(A.H_DISCOUNT, 0) H_DISCOUNT,
+                                NVL(A.H_SUBIMG, 0) H_SUBIMG,
+                                CONCAT(A.WH_CODE, A.H_CODE) AS WDH
+                            FROM
+                                WD_HALL A, WD_WEDDINGHALL B
+                            WHERE 
+                                A.WH_CODE = B.WH_CODE)
+            WHERE
+                1=1
+            <if test='wDate != null and wDate != ""'>   
+            AND    
+                 WDH NOT IN (SELECT
+                                  CONCAT(WH_CODE, H_CODE) AS WDH
+                                        FROM
+                                            WD_REZ
+                                        WHERE
+                                            WDATE LIKE #{wDate}
+                                        AND
+                                        	REZ_STATUS = 'Y')
+            </if>            
+			<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>   
+			   <choose>                
+			      <when test='searchType == "1"'>       
+			        AND
+			            WH_NAME LIKE '%' || #{searchValue} || '%'
+			      </when>
+			      <when test='searchType == "2"'>
+			        AND
+			           H_NAME LIKE '%' || #{searchValue} || '%'
+			      </when>
+			   </choose>            
+			</if>
+            ORDER BY WH_CODE ASC, H_CODE ASC))
 WHERE
     RNUM <![CDATA[>=]]> #{startRow}
 AND
@@ -305,6 +339,208 @@ AND
     RNUM <![CDATA[<=]]> 4
 </select>
 <!-- 홀 상세페이지 같은 회사 상품 조회 종료 -->
+
+<!-- 웨딩홀 추가 쿼리문 시작 -->
+<insert id="weddinghallInsert" parameterType="com.icia.web.model.WDHall">
+INSERT INTO WD_WEDDINGHALL (
+    WH_CODE,
+    WH_NAME,
+    WH_LOCATION,
+    WH_NUMBER,
+    WH_CONTENT
+) VALUES (
+    #{WHCode},
+    #{whName},
+    #{WHLocation},
+    #{whNumber},
+    #{whContent}
+)
+</insert>
+<!-- 웨딩홀 추가 쿼리문 끝 -->
+
+<!-- 웨딩홀 제일 마지막 웨딩홀 코드 불러오기 시작 -->
+<select id="maxWHCode" resultType="string">
+SELECT
+    MAX(WH_CODE)
+FROM
+    WD_WEDDINGHALL
+</select>
+<!-- 웨딩홀 가장 마지막 웨딩홀 코드 불러오기 끝 -->
+
+<!-- 웨딩홀 제일 마지막 웨딩홀 코드 불러오기 끝 -->
+
+<!-- 웨딩홀의 가장 마지막 웨딩홀 코드 불러오기 시작 -->
+<select id="maxHCode" parameterType="string" resultType="long">
+SELECT
+    NVL(MAX(A.H_CODE), 0) AS H_CODE
+FROM
+    WD_HALL A, WD_WEDDINGHALL B
+WHERE
+    A.WH_CODE = B.WH_CODE
+AND
+    A.WH_CODE = #{value}
+</select>
+<!-- 웨딩홀의 가장 마지막 웨딩홀 코드 불러오기 끝 -->
+
+<!-- 홀추가 인서트문 시작 -->
+<insert id="hallInsert" parameterType="com.icia.web.model.WDHall">
+INSERT INTO WD_HALL (
+    WH_CODE,
+    H_CODE,
+    H_NAME,
+    H_PRICE,
+    H_FOOD,
+    H_MIN,
+    H_MAX,
+    H_CONTENT,
+    H_IMGNAME,
+    REZCOUNT,
+    H_DISCOUNT,
+    H_SUBIMG
+) VALUES (
+    #{WHCode},
+    #{HCode},
+    #{HName},
+    #{HPrice},
+    #{HFood},
+    #{HMin},
+    #{HMax},
+    #{HContent},
+    #{HImgName},
+    #{RezCount},
+    #{hDiscount},
+    #{hSubImg}
+)
+</insert>
+<!-- 홀 추가 인서트문 끝 -->
+
+<!-- 웨딩홀 코드와 이름 가져오기 -->
+<select id="whNameAndCode" resultMap="hallResultMap">
+SELECT
+    WH_CODE,
+    NVL(WH_NAME, '') WH_NAME
+FROM
+    WD_WEDDINGHALL
+</select>
+<!-- 웨딩홀 코드와 이름 가져오기 -->
+
+<!-- 의수 추가 -->
+<!-- 예약 성공 시 해당 예약번호의 홀 REZCOUNT +1해주기 시작 -->
+<update id="rezCountPlus" parameterType="string">
+UPDATE
+    (SELECT
+            CONCAT(NVL(WH_CODE,''),NVL(H_CODE,'')) AS WDH,
+            REZCOUNT
+        FROM
+            WD_HALL)
+SET
+    REZCOUNT = REZCOUNT + 1
+WHERE
+    WDH = (SELECT
+                CONCAT(NVL(WH_CODE,''),NVL(H_CODE,'')) AS WDH
+            FROM
+                WD_REZ
+            WHERE
+                REZ_NO = #{value})
+</update>
+<!-- 예약 성공 시 해당 예약번호의 홀 REZCOUNT +1해주기 종료 -->
+
+<!-- 웨딩홀만 조회 -->
+<select id="onlyWeddingHall" parameterType="string" resultMap="hallResultMap">
+SELECT
+    WH_CODE,
+    WH_NAME,
+    WH_LOCATION,
+    WH_NUMBER,
+    WH_CONTENT
+FROM
+    WD_WEDDINGHALL
+WHERE
+    WH_CODE = #{value}
+</select>
+<!-- 웨딩홀만 조회 -->
+
+<!-- 웨딩홀 삭제 -->
+<delete id="weddingHallDelete" parameterType="string">
+DELETE FROM WD_WEDDINGHALL
+WHERE
+        WH_CODE = #{value}
+</delete>
+<!-- 웨딩홀 삭제 -->
+
+<!-- 홀 삭제 -->
+<delete id="hallDelete" parameterType="com.icia.web.model.WDHall">
+DELETE FROM WD_HALL
+WHERE
+    WH_CODE = #{WHCode}
+AND 
+	H_CODE = #{HCode}
+</delete>
+<!-- 홀 삭제 -->
+
+<!-- 웨딩홀 업데이트 -->
+<update id="weddinghallUpdate" parameterType="com.icia.web.model.WDHall">
+UPDATE WD_WEDDINGHALL
+SET
+    WH_NAME = #{whName},
+    WH_LOCATION = #{WHLocation},
+    WH_NUMBER = #{whNumber},
+    WH_CONTENT = #{whNumber}
+WHERE
+        WH_CODE = #{WHCode}
+</update>
+<!-- 웨딩홀 업데이트 -->
+
+<!-- 홀 업데이트 -->
+<update id="hallUpdate" parameterType="com.icia.web.model.WDHall">
+UPDATE WD_HALL
+SET
+    H_NAME = #{HName},
+    H_PRICE = #{HPrice},
+    H_FOOD = #{HFood},
+    H_MIN = #{HMin},
+    H_MAX = #{HMax},
+    H_CONTENT = #{HContent}
+WHERE
+        WH_CODE = #{WHCode}
+    AND H_CODE = #{HCode}
+</update>
+<!-- 홀 업데이트 -->
+
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+<select id="maxImgName" resultType="string">
+SELECT
+    NVL(MAX(A.H_IMGNAME), 0) AS H_IMGNAME
+FROM
+    WD_HALL A, WD_WEDDINGHALL B
+WHERE
+    A.WH_CODE = B.WH_CODE
+</select>
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+
+<!-- 홀 파일 삽입 -->
+<insert id="hallFileInsert" parameterType="com.icia.web.model.WDHallFile">
+INSERT INTO WD_HALL_FILE (
+    H_CODE,
+    H_FILE_SEQ,
+    H_FILE_NAME,
+    H_FILE_ORG_NAME,
+    H_FILE_EXT,
+    H_FILE_SIZE,
+    REG_DATE,
+    WH_CODE
+) VALUES (
+    #{HCode},
+    #{HFileSeq},
+    #{HFileName},
+    #{HFileOrgName},
+    #{HFileExt},
+    #{HFileSize},
+    SYSDATE,
+    #{WHCode}
+)
+</insert>
+<!-- 홀 파일 삽입 -->
 
 </mapper>
 

@@ -25,6 +25,8 @@ function kakaoPayResult(pgToken)
 	<input type="hidden" name="cCode" id="cCode" value="${cCode}" />	<!-- 동욱 추가 -->
 	<input type="hidden" name="rezNo" id="rezNo" value="${rezNo}" />
     <input type="hidden" name="rezFullPrice" id="rezFullPrice" value="${rezFullPrice}" />
+    <input type="hidden" name="rezPoint" id="rezPoint" value="${rezPoint}" />
+
 </form>
 </body>
 </html>

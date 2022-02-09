@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Tooplate">
+    
+    <!-- 파비콘 -->
+     <link href="../resources/images/favicon3.png" rel="icon">
+    <!-- 끝 -->
+    
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +19,13 @@
     <script type="text/javascript" src="../resources/js/icia.common.js"></script>
     <script type="text/javascript" src="../resources/js/icia.ajax.js"></script>
     
+    <!-- alert창 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    
+    <!-- 큐알 -->
+    <script type="text/javascript" src="../resources/js/qrcode.js"></script>
+    <script src="../resources/js/jquery-qrcode-0.18.0.js"></script>
+  
     
     <!-- 보현폰트 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +35,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script:400" rel="stylesheet">
 	
 	<!-- 의수 -->
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +73,10 @@
 	
 	<link rel="stylesheet" type="text/css" href="../resources/css/bootstrap-theme.min.css">
 	<link type="text/css" href="../resources/css/jquery.colorbox.css" rel="stylesheet" />
-	<link rel="stylesheet" href="../resources/css/admin.css">	
+	
+	
+	
+
 <!--
 
 Tooplate 2125 ArtXibition

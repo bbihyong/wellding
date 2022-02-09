@@ -1,0 +1,9 @@
+diff a/src/main/resources/com/icia/web/mapper/WDRezDao.xml b/src/main/resources/com/icia/web/mapper/WDRezDao.xml	(rejected hunks)
+@@ -531,7 +531,6 @@
+ </select>
+ <!-- 결제 내역을 가져오기(rezStatus Y) 종료 -->
+ <!-- 환불요청시 (status C로 변경) 시작 -->
+-<!-- 환불요청시 (status C로 변경) 시작 -->
+ 
+ <!-- 관리자페이지에서 결제내역 리스트 조회 -->
+ <select id="rezAdminSelect" parameterType="com.icia.web.model.WDRez" resultMap="WDRezDaoResultMap">

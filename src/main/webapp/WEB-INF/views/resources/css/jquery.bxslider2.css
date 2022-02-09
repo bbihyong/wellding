@@ -5,6 +5,7 @@
 	padding: 100px 0 110px 0;
 	border-bottom: dashed 1px #d3d3d3;
 	border-top: dashed 1px #d3d3d3;
+	z-index:1000;
 	/*background:linear-gradient(#ffefe5, white);*/
 }
 .bx-wrapper {position: relative;}
@@ -17,7 +18,7 @@
 	width:100px; 
 	height:100px; 
 	overflow:hidden; 
-	transform: translateY(-50%); 
+	transform: translateY(-50%) translateZ(-1); 
 	color:#e68e8e;
 }
 .bx-controls-direction .bx-prev {left:0;}

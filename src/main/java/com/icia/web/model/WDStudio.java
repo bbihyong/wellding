@@ -24,6 +24,7 @@ public class WDStudio implements Serializable
 	
 	private WDStudioFile wdStudoiFile;
 	
+	private String sDate;	//결혼 날짜
 	
 	public WDStudio()
 	{
@@ -42,6 +43,7 @@ public class WDStudio implements Serializable
 	    sDiscount = 0;
 	    
 	    sSubImg = 0;
+	    sDate = "";
 	}
 		
 
@@ -181,6 +183,16 @@ public class WDStudio implements Serializable
 
 	public void setWdStudoiFile(WDStudioFile wdStudoiFile) {
 		this.wdStudoiFile = wdStudoiFile;
+	}
+
+
+	public String getsDate() {
+		return sDate;
+	}
+
+
+	public void setsDate(String sDate) {
+		this.sDate = sDate;
 	}
 
 }

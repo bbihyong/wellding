@@ -7,6 +7,7 @@
 <head>
 <%@ include file="/WEB-INF/views/include/head.jsp"%>
 <title>이벤트</title>
+
 <script>   
 $(document).ready(function(){
 	$("#btnSearch").on("click", function(){
@@ -25,7 +26,11 @@ function fn_search(){
 	
 	if($.trim($("#_searchValue").val()).length <= 0)
 	{
-		alert("조회값을 입력하세요.");
+		//alert("조회값을 입력하세요.");
+		Swal.fire({ 
+			icon: 'warning',
+			text: '조회값을 입력하세요.'
+		});
 		$("#_searchValue").focus();
 		return;
 	}
@@ -37,7 +42,7 @@ function fn_search(){
      document.eBoardForm.submit(); 
 }
 
-function fn_list(curPage)
+function fn_paging(curPage)
 {
 	document.eBoardForm.eBSeq.value = "";
 	document.eBoardForm.curPage.value = curPage;
@@ -78,8 +83,17 @@ function fn_view(eBSeq)
 	<!--h2 class="e_title">EVENT</h2-->
 	<p style="text-align: center; margin-bottom: 20px;">웰딩 이벤트를 확인해보세요!</p>
 	<br />
-
-	<div class="tickets-page">
+      
+                <div class="tickets-page">
+       			 <div class="container">
+          		  <div class="row">
+                <div class="col-lg-12">
+                    <div class="heading">
+                        <h2><!-- Event --></h2>
+                    </div>
+                </div>
+ 				
+					                             
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12" id="search-box" style="margin-bottom: 30px;">
@@ -124,6 +138,30 @@ function fn_view(eBSeq)
 				<div class="col-lg-1"></div>
 				<div class="col-lg-10">
 					<div class="row">
+					
+						<div class="event-item">
+							<div class="row">
+								<div class="col-lg-8" id="eback">
+										<div class="left-content" style="padding: 25px;">
+											<a href="/board/eBoardCoupon">
+											<h1 class="display-5 fw-bolder" id="etitle">쿠폰 발급 이벤트</h1>
+											<div class="caption_desc">웰딩에서 준비한 쿠폰이벤트! 웰딩 회원이라면 모두 발급 가능합니다 ^^</div>
+											<div class="e_write">admin</div>
+											<div class="e_date">2022.01.01</div></a>
+										</div>
+									</div>
+								
+									<div class="col-lg-4" id="eback2">
+										<div class="thumb" >
+											<a href="/board/eBoardCoupon">
+												<img src="/resources/images/couponbanner.jpg" alt="할인쿠폰" style="border-radius: 4%;">
+											</a>
+										</div>
+									</div>
+								</div>
+							</div>
+									
+					
 						<c:forEach var="eboard" items="${eBoard}" varStatus="status">
 							<div class="event-item" onclick="fn_view(${eboard.eBSeq})">
 								<div class="row">
@@ -156,12 +194,12 @@ function fn_view(eBSeq)
 								<ul class="pagination justify-content-center">
 									<c:if test="${!empty paging}">
 										<c:if test="${paging.prevBlockPage gt 0}">	<!-- prevBlockPage이 0 보다 크냐 -->
-										<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_list(${paging.prevBlockPage})">이전</a></li>
+										<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_paging(${paging.prevBlockPage})">이전</a></li>
 										</c:if>
-										<c:forEach var="i" begin="${paging.startPage}" end="${paging.endPage}">
+										<c:forEach var="i" begin = "${paging.startPage}" end="${paging.endPage}">
 											<c:choose>
 												<c:when test="${i ne curPage}">
-													<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_list(${i})">${i}</a></li>
+													<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_paging(${i})">${i}</a></li>
 												</c:when>
 												<c:otherwise>
 													<li class="page-item active"><a class="page-link" href="javascript:void(0)" style="cursor:default">${i}</a></li>
@@ -169,7 +207,7 @@ function fn_view(eBSeq)
 											</c:choose>
 										</c:forEach>
 										<c:if test="${paging.nextBlockPage gt 0}">         
-											<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_list(${paging.nextBlockPage})">다음</a></li>
+											<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_paging(${paging.nextBlockPage})">다음</a></li>
 										</c:if>       
 									</c:if> 
 								</ul>
@@ -191,4 +229,3 @@ function fn_view(eBSeq)
 
 </body>
 </html>
-

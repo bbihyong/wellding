@@ -30,10 +30,12 @@ import com.icia.web.model.User;
 import com.icia.web.model.WDEBoard;
 import com.icia.web.model.WDFBoard;
 import com.icia.web.model.WDHall;
+import com.icia.web.model.WDReview;
 import com.icia.web.model.WDUser;
 import com.icia.web.service.WDEBoardService;
 import com.icia.web.service.WDFBoardService;
 import com.icia.web.service.WDHallService;
+import com.icia.web.service.WDReviewService;
 import com.icia.web.service.WDUserService;
 import com.icia.web.util.CookieUtil;
 
@@ -67,6 +69,9 @@ public class IndexController
 	@Autowired
 	private WDEBoardService wdEBoardService;
 	
+	@Autowired
+	private WDReviewService wdReviewService;
+	
 	//자유게시판 서비스
 	@Autowired
 	private WDFBoardService wdFBoardService;
@@ -77,10 +82,6 @@ public class IndexController
 			 
 		//쿠키 확인
 		String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
-		
-		if(StringUtil.equals(cookieUserId, "admin")) {
-			return "/mng/userList";
-		}
 		
 		//로그인 했을 때와 안했을 때를 구분해서 페이지를 보여주려 함.
 		//로그인 체크용. 0 => 로그인 x, 혹은 없는 계정; 1 => 로그인 정보 있는 계정
@@ -121,8 +122,8 @@ public class IndexController
 		//이벤트 
 		WDEBoard eSearch = new WDEBoard();
 		//이벤트 글 3개만 보여줄거니깐, 1-3으로 넣었는데, 이건 뭐 어떻게 할지 논의해보면 좋을듯.
-		eSearch.setStartRow(1);
-		eSearch.setEndRow(5);
+		eSearch.setStartRow(2);
+		eSearch.setEndRow(6);
 		
 		List<WDEBoard> wdEBoard = null;
 		
@@ -134,11 +135,15 @@ public class IndexController
 		fSearch.setStartRow(11);
 		fSearch.setEndRow(15);
 		
-		List<WDFBoard> wdFBoard = null;
+		List<WDReview> wdReviewList = null;
 		
-		wdFBoard = wdFBoardService.fBoardList(fSearch);
+		WDReview wdReview = new WDReview();
+		wdReview.setStartRow(1);
+		wdReview.setEndRow(5);
+		
+		wdReviewList = wdReviewService.ReviewList(wdReview);
 				
-		model.addAttribute("wdFBoard", wdFBoard);
+		model.addAttribute("wdReviewList", wdReviewList);
 		
 		return "/index";
 	}
@@ -169,6 +174,15 @@ public class IndexController
 		
 		model.addAttribute("wdUser", wdUser);
 		
+		String wDate = wdUser.getMarrytDate();
+		String year = wDate.substring(0, 4);
+		String month = wDate.substring(4, 6);
+		String day = wDate.substring(6, 8);
+		
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
+		
 		
 		return "/user/modify";
 	}
@@ -185,6 +199,24 @@ public class IndexController
 		
 		return "/about";
 	}
+	
+	//오시는 길
+	@RequestMapping(value="/about/map")
+	public String aboutMap(ModelMap model, HttpServletRequest request, HttpServletResponse response) 
+	{
+		String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+		
+		WDUser wdUser = wdUserService.userSelect(cookieUserId);
+		
+		int map = 1;
+		
+		model.addAttribute("wdUser" ,wdUser);
+		model.addAttribute("map", map);
+		
+		return "/about";
+	}
+	
+	
 	
 	@RequestMapping(value="/Termsofuse")
 	public String termsofuse(ModelMap model, HttpServletRequest request, HttpServletResponse response) {

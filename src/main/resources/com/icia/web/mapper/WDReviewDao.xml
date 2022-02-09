@@ -3,10 +3,10 @@
 <mapper namespace="com.icia.web.dao.WDReviewDao">
 <!-- 리뷰 resultMap 시작 -->
 <resultMap id="ReviewResultMap" type="com.icia.web.model.WDReview">
-		<id column="R_SEQ" property="RSeq" />
-		<id column="REZ_NO" property="rezNo" />
-    	<result column="USER_ID" property="UserId" />
-    	<result column="U_NICKNAME" property="UNickName" />
+      <id column="R_SEQ" property="RSeq" />
+      <id column="REZ_NO" property="rezNo" />
+       <result column="USER_ID" property="UserId" />
+       <result column="U_NICKNAME" property="UNickName" />
         <result column="WDATE" property="WDate" />
         <result column="R_TITLE" property="RTitle" />
         <result column="R_CONTENT" property="RContent" />
@@ -15,18 +15,29 @@
         <result column="R_SCORE_STAR" property="RScore" />
         <result column="REZ_STATUS" property="rezStatus" />
         <result column="TODAY" property="today" />
+        <result column="REVIEW_STATUS" property="reviewStatus" />
+        <result column="WH_CODE" property="whCode" />
+        <result column="H_CODE" property="hCode" />
+        <result column="S_CODE" property="sCode" />
+        <result column="DC_CODE" property="dcCode" />
+        <result column="D_NO" property="dNo" />
+        <result column="M_CODE" property="mCode" />
+        <result column="H_NAME" property="hName" />
+        <result column="S_NAME" property="sName" />
+        <result column="D_NAME" property="dName" />
+        <result column="M_NAME" property="mName" />
 </resultMap>
 <!-- 리뷰 resultMap 끝 -->
 
 <!-- 리뷰파일 resultMap 시작 -->
 <resultMap id="ReviewFileResultMap" type="com.icia.web.model.WDReviewFile">
-		    <id column="R_SEQ" property="rSeq" />
-		    <id column="R_FILE_SEQ" property="rFileSeq" />
-		    <result column="R_FILE_NAME" property="rFileName" />
-		    <result column="R_FILE_ORG_NAME" property="rFileOrgName" />
-		    <result column="R_FILE_EXT" property="rFileExt" />
-		    <result column="R_FILE_SIZE" property="rFileSize" />
-		    <result column="REG_DATE" property="regDate" />
+          <id column="R_SEQ" property="rSeq" />
+          <id column="R_FILE_SEQ" property="rFileSeq" />
+          <result column="R_FILE_NAME" property="rFileName" />
+          <result column="R_FILE_ORG_NAME" property="rFileOrgName" />
+          <result column="R_FILE_EXT" property="rFileExt" />
+          <result column="R_FILE_SIZE" property="rFileSize" />
+          <result column="REG_DATE" property="regDate" />
 </resultMap>
 <!-- 리뷰파일 resultMap 끝 -->
 
@@ -35,16 +46,20 @@
 SELECT
     COUNT(A.R_SEQ) CNT
 FROM
-    WD_REVIEW A, WD_REZ B, WD_HALL C
+    WD_REVIEW A, WD_REZ B
+<if test='searchValue != null and searchValue != ""'>     
+    , WD_HALL C
+</if>    
 WHERE
     A.REZ_NO = B.REZ_NO
+<if test='searchValue != null and searchValue != ""'> 
 AND 
     B.WH_CODE = C.WH_CODE
 AND
     B.H_CODE = C.H_CODE
-<if test='searchValue != null and searchValue != ""'> 
+
 AND
-    C.H_NAME LIKE '%' || #{value} || '%'
+    C.H_NAME LIKE '%' || #{searchValue} || '%'
 </if>
 </select>
 <!-- 리뷰 게시물 총 수 체크 끝 -->
@@ -61,7 +76,8 @@ SELECT
     R_READ_CNT,
     REG_DATE,
     R_SCORE_STAR,
-    REZ_NO
+    REZ_NO,
+    H_NAME
 FROM (SELECT
             ROWNUM RNUM,
             R_SEQ,
@@ -73,7 +89,8 @@ FROM (SELECT
             R_READ_CNT,
             REG_DATE,
             R_SCORE_STAR,
-            REZ_NO
+            REZ_NO,
+            H_NAME
         FROM ( SELECT
                     A.R_SEQ,
                     A.USER_ID,
@@ -84,22 +101,25 @@ FROM (SELECT
                     NVL(A.R_READ_CNT, 0) R_READ_CNT,
                     NVL(TO_CHAR(A.REG_DATE, 'YYYY.MM.DD HH24:MI:SS'), '') REG_DATE,
                     NVL(A.R_SCORE_STAR, 0), R_SCORE_STAR,
-                    A.REZ_NO
+                    A.REZ_NO,
+                    NVL(D.H_NAME, '없음') H_NAME
                 FROM
                     WD_REVIEW A, WD_USER B, WD_REZ C, WD_HALL D
+               
                 WHERE
                     A.USER_ID = B.USER_ID
                 AND
                     A.REZ_NO = C.REZ_NO
+                  
                 AND
-                    C.WH_CODE = D.WH_CODE
+                    C.WH_CODE = D.WH_CODE(+)
                 AND
-                    C.H_CODE =  D.H_CODE
-<if test='searchValue != null and searchValue != ""'>                    
+                    C.H_CODE =  D.H_CODE(+)
+<if test='searchValue != null and searchValue != ""'>                      
                 AND
                     D.H_NAME LIKE '%' || #{searchValue} || '%'
 </if>                          
-                ORDER BY R_SEQ ASC))
+                ORDER BY R_SEQ DESC))
 WHERE
     RNUM <![CDATA[>=]]> #{startRow}
 AND
@@ -213,7 +233,7 @@ SELECT
 FROM
     WD_REZ
 WHERE
-    USER_ID = #{value}
+    REZ_NO = #{value}
 AND
     REZ_STATUS = 'Y'
 </select>
@@ -269,4 +289,130 @@ WHERE
 </update>
 <!-- 리뷰 게시글 수정 -->
 
+<!-- 리뷰 중복 작성 불가능하게 체크 시작-->
+<select id="reviewOverlapCheck" parameterType="string" resultType="string">
+SELECT
+    NVL(REVIEW_STATUS, 'N') REVIEW_STATUS
+FROM 
+     WD_REZ
+WHERE
+   REZ_NO = #{value}
+</select>
+<!-- 리뷰 중복 작성 불가능하게 체크 끝-->
+
+<!-- 리뷰 작성처리 -->
+<update id="reviewCPT" parameterType="string">
+UPDATE WD_REZ
+SET
+    REVIEW_STATUS = 'Y'
+WHERE
+        REZ_NO = #{value}
+</update>
+<!-- 리뷰 작성처리 -->
+
+<!-- 리뷰게시판 홀 이름 보여주기 쿼리문 -->
+<select id="hallNameList" parameterType="string" resultType="string">
+SELECT NVL(A.H_NAME, '없음') H_NAME
+FROM WD_REVIEW C, WD_REZ B LEFT OUTER JOIN WD_HALL A
+    ON ( A.WH_CODE = B.WH_CODE AND A.H_CODE = B.H_CODE )
+WHERE 
+    B.REZ_NO = C.REZ_NO
+AND
+    B.REZ_NO = #{value}
+AND
+    B.REVIEW_STATUS = 'Y'
+
+<!-- SELECT NVL(A.H_NAME, '없음') H_NAME
+FROM WD_REZ B LEFT OUTER JOIN WD_HALL A
+    ON ( A.WH_CODE = B.WH_CODE AND A.H_CODE = B.H_CODE )
+WHERE B.REVIEW_STATUS = 'Y'-->
+</select>    
+<!-- 리뷰게시판 홀 이름 보여주기 쿼리문 -->  
+
+<!-- 리뷰인포 업체이름 불러오기 전 코드 부터 불러오기 -->
+<select id="reviewhsdmCodeSet" parameterType="com.icia.web.model.WDReview" resultMap="ReviewResultMap">
+SELECT
+    NVL(B.WH_CODE, '없음') WH_CODE,
+    NVL(B.H_CODE, '없음') H_CODE,
+    NVL(B.S_CODE, '없음') S_CODE,
+    NVL(B.DC_CODE, '없음') DC_CODE,
+    NVL(B.D_NO, '없음')  D_NO,
+    NVL(B.M_CODE, '없음') M_CODE
+FROM
+    WD_REVIEW A, WD_REZ B
+WHERE
+    A.REZ_NO = B.REZ_NO
+AND
+   A.REZ_NO = #{rezNo}
+</select>
+<!-- 리뷰인포 업체이름 불러오기 전 코드 부터 불러오기 -->
+
+<!-- 리뷰인포 홀 스 드 메 업체 이름 불러오기 -->
+<select id="reviewInfohsdmName" parameterType="com.icia.web.model.WDReview" resultMap="ReviewResultMap">
+SELECT
+<if test='whCode != null and !whCode.equals("없음") and hCode != null and !hCode.equals("없음")'>  
+    NVL(C.H_NAME, '없음') H_NAME,
+</if>
+<if test='sCode != null and !sCode.equals("없음")'>     
+    NVL(D.S_NAME, '없음') S_NAME,
+</if>
+<if test='dcCode != null and !dcCode.equals("없음") and dNo != null and !dNo.equals("없음")'> 
+    NVL(E.D_NAME, '없음') D_NAME,
+</if>    
+<if test='mCode != null and !mCode.equals("없음")'>     
+    NVL(F.M_NAME, '없음') M_NAME,
+</if>    
+    A.REZ_NO
+FROM
+    WD_REVIEW A, WD_REZ B
+<if test='whCode != null and !whCode.equals("없음") and hCode != null and !hCode.equals("없음")'>      
+    , WD_HALL C
+</if>    
+<if test='sCode != null and !sCode.equals("없음")'>         
+    , WD_STUDIO D
+</if>    
+<if test='dcCode != null and !dcCode.equals("없음") and dNo != null and !dNo.equals("없음")'>     
+    , WD_DRESS E
+</if>    
+<if test='mCode != null and !mCode.equals("없음")'>         
+    , WD_MAKEUP F
+</if>    
+WHERE
+   A.REZ_NO = B.REZ_NO
+AND
+   A.REZ_NO = #{rezNo}   
+<if test='whCode != null and !whCode.equals("없음") and hCode != null and !hCode.equals("없음")'>     
+AND
+    B.WH_CODE = C.WH_CODE
+AND
+    B.H_CODE = C.H_CODE
+AND
+   B.WH_CODE = #{whCode}
+AND
+   B.H_CODE = #{hCode}
+</if>     
+<if test='sCode != null and !sCode.equals("없음")'>         
+AND
+    B.S_CODE = D.S_CODE
+AND
+   B.S_CODE = #{sCode}
+</if>     
+<if test='dcCode != null and !dcCode.equals("없음") and dNo != null and !dNo.equals("없음")'>        
+AND
+    B.DC_CODE = E.DC_CODE
+AND
+    B.D_NO = E.D_NO
+AND
+   B.DC_CODE = #{dcCode}    
+AND
+   B.D_NO = #{dNo}   
+</if>     
+<if test='mCode != null and !mCode.equals("없음")'>             
+AND
+    B.M_CODE = F.M_CODE
+AND
+   B.M_CODE = #{mCode}
+</if>     
+</select>
+<!-- 리뷰인포 홀 스 드 메 업체 이름 불러오기 -->  
 </mapper>

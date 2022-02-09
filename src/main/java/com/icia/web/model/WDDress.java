@@ -21,13 +21,60 @@ public class WDDress implements Serializable
 	private String searchType;		//검색타입(1:이름, 2:제목, 3:내용)
 	private String searchValue;		//검색 값
 	
-	private WDHallFile wdDressFile;
+	private WDDressFile wdDressFile;
 	
 	private long startRow;			//시작 rownum
 	private long endRow;			//끝 rownum
+	private String wDate;		//결혼날짜
+	
+	private String year;
+	private String month;
+	private String day;
 	
 
 	
+	public String getYear() {
+		return year;
+	}
+
+
+
+
+	public void setYear(String year) {
+		this.year = year;
+	}
+
+
+
+
+	public String getMonth() {
+		return month;
+	}
+
+
+
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+
+
+
+
+	public String getDay() {
+		return day;
+	}
+
+
+
+
+	public void setDay(String day) {
+		this.day = day;
+	}
+
+
+
+
 	public WDDress()
 	{
 		dcCode = "";
@@ -49,8 +96,29 @@ public class WDDress implements Serializable
 		startRow = 0;
 		endRow = 0;
 		dDiscount = 0;
+		wDate ="";
+		year = "";
+		month = "";
+		day = "";
+		
 		
 	}
+	
+	
+
+
+	public String getWdate() {
+		return wDate;
+	}
+
+
+
+
+	public void setWdate(String wDate) {
+		this.wDate = wDate;
+	}
+
+
 
 
 	public String getDcCode() {
@@ -183,12 +251,12 @@ public class WDDress implements Serializable
 	}
 
 
-	public WDHallFile getWdDressFile() {
+	public WDDressFile getWdDressFile() {
 		return wdDressFile;
 	}
 
 
-	public void setWdDressFile(WDHallFile wdDressFile) {
+	public void setWdDressFile(WDDressFile wdDressFile) {
 		this.wdDressFile = wdDressFile;
 	}
 
@@ -210,6 +278,16 @@ public class WDDress implements Serializable
 
 	public void setEndRow(long endRow) {
 		this.endRow = endRow;
+	}
+
+
+	public String getwDate() {
+		return wDate;
+	}
+
+
+	public void setwDate(String wDate) {
+		this.wDate = wDate;
 	}
 	
 }

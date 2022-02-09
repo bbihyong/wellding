@@ -10,15 +10,17 @@
 $(document).ready(function(){
    $("#btnSearch").on("click", function(){
       //새로 조회버튼을 누를 때에는 신규로 넣은 값을 가져가야 함.
-      document.bbsForm.bSeq.value = "";
+      document.bbsForm.RSeq.value = 0;
+
       document.bbsForm.searchValue.value = $("#_searchValue").val();
       //조회를 했을 때 무조건 1페이지로 가야 함. 결색 결과가 몇페이지까지 나올지 모르니깐
       document.bbsForm.curPage.value = 1;
-      document.bbsForm.action = "/board/fBoard";
+      document.bbsForm.action = "/board/reviews";
       document.bbsForm.submit();
    });
    
-   $("#btnReviewWrite").on("click", function(){
+
+  /* $("#btnReviewWrite").on("click", function(){
       document.bbsForm.RSeq.value = "";
       var form = $("#bbsForm")[0];
       var formData = new FormData(form);
@@ -67,7 +69,7 @@ $(document).ready(function(){
                   icia.common.error(error);
                }
             });
-   });
+   });*/
 
 });
 
@@ -84,9 +86,9 @@ function fn_view(RSeq)
 //페이지 이동에 대한 버튼 처리
 function fn_list(curPage)
 {
-   document.bbsForm.bSeq.value = "";
+   document.bbsForm.RSeq.value = "";
    document.bbsForm.curPage.value = curPage;
-   document.bbsForm.action = "/board/fBoard";
+   document.bbsForm.action = "/board/reviews";
    document.bbsForm.submit();
 }
 
@@ -116,6 +118,7 @@ function fn_list(curPage)
                         <div class="category2">
                             <p>Review</p>
                         </div>
+                         <p style="text-align:center; margin-top: 10px;">여러분들의 웰딩 후기를 공유해보세요</p>
                     </div>
                 </div>
             </div>
@@ -137,7 +140,7 @@ function fn_list(curPage)
                                                 <div class="row">
                                                     <div class="col-lg-3">
                                                         <select value="searchType" name="_searchType" id="_searchType">
-                                                            <option value="1">홀 제목</option>
+                                                            <option value="1">홀 이름</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-lg-7">
@@ -169,9 +172,14 @@ function fn_list(curPage)
 											<span>번호</span>
 										</div>
 									</div>
-									<div class="col-lg-6" style="text-align: center;">
+									<div class="col-lg-2" style="text-align: center;">
 										<div class="divB_tb">
-											<span>내용</span>
+											<span>선택 홀</span>
+										</div>
+									</div>
+									<div class="col-lg-4" style="text-align: center;">
+										<div class="divB_tb">
+											<span>제목</span>
 										</div>
 									</div>
 									<div class="col-lg-2" style="text-align: center;">
@@ -200,9 +208,14 @@ function fn_list(curPage)
 	                                                <span>${review.RSeq}</span>
 	                                            </div>
 	                                        </div>
+	                                        <div class="col-lg-2" style="text-align: left;">
+	                                            <div class="divB_tb2 tbstyle6">
+	                                            	<span>${review.hName }</span>
+	                                            </div>
+	                                        </div>
 	                                        
-	                                        <div class="col-lg-6" style="text-align: left;">
-	                                            <div class="divB_tb2">
+	                                        <div class="col-lg-4" style="text-align: left;">
+	                                            <div class="divB_tb2 tbstyle5">
 	                                            	<span>${review.RTitle}</span>
 	                                            </div>
 	                                        </div>
@@ -239,10 +252,6 @@ function fn_list(curPage)
 												<div class="col-lg-3"></div>
 												<div class="col-lg-6"></div>
 												<div class="col-lg-3">
-
-													<button type="button" id="btnReviewWrite"
-														class="main-dark-button3">글쓰기</button>
-
 												</div>
 											</div>
 										</div>
@@ -253,7 +262,7 @@ function fn_list(curPage)
 						
 						<div class="col-lg-12">
 		                    <div class="pagination">
-								<ul class="pagination justify-content-center">
+								<ul class="pagination justify-content-center" style="border-top:none;">
 									<c:if test="${!empty paging}">
 										<c:if test="${paging.prevBlockPage gt 0}">	<!-- prevBlockPage이 0 보다 크냐 -->
 										<li class="page-item"><a class="page-link" href="javascript:void(0)" onclick="fn_list(${paging.prevBlockPage})">이전</a></li>
@@ -283,7 +292,8 @@ function fn_list(curPage)
   </div>
 
     <form name="bbsForm" id="bbsForm" method="post">
-        <input type="hidden" name="RSeq" value="${RSeq}" /> <!-- 상세페이지 들어갈때 필요하니까 그때만 이 값이 들어가면됨 -->
+        <input type="hidden" name="RSeq" value="" /> <!-- 상세페이지 들어갈때 필요하니까 그때만 이 값이 들어가면됨 -->
+        <input type="hidden" name="searchType" value="${searchType}" />
         <input type="hidden" name="searchValue" value="${searchValue}" />
         <input type="hidden" name="curPage" value="${curPage}" />
     </form>

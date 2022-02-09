@@ -25,17 +25,28 @@ $(document).ready(function(){
 			count ++;
 			$("#quantity").val(count);
 		});
-		$("#btnList").on("click", function(){
+		$(".btnListt").on("click", function(){
 			document.bbsForm.action = "/hsdm/makeUp";
 			document.bbsForm.submit();
 		});
 	}
 	
-	
-	//홀 담기 버튼 시작
+/*	
+	//메이크업 담기 버튼 시작
 	$("#chae").on("click",function(){
 		if(confirm("해당 메이크업샵을 장바구니에 담으시겠습니까?"))
 		{
+			if($("#quantity").val() <0)
+			{
+				//alert("메이크업 추가 인원이 잘못되었습니다.");
+				Swal.fire({ 
+					icon: 'info',
+					title: '메이크업 추가 인원이 잘못되었습니다.',
+					text: '메이크업 추가인원은 0명 이상으로 선택해주세요.'
+				});
+				return;
+			}
+			
 			//ajax통신 시작
 			$.ajax({
 			type:"POST",
@@ -43,7 +54,8 @@ $(document).ready(function(){
 			data:
 			{
 				mCode: $("#mCode").val(),
-				mPlusNum: $("#quantity").val()
+				mPlusNum: $("#quantity").val(),
+				wDate: $("#wDate").val()
 			},
 			datatype:"JSON",
 			beforeSend:function(xhr){
@@ -87,7 +99,175 @@ $(document).ready(function(){
 		}
 		
 	});
-	//홀 담기 버튼 종료
+*/
+	$("#chae").on("click",function(){
+		
+		if($("#quantity").val() <0)
+		{
+			//alert("메이크업 추가 인원이 잘못되었습니다.");
+			Swal.fire({ 
+				icon: 'info',
+				title: '메이크업 추가 인원이 잘못되었습니다.',
+				text: '메이크업 추가인원은 0명 이상으로 선택해주세요.'
+			});
+			return;
+		}
+		
+		Swal.fire({
+			   title: '메이크업 선택 완료!',
+			   text: '해당 메이크업샵을 장바구니에 담으시겠습니까?',
+			   icon: 'success',
+			   
+			   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+			   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+			   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+			   confirmButtonText: '장바구니에 담기', // confirm 버튼 텍스트 지정
+			   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+			   
+			   reverseButtons: false, // 버튼 순서 거꾸로
+			   
+			}).then(result => {
+				   // 만약 Promise리턴을 받으면,
+				   if (result.isConfirmed) 
+				   { // 만약 모달창에서 confirm 버튼을 눌렀다면
+						//ajax통신 시작
+						$.ajax({
+						type:"POST",
+						url:"/hsdm/makeUpRezProc",
+						data:
+						{
+							mCode: $("#mCode").val(),
+							mPlusNum: $("#quantity").val(),
+							wDate: $("#wDate").val()
+						},
+						datatype:"JSON",
+						beforeSend:function(xhr){
+							xhr.setRequestHeader("AJAX", "true");
+						},
+						success:function(response){
+							if(response.code == 0)
+							{
+								//alert("장바구니에 해당 상품을 담았습니다.");
+								//if(confirm("장바구니로 이동하시겠습니까?"))
+								//{
+								//	location.href = "/user/wishlist";
+								//}
+								Swal.fire({ 
+									icon: 'success',
+									text: '장바구니에 해당 상품을 담았습니다.'
+								}).then((result) => {
+									if (result.isConfirmed) 
+									{ 
+										Swal.fire({ 
+											icon: 'question',
+											text: '장바구니로 이동하시겠습니까?',
+													
+										    showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+										    confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+										    cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+										    confirmButtonText: '장바구니로 이동', // confirm 버튼 텍스트 지정
+										    cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+										    reverseButtons: false // 버튼 순서 거꾸로
+										}).then((result) => {
+											if (result.isConfirmed) 
+											{
+												location.href = "/user/wishlist";
+											}
+											else if (result.isDismissed) 
+										    { // 만약 모달창에서 cancel 버튼을 눌렀다면
+												return;
+										    }
+										});
+									}
+								});
+							}
+							else if(response.code == 403)
+							{
+								//alert("서버와의 연결 상태를 확인해주세요.");
+								Swal.fire({ 
+									icon: 'error',
+									text: '서버와의 연결 상태를 확인해주세요.'
+								}).then(function(){
+									return;
+								});
+							}
+							else if(response.code == 502)
+							{
+								//alert("장바구니에 이미 다른 드레스가 담겨 있습니다.");
+								//if(confirm("장바구니로 이동하시겠습니까?"))
+								//{
+								//	location.href = "/user/wishlist";
+								//}
+								Swal.fire({ 
+									icon: 'warning',
+									text: '장바구니에 이미 다른 메이크업샵이 담겨 있습니다.'
+								}).then((result) => {
+									if (result.isConfirmed) 
+									{ 
+										Swal.fire({ 
+											icon: 'question',
+											text: '장바구니로 이동하시겠습니까?',
+													
+										    showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+										    confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+										    cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+										    confirmButtonText: '장바구니로 이동', // confirm 버튼 텍스트 지정
+										    cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+										    reverseButtons: false // 버튼 순서 거꾸로
+										}).then((result) => {
+											if (result.isConfirmed) 
+											{
+												location.href = "/user/wishlist";
+											}
+											else if (result.isDismissed) 
+										    { // 만약 모달창에서 cancel 버튼을 눌렀다면
+												return;
+										    }
+										});
+									}
+								});
+							}
+							else if(response.code == 500)
+							{
+								Swal.fire({ 
+									icon: 'error',
+									text: '로그인이 필요합니다.'
+								}).then(function(){
+									location.href="/board/login";
+								});
+							}
+							else
+							{
+								//alert("장바구니에 상품을 담는 중 오류가 발생했습니다.");
+								Swal.fire({ 
+									icon: 'error',
+									text: '장바구니에 상품을 담는 중 오류가 발생했습니다.'
+								}).then(function(){
+									return;
+								});
+							}
+						},
+						complete:function(data){
+							icia.common.log(data);
+						},
+						error:function(xhr, status, error)
+						{
+							icia.common.error(error);
+						}
+						});
+						//ajax통신 종료
+				   }
+				   else if (result.isDismissed) 
+				   { // 만약 모달창에서 cancel 버튼을 눌렀다면
+						return;
+				   }
+			});
+	});
+	//메이크업 담기 버튼 종료
+	
+	$(".banner3").on("click", function(){
+		location.href = "/board/specialist";
+	});
 	
 });
 function fn_view_st(sCode)
@@ -137,7 +317,7 @@ function fn_view(dNo)
                         <div class="right-content2">
                             <h4>
                             	<c:out value="${wdMakeup.mName}" />
-				             	<button type="button" id="btnList" class="listButton3">
+				             	<button type="button" id="btnList" class="btnListt listButton3">
 				        			<img src="../resources/images/icons/leftButton.png" class="listIcon" alt="리스트" width="32" height="32">
 				        		</button>
                             </h4>
@@ -156,7 +336,9 @@ function fn_view(dNo)
 	                            <div class="dis-price"><fmt:formatNumber type="number" maxFractionDigits="0" value="${wdMakeup.mPrice * (1-wdMakeup.mDiscount*0.01)}" />원</div>
                             </div>
                             <div class="banner3">
-                                <img src="../resources/images/vip.png" width="100%">
+                            	<a href="/board/specialist">
+                                	<img src="../resources/images/vip.png" width="100%">
+                            	</a>
                             </div>
                            <!---- 추가인원계산할때 쓸거-->
                             <div class="quantity-content">
@@ -181,7 +363,7 @@ function fn_view(dNo)
                 <div class="col-lg-12">
                 	<div class="det_navi3">
                 		<ul>
-                			<li><a href="">스튜디오 추천받기</a></li>
+                			<li><a href="javascript:void(0)">스튜디오 추천받기</a></li>
                 		</ul>
                 	</div>
                 </div>
@@ -190,8 +372,8 @@ function fn_view(dNo)
 <c:if test="${!empty studioRandom}">        
 	<c:forEach var="wdStudio" items="${studioRandom}" varStatus="status">
                	<div class="col-lg-4">
-                    <div class="ticket-item2" onclick="fn_view_st('${wdStudio.sCode}')" style="cursor:pointer">
-                        <div class="thumb_ss">
+                    <div class="ticket-item2">
+                        <div class="thumb_ss" onclick="fn_view_st('${wdStudio.sCode}')" style="cursor:pointer">
                             <img src="../resources/images/studio/${wdStudio.sImgname}" alt="">
                         </div>
                         <div class="down-content dtbox">
@@ -208,7 +390,7 @@ function fn_view(dNo)
 				<div class="col-lg-12">
                 	<div class="det_navi3">
                 		<ul>
-                			<li><a href="">드레스 추천받기</a></li>
+                			<li><a href="javascript:void(0)">드레스 추천받기</a></li>
                 		</ul>
                 	</div>
                 </div>
@@ -216,8 +398,8 @@ function fn_view(dNo)
 <c:if test="${!empty dressRandom}">        
 	<c:forEach var="wdDress" items="${dressRandom}" varStatus="status">
                	<div class="col-lg-3">
-                    <div class="ticket-item2" onclick="fn_view('${wdDress.dNo}')" style="cursor:pointer">
-                        <div class="thumb1">
+                    <div class="ticket-item2">
+                        <div class="thumb1" onclick="fn_view('${wdDress.dNo}')" style="cursor:pointer">
                             <img src="../resources/images/dress/${wdDress.dImgname}" alt="">
                         </div>
                         <div class="down-content dtbox">
@@ -234,7 +416,7 @@ function fn_view(dNo)
                 <!-- 아래쪽 뒤로가기버튼 시작 -->
                 <div class="col-lg-12" style="width: 100%; height: 1px; background:#eee; margin-top:50px;"></div>
             	<div class="alignleft2">
-	             	<button type="button" id="btnList" class="listButton">
+	             	<button type="button" id="btnList" class="btnListt listButton">
 	        			<img src="../resources/images/icons/leftButton.png" class="listIcon" alt="리스트" width="32" height="32">
 	        		</button>
             	</div>  
@@ -265,6 +447,7 @@ function fn_view(dNo)
    <input type="hidden" name="searchType" value="${searchType}" />
    <input type="hidden" name="searchValue" value="${searchValue}" />
    <input type="hidden" name="curPage" value="${curPage}" />
+   <input type="hidden" name="wDate" value="${wDate}" />
 </form>
 
     

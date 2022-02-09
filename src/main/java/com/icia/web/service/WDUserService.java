@@ -1,5 +1,7 @@
 package com.icia.web.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,4 +121,79 @@ public class WDUserService
 		return wduser;
 	}
 	
+	//회원탈퇴
+	public int userDrop(WDUser wduser) {
+		int count = 0;
+		
+		try {
+			count = wdUserDao.userDrop(wduser);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDUserService] userDrop Exception",e);
+		}
+		
+		return count;
+	}
+	
+	//예약번호없을때 결혼날짜 변경
+	
+	public int nonRezNumberMarrydateUpdate(WDUser wduser)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdUserDao.nonRezNumberMarrydateUpdate(wduser);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDUserService] nonRezNumberMarrydateUpdate Exception",e);
+		}
+		return count;
+	}
+	
+	//이메일로 아이디 찾기
+	public List<WDUser> findId(String userEmail)
+	{
+		List<WDUser> wduser = null;
+		
+		try
+		{
+			wduser = wdUserDao.findId(userEmail);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDUserService] findId Exception",e);
+		}
+		return wduser;
+	}
+	
+	//비밀번호 찾기
+	public int findPwd(WDUser wduser)
+	{		
+		int count = 0;
+		
+		try {
+			count = wdUserDao.findPwd(wduser);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDUserService] findPwd Exception",e);
+		}
+		
+		return count;
+	}
+	
+	public WDUser findPwdSelectUser(WDUser wdUser) {
+		WDUser tempUser = null; 		
+		try {
+			tempUser = wdUserDao.findPwdSelectUser(wdUser);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDUserService] findPwdSelectUser Exception",e);
+		}
+		return tempUser;
+	}
 }

@@ -12,8 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.icia.web.dao.WDRezDao;
 import com.icia.web.dao.WDStudioDao;
+import com.icia.web.model.WDHall;
+import com.icia.web.model.WDHallFile;
 import com.icia.web.model.WDRez;
 import com.icia.web.model.WDStudio;
+import com.icia.web.model.WDStudioFile;
 
 @Service("WDStudioService")
 public class WDStudioService 
@@ -112,5 +115,137 @@ public class WDStudioService
    		}
    		return cnt;
    	}
+	
+   	
+   	//스튜디오 예약테이블에서 예약된 날짜 제외하고 가져오기
+  	public List<WDStudio> studioListSdate(WDStudio wdStudio)
+  	{
+  		List<WDStudio> list = null;
+  		
+  		try 
+  		{
+  			list = wdStudioDao.studioListSdate(wdStudio);
+  		}
+  		catch(Exception e) 
+  		{
+			logger.error("[WDStudioService] studioListWdate Exception", e);
+  		}
+  		
+  		return list;
+  	}
+  	
+  	//게시물 총수 예약일 기준 시작
+  	public long studioListSdateCount(WDStudio wdStudio) 
+  	{
+  		long cnt = 0;
+  		
+  		try 
+  		{
+  			cnt = wdStudioDao.studioListSdateCount(wdStudio);
+  		}
+  		catch(Exception e) 
+  		{
+			logger.error("[WDStudioService] studioListWdateCount Exception", e);
+  		}
+  		
+  		return cnt;
+  	}
+  	
+  	//스튜디오 코드 최대값
+  	public String maxSCode() {
+  		String sCode = "";
+  		
+  		try {
+  			sCode = wdStudioDao.maxSCode();
+  		}
+  		catch(Exception e) 
+  		{
+			logger.error("[WDStudioService] maxSCode Exception", e);
+  		}
+  		
+  		return sCode;
+  	}
+  	
+	//스튜디오 삽입
+   	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+   	public int studioInsert(WDStudio wdStudio) throws Exception
+   	{
+   		int count = 0;
+   		
+   		count = wdStudioDao.studioInsert(wdStudio);
+
+   		if(count > 0 && wdStudio.getWdStudoiFile() != null)
+   		{
+   			WDStudioFile wdStudioFile = wdStudio.getWdStudoiFile();
+   			
+   			wdStudioDao.studioFileInsert(wdStudioFile);
+   		}
+   		
+   		return count;
+   	}
+	
+	//스튜디오 삭제
+	public int studioDelete(String sCode)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdStudioDao.studioDelete(sCode);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDStudioService] studioDelete Exception", e);
+		}
+		
+		return count;
+	}
+  	
+	//스튜디오 모달창?
+	public int studioUpdate(WDStudio wdStudio)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdStudioDao.studioUpdate(wdStudio);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDStudioService] studioUpdate Exception", e);
+		}
+		
+		return count;
+	}
+	
+	//스튜디오 수정
+	public int studioUpdateProc(WDStudio wdStudio)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdStudioDao.studioUpdateProc(wdStudio);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDStudioService] studioUpdateProc Exception", e);
+		}
+		
+		return count;
+	}
+	
+	public String maxImgName() {
+		
+		String maxName = "";
+		try {
+			maxName = wdStudioDao.maxImgName();
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDStudioService] maxImgName Exception", e);
+		}
+		return maxName;
+	}
 	
 }

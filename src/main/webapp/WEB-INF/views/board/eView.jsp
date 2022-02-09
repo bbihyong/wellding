@@ -73,7 +73,7 @@
 							<td colspan="2" style="width: 100%; border-bottom: 1px solid #555;">
 								<div style="padding: 10px">
 									<div class="e_imgbox">
-										<img src="/resources/board/${eBoard.eBSubImgName}"> <br />
+										<img src="/resources/board/${eBoard.eBSubImgName}" style="width: 1000px;"> <br />
 										<br />
 										<c:out value="${eBoard.eBContent}" />
 									</div>

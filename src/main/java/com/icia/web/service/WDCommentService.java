@@ -1,5 +1,6 @@
 package com.icia.web.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -96,5 +97,70 @@ public class WDCommentService {
 		
 		return count;
 	}
+	
+	//게시물 댓글 개수 체크
+	public int commentListCount(long parentSeq) 
+	{
+		int count = 0;
+		try {
+			count = wdCommentDao.commentListCount(parentSeq);
+		}
+		catch(Exception e) {
+			logger.error("[WDCommentService] commentListCount Exception", e);
+		}	
+		
+		return count;
+		
+	}	
+	
+	//댓글 전부 불러오기 시작
+	public List<WDComment> commentTotalSelect(HashMap<String, Object> map)
+	{
+		List<WDComment> list = null;
+		
+		try 
+		{
+			list = wdCommentDao.commentTotalSelect(map);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentTotalSelect Exception", e);
+		}
+		
+		return list;
+	}
+	
+	//댓글 총 수 가져오기 시작
+	public int commentTotalCnt() 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdCommentDao.commentTotalCnt();
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentTotalCnt Exception", e);
+		}
+		
+		return count;
+	}
 
+	//관리자 페이지에서 댓글 삭제 시작
+	public int commentDelAdm(WDComment wdComment) 
+	{
+		int cnt = 0;
+		
+		try 
+		{
+			cnt = wdCommentDao.commentDelAdm(wdComment);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentDelAdm Exception", e);
+		}
+		
+		return cnt;
+	}
 }

@@ -1,5 +1,6 @@
 package com.icia.web.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class WDRezService {
 	
 	
 	//예약 게시물 총 수 
-	public long rezListCount()
+	public long rezListCount(WDRez wdRez)
 	{
 		long count = 0;
 		
@@ -70,6 +71,23 @@ public class WDRezService {
 		{
 			logger.error("[WDRezService] rezListCount Exception", e);
 		}
+		return count;
+	}
+	
+	//결제내역 리스트 검색값 조회
+	public long rezSearchCount(WDRez wdRez)
+	{
+		long count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezSearchCount(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezSearchCount Exception", e);
+		}
+		
 		return count;
 	}
 	
@@ -298,9 +316,10 @@ public class WDRezService {
 	public int rezUpdatePay(WDRez wdRez) throws Exception
 	{
 		int count = 0;
-		
 
 		count = wdRezDao.rezUpdatePay(wdRez);
+		
+		wdCouponDao.QRrezNoInsert(wdRez.getRezNo());
 		
 		if(count > 0) 
 		{
@@ -320,23 +339,302 @@ public class WDRezService {
 				}
 			}
 		}
+		return count;
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+	public int rezUpdatePayNoC(WDRez wdRez) throws Exception
+	{
+		int count = 0;
+		
+		count = wdRezDao.rezUpdatePay(wdRez);
+		
+		wdCouponDao.QRrezNoInsert(wdRez.getRezNo());
+		
+		if(count > 0) 
+		{
+			int x = wdRezDao.rezUpdateStatusAfC(wdRez.getUserId());
+			if(x <= 0) 
+			{
+				count = 0;
+			}
+		}
 		
 		return count;
 	}
-
 	
 	//결제 리스트 페이지
-	public List<WDRez> rezSelectList(String userId)
+		public List<WDRez> rezSelectList(String userId)
+		{
+			List<WDRez> list = null;
+			
+			try 
+			{
+				list = wdRezDao.rezSelectList(userId);
+			}
+			catch(Exception e) 
+			{
+				logger.error("[WDRezService] rezSelectList Exception", e);
+
+			}
+			
+			return list;
+		}
+	
+	//결제 취소 신청 승인
+    public int rezCancelApprove(String rezNo) {
+			
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezCancelApprove(rezNo);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezCancelApprove", e);
+		}
+		
+		return count;
+	}
+	
+	// 관리자 사이트에서 결제 내역 리스트 조회하기
+	public List<WDRez> rezAdminSelect (WDRez wdRez)
+	{
+		List<WDRez> list = null;
+		
+		try
+		{
+			list = wdRezDao.rezAdminSelect(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezAdminSelect Exception", e);
+		}	
+		
+			return list;
+		}	
+	
+	
+	//결제 취소시 포인트 환불
+	public int rezPointReturn(HashMap<String, Object> map) {
+	
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezPointReturn(map);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezPointReturn", e);
+		}
+		
+		return count;
+	}
+	
+	//환불 요청 수락 후 결제금액 삭제
+	public int rezCancelComplete(WDRez wdRez)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezCancelComplete(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezCancelComplete", e);
+		}
+		return count;
+	}
+	
+	//환불요청시 상태창 변경
+	public int rezCancelPayment(WDRez wdRez)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezCancelPayment(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezCancelPayment Exception", e);
+		}
+		
+		return count;
+	}
+	
+	public WDRez listSelect(String rezNo)
+	{
+		WDRez wdRez = null;
+		
+		try
+		{
+			wdRez = wdRezDao.listSelect(rezNo);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] listSelect Exception", e);
+		}
+		
+		return wdRez;
+	}
+
+	/*	밑에 트랜젝션 오류나면 이걸로 해야겟어용
+	//포인트 사용시 결제테이블 포인트 추가
+	public int rezPointUpdate(WDRez wdRez)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.rezPointUpdate(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] rezPointUpdate Exception", e);
+		}
+		
+		return count;
+	}
+	
+	//유저테이블 보유 포인트 감소
+	public int userPointMinus(WDRez wdRez)
+	{
+		int count = 0;
+		
+		try
+		{
+			count = wdRezDao.userPointMinus(wdRez);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDRezService] userPointMinus Exception", e);
+		}
+		
+		return count;
+	}
+	*/
+	//포인트 사용시 업데이트문, 결제 테이블 포인트 추가, 보유포인트 감소
+	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+	public int rezPointUpdate(WDRez wdRez) throws Exception
+	{
+		int count = 0;
+		
+		count = wdRezDao.rezPointUpdate(wdRez);
+		
+		if(count > 0)
+		{
+			int cnt = wdRezDao.userPointMinus(wdRez);
+		}
+		
+		return count;
+	}
+	
+	
+	//의수 추가
+	//해당 날짜에 해당 홀 예약 확인
+	public int isHallRez(WDRez wdRez) 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdRezDao.isHallRez(wdRez);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDRezService] isHallRez Exception", e);
+		}
+		
+		return count;
+	}
+	
+	//해당 날짜에 해당 스튜디오 예약되어있는지 확인
+	public int isStudioRez(WDRez wdRez) 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdRezDao.isStudioRez(wdRez);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDRezService] isStudioRez Exception", e);
+		}
+		
+		return count;
+	}
+	
+	
+	//해당 날짜에 해당 드레스 예약되어있는지 확인
+	//해당 날짜에 해당 드레스 예약 확인
+	public int isDressRez(WDRez wdRez) 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdRezDao.isDressRez(wdRez);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDRezService] isDressRez Exception", e);
+		}
+		
+		return count;
+	}
+	
+	
+	//해당 날짜에 해당 메이크업 업체 예약되어 있는지 확인
+	//해당 날짜에 해당 메이크업 업체 예약 확인
+	public int isMakeUpRez(WDRez wdRez) 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdRezDao.isMakeUpRez(wdRez);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDRezService] isMakeUpRez Exception", e);
+		}
+		
+		return count;
+	}
+	//장바구니 결혼날짜
+	public int MarrydateUpdate(WDRez wdRez) {
+		int count = 0;
+		
+		try 
+		{
+			count = wdRezDao.MarrydateUpdate(wdRez);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDRezService] MarrydateUpdate Exception", e);
+		}
+		
+		return count;
+	}
+	
+	
+	//결제 취소 신청&취소완료된 내역 가져오기
+	public List<WDRez> rezSelectStatusNotNY(String userId)
 	{
 		List<WDRez> list = null;
 		
 		try 
 		{
-			list = wdRezDao.rezSelectList(userId);
+			list = wdRezDao.rezSelectStatusNotNY(userId);
 		}
 		catch(Exception e) 
 		{
-			logger.error("[WDRezService] rezSelectList Exception", e);
+			logger.error("[WDRezService] rezSelectStatusNotNY Exception", e);
 		}
 		
 		return list;

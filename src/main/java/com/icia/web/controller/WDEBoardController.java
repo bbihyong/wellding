@@ -12,12 +12,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.icia.common.util.StringUtil;
 import com.icia.web.model.Paging;
+import com.icia.web.model.Response;
+import com.icia.web.model.WDCoupon;
 import com.icia.web.model.WDEBoard;
 import com.icia.web.model.WDNBoard;
 import com.icia.web.model.WDUser;
+import com.icia.web.service.WDCouponService;
 import com.icia.web.service.WDEBoardService;
 import com.icia.web.service.WDUserService;
 import com.icia.web.util.CookieUtil;
@@ -45,6 +49,9 @@ public class WDEBoardController
 		
 		@Autowired
 		private WDUserService wdUserService;
+		
+		@Autowired
+		private WDCouponService wdCouponService;
 		
 		// 이벤트 게시판 리스트
 		@RequestMapping(value="/board/eBoard")
@@ -105,8 +112,7 @@ public class WDEBoardController
 			if(totalCount > 0 ) 
 			{
 				
-				paging = new Paging("/board/eList", totalCount, LIST_COUNT, PAGE_COUNT, curPage, "curPage");
-				paging.addParam("curPage", curPage);
+				paging = new Paging("/mng/eBoardList", totalCount, LIST_COUNT, PAGE_COUNT, curPage, "curPage");
 				paging.addParam("searchType", searchType);
 				paging.addParam("searchValue", searchValue);
 				paging.addParam("curPage", curPage);
@@ -177,5 +183,82 @@ public class WDEBoardController
 			model.addAttribute("curPage", curPage);
 			
 			return "/board/eView";
+		}
+		
+		//쿠폰 발급 페이지
+		@RequestMapping(value="/board/eBoardCoupon")
+		public String eBoardCoupon(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+		{
+			/*********상단에 닉넴 보여주기 시작*********/
+			//쿠키 확인
+			String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+			
+			//로그인 했을 때와 안했을 때를 구분해서 페이지를 보여주려 함.
+			//로그인 체크용. 0 => 로그인 x, 혹은 없는 계정; 1 => 로그인 정보 있는 계정
+			int loginS = 0;
+			WDUser wdUser = null;
+			
+			if(wdUserService.wdUserIdCount(cookieUserId) >0) 
+			{
+				//쿠키 아이디로 된 유저 정보가 db에 존재함.
+				wdUser = wdUserService.userSelect(cookieUserId);
+				if(wdUser != null) 
+				{
+					//객체가 비어있지 않으면 보여줄 유저의 정보를 담은 객체를 넘기고, 로그인 상태에 1을 넣어줌.
+					loginS = 1;
+					model.addAttribute("wdUser", wdUser);
+				}
+			}
+			else 
+			{
+				loginS = 0;
+			}
+			/**********상단에 닉넴 보여주기 끝***********/
+			
+			return "/board/eBoardCoupon";
+		}
+		
+		//쿠폰 발급 받기
+		@RequestMapping(value="/board/eBoardCouponProc")
+		@ResponseBody
+		public Response<Object> eBoardCouponProc(HttpServletRequest request, HttpServletResponse response)
+		{
+			Response<Object> ajaxResponse = new Response<Object>();
+			String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+			
+			WDCoupon wdCoupon = new WDCoupon();
+			
+			long count = 0;
+			
+			//로그인이 안되어 있는 경우
+			if(!StringUtil.isEmpty(cookieUserId))
+			{	
+				count = wdCouponService.selectCoupon(cookieUserId);
+				
+				//이벤트 쿠폰이 0개 있을 경우
+				if(count == 0)
+				{
+					wdCoupon = wdCouponService.downloadCoupon(cookieUserId);
+					
+					if(wdCouponService.selectCoupon(cookieUserId) > 0)
+					{
+						ajaxResponse.setResponse(0, "Success");
+					}
+					else
+					{
+						ajaxResponse.setResponse(-1, "Bad Request");
+					}
+				}
+				else
+				{
+					ajaxResponse.setResponse(401, "Duplicate Coupon");
+				}
+			}
+			else
+			{
+				ajaxResponse.setResponse(400, "Not Found Cookie");
+			}
+				
+			return ajaxResponse;
 		}
 }

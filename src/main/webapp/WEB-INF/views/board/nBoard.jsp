@@ -113,13 +113,13 @@ function fn_list(curPage)
                 <div class="col-lg-12" style="border-bottom: 1px solid black; margin-bottom: 20px;">
                     <ul>
                         <li>
-                            <table class="table table-hover">
+                            <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead>
                                     <tr style="background-color: #e9e8e8;">
                                     <th scope="col" class="text-center" style="width:10%">번호</th>
-                                    <th scope="col" class="text-center" style="width:50%">제목</th>
+                                    <th scope="col" class="text-center" style="width:42%">제목</th>
                                     <th scope="col" class="text-center" style="width:20%">작성자</th>
-                                    <th scope="col" class="text-center" style="width:10%">날짜</th>
+                                    <th scope="col" class="text-center" style="width:18%">날짜</th>
                                     <th scope="col" class="text-center" style="width:10%">조회</th>
                                     </tr>
                                 </thead>

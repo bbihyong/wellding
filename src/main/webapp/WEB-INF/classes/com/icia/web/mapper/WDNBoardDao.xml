@@ -35,7 +35,7 @@ FROM (SELECT
                     NVL(B_TITLE, '') B_TITLE,
                     NVL(B_CONTENT, '') B_CONTENT,
                     NVL(B_READ_CNT, 0) B_READ_CNT,
-                    NVL(TO_CHAR(REG_DATE, 'YYYY.MM.DD'), '') REG_DATE
+                    NVL(TO_CHAR(REG_DATE, 'YYYY.MM.DD HH24:MI'), '') REG_DATE
                 FROM
                     WD_NBOARD
                WHERE
@@ -103,26 +103,27 @@ UPDATE WD_NBOARD
 <!-- (관리자ver) 공지사항 글쓰기 시작 -->
 <insert id="nBoardInsert" parameterType="com.icia.web.model.WDNBoard">
  <!-- 이벤트 글 시퀀스 생성 시작 -->
-    <selectKey resultType="long" keyProperty="bSeq" order="BEFORE">
-    SELECT WD_NBOARD_SEQ.NEXTVAL FROM DUAL
-    </selectKey>
-    <!-- 이벤트 글 시퀀스  생성 끝 -->
-    
-     INSERT INTO WD_NBOARD (
-    B_SEQ,
-    ADMIN_ID,
-    B_TITLE,
-    B_CONTENT,
-    B_READ_CNT,
-    REG_DATE
-) VALUES (
-    #{bSeq},
-    #{adminId},
-    #{bTitle},
-    #{bContent},
-    0,
-    SYSDATE
-)
+<selectKey resultType="long" keyProperty="bSeq" order="BEFORE">
+SELECT WD_NBOARD_SEQ.NEXTVAL FROM DUAL
+</selectKey>
+<!-- 이벤트 글 시퀀스  생성 끝 -->
+INSERT INTO 
+	WD_NBOARD (
+			    B_SEQ,
+			    ADMIN_ID,
+			    B_TITLE,
+			    B_CONTENT,
+			    B_READ_CNT,
+			    REG_DATE
+				) 
+				VALUES (
+				    #{bSeq},
+				    #{adminId},
+				    #{bTitle},
+				    #{bContent},
+				    0,
+				    SYSDATE
+				)
 </insert>
 <!-- (관리자ver) 공지사항 글쓰기 끝 -->
 

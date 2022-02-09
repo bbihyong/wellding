@@ -43,6 +43,7 @@ $(document).ready(function() {
 -->
 
 <form name="kakaoForm" id="kakaoForm" method="post" action="/kakao/payResult">
+
 	<input type="hidden" name="orderId" id="orderId" value="${orderId}" />
 	<input type="hidden" name="tId" id="tId" value="${tId}" />
 	<input type="hidden" name="userId" id="userId" value="${userId}" />
@@ -50,6 +51,8 @@ $(document).ready(function() {
 	<input type="hidden" name="cCode" id="cCode" value="${cCode}" />	<!-- 동욱 추가 -->
 	<input type="hidden" name="rezNo" id="rezNo" value="${rezNo}" />
     <input type="hidden" name="rezFullPrice" id="rezFullPrice" value="${rezFullPrice}" />
+    <input type="hidden" name="rezPoint" id="rezPoint" value="${rezPoint}" />
+
 </form>
 </body>
 </html>

@@ -247,6 +247,7 @@ p {
   line-height: 25px;
   color: #2a2a2a;
   font-weight: 300;
+  cursor: default;
 }
 
 /* 
@@ -324,7 +325,7 @@ a{ text-decoration: none; color: inherit; }
 }
 .bdate
 {
-  width: 65px;
+  width: 70px;
   float: right;
   font-size: 13px;
   padding: 0;
@@ -501,7 +502,7 @@ a{ text-decoration: none; color: inherit; }
   display: inline-block;
   font-size: 13px;
   padding: 12px 18px;
-  background-color: #ff6e2e;
+  background-color: #ff7f50; /*#ff6e2e;*/
   color: #fff;
   text-align: center;
   font-weight: 600;
@@ -543,7 +544,8 @@ a{ text-decoration: none; color: inherit; }
 }
 
 .main-dark-button a:hover {
-  opacity: 0.9;
+  /*opacity: 0.9;*/
+  background: #ff4e0d;
 }
 
 
@@ -611,6 +613,11 @@ header
    color: #777!important;
    font-weight: 600;
    font-size: 13px;
+}
+
+.ourperson a:hover 
+{
+    color: #000!important;
 }
 
 /*상단바 투명*/
@@ -981,14 +988,23 @@ banner
 }
 
 /*글씨*/ /*보현수정*/
-.main-banner h2 {
+.main-banner h2 
+{
   font-size: 250px;
   color: #fff;
-  text-shadow: 0 0 20px rgb(156,94,86); /*네온 쉐도우*/
+  text-shadow: 0 0 20px rgb(156,94,86); /*네온쉐도우*/
   margin-top: 70px;
   margin-bottom: 10px;
   font-family: 'nether' ;
   display: block;
+   /* font-size: 200px;
+    color: #fff;
+    text-shadow: 0 0 20px rgb(156 94 86);
+    margin-top: 90px;
+    margin-bottom: 40px;
+    font-family: 'nether';
+    display: block;
+    letter-sapcing: 4px;*/
   
 
 }
@@ -1163,11 +1179,12 @@ banner
    height: 600px;
    overflow: hidden;
    transition: all 0.5s linear;
+   border-radius: 17px;
 }
 
 .sdmimg:hover img
 {
-   transform: scale(1.2);
+   transform: scale(1.15);
 }
 
 .sdmimg:hover
@@ -1605,7 +1622,7 @@ Coming Events
 }
 
 .event-item2 .down-content2 ul .main_location {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   height: 40px;
 }
 
@@ -1615,6 +1632,13 @@ Coming Events
     float: left;
     margin-left: 22px;
     width: 68%;
+    
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .event-item2 .down-content2 ul li {
@@ -1854,10 +1878,11 @@ footer span{
 .menu a{
    text-decoration: none;/*a href 밑줄 등 글자 꾸밈 없음*/
 }
+
 .menu a:after {/*after 가상요소*/
    display:block;/*a요소를 블록 요소라고 선언*/
    content: '';/*comtent안은 밑줄 디자인을 위해 비워두세요.*/
-   border-bottom: solid 2px #fff;
+   border-bottom: solid 2px #ef775f;
    transform: scaleX(0);/*크기를 0으로 줌으로써 평상시엔 밑줄 없음*/
    transition: transform 250ms ease-in-out; /*변형 방식*/
 }
@@ -1937,7 +1962,7 @@ footer p.copyright {
 
 .sub-footer {
   border-top: 1px solid #e4e4e4;
-  margin-top: 30px;
+  margin-top: 60px;
   padding-top: 30px;
 }
 
@@ -1953,18 +1978,18 @@ footer p.copyright {
 }
 
 .sub-footer .menu {
-  text-align: center;
+  text-align: left; /*center;*/
 }
 
 .sub-footer .menu ul li {
   display: inline-block;
-  margin: 10px 15px 5px 15px;
+  margin: 10px 20px 5px 20px;
 }
 
 .sub-footer .menu ul li a {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  color: #fff;
+  color: #777;
 }
 
 .sub-footer .menu ul li a:hover {
@@ -2237,8 +2262,98 @@ About Us Page
     float: right;
     margin-bottom: 15px;
 }
-/*************/
 
+#wook p
+{
+	display: inline-block;
+    font-size: 18px;
+    padding-right: 12px;
+    font-weight: 400;
+    color: #666;
+    letter-spacing: -1.2px;
+}
+
+#wook2 p
+{
+	display: inline-block;
+    font-size: 18px;
+    padding-right: 12px;
+    font-weight: 400;
+    color: #666;
+    letter-spacing: -1.2px;
+}
+
+#wook3 p
+{
+	display: inline-block;
+    font-size: 18px;
+    padding-right: 12px;
+    font-weight: 400;
+    color: #666;
+    letter-spacing: -1.2px;
+}
+
+#wook2
+{
+	font-size: 25px;
+    font-weight: 700;
+    color: #000;
+    float : right;
+    border-bottom: none;
+    margin-bottom: 15px;
+}
+
+#wook3
+{
+	font-size: 32px;
+    font-weight: 700;
+    color: #000;
+    float : right;
+    border-bottom: none;
+    margin-bottom: 15px;
+}
+/*************/
+.det_price2
+{
+	display: inline-block;
+   /* padding-right: 30px;
+    padding-left: 25px;*/
+}
+
+.det_price2 .price3
+{
+	color: #888!important;
+	margin: 0;
+	height: 20px;
+	float: right;
+	font-size: 15px;
+	font-weight: 300;
+}
+
+.det_price2 .price3 p
+{
+	font-weight: 600;
+	display: inline-block;
+    color: #444;
+}
+
+.det_price2 .price4
+{
+	color: #888!important;
+	margin: 0;
+	height: 20px;
+	float: right;
+	font-size: 17px;
+	font-weight: 500;
+}
+
+.det_price2 .price4 p
+{
+	font-weight: 500;
+	display: inline-block;
+	font-size: 17px;
+    color: #444;
+}
 /*욱채**/
 .det_price2 .price2
 {
@@ -2285,6 +2400,11 @@ About Us Page
 	float:right;
 }
 
+#chae2{
+	float:right;
+	padding: 25px;
+}
+
 /*****************/
 #wook{
 	font-size: 28px;
@@ -2308,9 +2428,10 @@ About Us Page
 
 .det_navi-hall ul
 {
-	margin-bottom: 20px;
+	/*margin-bottom: 20px;*/
 	width: 100%;
 	padding: 0 25%;
+	text-align: center;
 }
 
 .det_navi-hall li
@@ -2318,8 +2439,7 @@ About Us Page
 	/*float: left;*/
 	margin: 0 auto;
 	text-align: center;
-	width: 50%;
-	float: left;
+	/*width: 50%;*/
 }
 
 .det_navi-hall li:first-child a
@@ -2347,7 +2467,7 @@ About Us Page
 
 .det_navi ul
 {
-	margin-bottom: 20px;
+	/*margin-bottom: 20px;*/
 	width: 100%;
 	padding: 0 25%;
 }
@@ -2357,8 +2477,8 @@ About Us Page
 	/*float: left;*/
 	margin: 0 auto;
 	text-align: center;
-	width: 50%;
-	float: left;
+	/*width: 50%;
+	float: left;*/
 }
 
 .det_navi li:first-child a
@@ -2384,7 +2504,7 @@ About Us Page
 
 .det_navi2 ul
 {
-	margin-bottom: 20px;
+	/*margin-bottom: 20px;*/
 	width: 100%;
 	padding: 0 25%;
 }
@@ -2394,8 +2514,8 @@ About Us Page
 	/*float: left;*/
 	margin: 0 auto;
 	text-align: center;
-	width: 50%;
-	float: left;
+	/*width: 50%;
+	float: left;*/
 }
 
 .det_navi2 li:first-child a
@@ -2873,11 +2993,28 @@ Rent Venue Page
   margin-top: 10px;
   width: 250px;
   float: right;
-  
+}
+
+.rent-venue-application form .main-dark-button2 {
+  display: inline-block;
+  font-size: 14px;
+  padding: 18px;
+  background-color: #656c74;
+  color: #fff;
+  text-align: center;
+  font-weight: 500;
+  text-transform: capitalize;
+  transition: all .3s;
+  border: none;
+  outline: none;
+  margin-top: 10px;
+  width: 170px;
+  float: right;
+  margin-left: 15px;
 }
 
 .rent-venue-application form .main-dark-button:hover {
-  background-color: #656c74;
+  background-color: coral;
 }
 
 /*
@@ -3256,17 +3393,43 @@ Shows Events Page
       border: 3px solid #cecece;
 }
 
+/* 결혼예정일 추가 */
+.let_sp
+{
+	letter-spacing: 12px;
+}
+
+.let_sp
+{
+	letter-spacing: 10px;
+}
+
+.span_design
+{
+	height: 2px;
+    background: linear-gradient(45deg, #333, transparent);
+    width: 210px;
+    display: inline-block;
+    position: relative;
+    top: -5px;
+    margin-left: 10px;
+    border-radius: 3px;
+}
+
+/***/
 
 .tickets-page .search-box h4 {
   color: #fff;
   font-weight: 500;
   font-size: 20px;
 
-  margin-top: 13px;
+  margin-top: 15px;
   margin-left : 5px;
  
    font-family: 'OTWelcomeRA';
    color: rgba(40,30,25,1);
+   
+   cursor: default;
 }
 
 .tickets-page .search-box select {
@@ -3333,8 +3496,8 @@ Shows Events Page
   font-weight: 800;
   color: #2a2a2a;
   text-align: center;
-  margin-top: 80px;
-  margin-bottom: 60px;
+  /*margin-top: 80px;
+  margin-bottom: 60px;*/
 }
 
 .tickets-page .heading .h22 {
@@ -3385,6 +3548,7 @@ Shows Events Page
 
 .tickets-page .ticket-item {
   margin-bottom: 30px;
+  /*cursor: pointer;*/
 }
 
 /**************************보현이가하는 욱채홀 이미지 수정시작********************************/
@@ -3392,6 +3556,7 @@ Shows Events Page
   position: relative;
   height: 255px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .tickets-page .ticket-item .thumb3 img {
@@ -3503,6 +3668,7 @@ Shows Events Page
   position: relative;
   height: 300px;
   overflow: hidden;
+  cursor: pointer;
 }
 
 .ticket-item2 .thumb-hall {
@@ -3624,6 +3790,7 @@ Shows Events Page
 .tickets-page .ticket-item .down-content {
   background-color: #efefef;
   padding: 30px;
+  cursor: default;
 }
 
 .tickets-page .ticket-item2 .down-content2 {
@@ -3727,12 +3894,45 @@ Shows Events Page
 	font-size: 22px;
     font-weight: 700;
     color: #000;
+    height: 33px;
 }
 
-.down-content .dis_price
+.down-content .dis-price2
 {
-	height: 33px;
+	font-size: 20px;
+    font-weight: 900;
+    color: #000;
+    height: 20px;
 }
+
+.addprice_box
+{
+	height: 62px;
+    line-height: 20px;
+    margin-top: 15px;
+    background: rgba(255,255,255,0.8);
+    padding: 11px 18px;
+    border-radius: 10px;
+}
+
+.addprice
+{
+	color: #666;
+	margin: 0;
+	height: 20px;
+	font-size: 13px;
+}
+
+.addprice2
+{
+	color: #888;
+	margin: 0;
+	font-size: 12px;
+	letter-spacing: -0.6px;
+	font-weight: 600;
+}
+
+
 
 .sd_adress
 {
@@ -4036,8 +4236,8 @@ Ticket Details Page : 보현 수정 쭉한다
 }
 
 .ticket-details-page-hall .right-content span {
-  font-size: 18px;
-  line-height: 27px;
+  font-size: 17px;
+  line-height: 29px;
   font-weight: 500;
   color: #756c74; /* 보현수정 */
   display: inline-block;
@@ -4621,7 +4821,7 @@ responsive
 /* 밑줄 구현 */
 .shows-events-schedule2 ul
 {
-	/*border-top: 2px solid #222;*/
+	border-top: 2px solid #222;
 }
 
 .shows-events-schedule2 ul li {
@@ -4946,12 +5146,13 @@ responsive
 .category2 {
   padding-bottom: 0px;
   text-align: center;
+  cursor: default;
 }
 
 .shows-events-scheduleW {
   margin-top: 0px;
   padding-bottom: 0px;
-  background-color: #F0F9F8;
+  
 }
 
 #divB
@@ -5371,16 +5572,16 @@ responsive
 
 .containerfW .nickInput
 {
-	background-color: #91DDDB;
-	color: #fff;
+	background-color: #fff;
+	
 	font-weight: bold;
 	font-size: 20px;
 }
 
 .containerfW .emailInput
 {
-	background-color: #91DDDB;
-	color: #fff;
+	background-color:  #fff;
+	
 	font-weight: bold;
 	font-size: 20px;
 }
@@ -5612,11 +5813,12 @@ responsive
 .about .content ul {
   list-style: none;
   padding: 0;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 300;
 }
 .about .content ul li {
   padding-bottom: 10px;
+  letter-spacing: -0.7px;
 }
 .about .content ul i {
   font-size: 20px;
@@ -5683,6 +5885,7 @@ responsive
 .imgNav
 {
 	/* height: 100px; */	
+	filter: invert(65%) sepia(44%) saturate(617%) hue-rotate(323deg) brightness(102%) contrast(83%);
 }
 
 /* 왜 우리 종료 */
@@ -5767,12 +5970,14 @@ responsive
 	color: black;
 	font-weight: bold;
 }
-
+/*
 .bc a:focus
 {
 	color: black;
 	font-weight: bold;
-}
+}*/
+
+
 
 .bcline
 {
@@ -5804,7 +6009,7 @@ responsive
 {
 	text-align: center;
 	/*border-right: 1px solid lightgray;*/
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
 	color: #555;
 	padding: 10px;
@@ -5837,8 +6042,9 @@ responsive
 
 .chamgo
 {
-	font-size: 10px;
-	color: #a8a8a8;
+	font-size: 12px;
+    color: #8a8a8a;
+    font-weight: 550;
 }
 
 .HpriceTd
@@ -5862,8 +6068,8 @@ responsive
 
 #xPrice
 {
-	font-weight: none;
-	font-size: 10px;
+	font-weight: 600;
+	font-size: 13px;
 	color: #a8a8a8;
 	text-decoration: line-through;
 }
@@ -5876,6 +6082,7 @@ responsive
 #discountSpan
 {
 	color: #f85151;
+	font-size: 14px;
 }
 
 .HpriceTd .Hpc
@@ -5917,8 +6124,10 @@ responsive
 
 .bcItem h5
 {
-	color: black;
+	color: #444;
 	font-weight: bold;
+	font-size: 16px;
+	cursor: default;
 }
 
 /* 마이페이지 관련 종료 */
@@ -6066,6 +6275,106 @@ responsive
     border-right: 5px solid #fff; /* 선 두께 */
     transform: rotate(45deg); /* 각도 */
 }
+
+/*욱채 인덱스 슬라이더
+.slick-prev3.slick-arrow{ 
+	left: 0%!important;
+	outline: none
+    
+}
+.slick-next3.slick-arrow{
+	right: 3%!important;
+	outline: none
+}
+
+.slick-prev3::after {
+    position: absolute;
+    content: '';
+    width: 36px; 
+    height: 36px; 
+    border-top: 5px solid #ffc0c8;
+    border-right: 5px solid #ffc0c8;
+    transform: rotate(225deg);
+}
+
+.slick-next3::after {
+    position: absolute;
+    content: '';
+    width: 36px; 
+    height: 36px;
+    border-top: 5px solid #ffc0c8;
+    border-right: 5px solid #ffc0c8; 
+    transform: rotate(45deg);
+}
+/*욱채 인덱스 슬라이더*/
+
+/** 인덱스 슬라이더이미지 **/
+/****** 보현 슬라이더ㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓㅓ *******/
+.post-slider3{
+  /*border:1px solid red;*/
+  text-align: center;
+  width: 100%;
+}
+.post-slider3 .post-wrapper3{
+  width:70%;
+  margin:0px auto;
+  /*border:1px dashed red;*/
+}
+.post-slider3 .post-wrapper3 .post3{
+  width:80%;
+  height:auto;
+  display:inline-block;
+}
+
+.post-slider3 .post-wrapper3 .post3 img{
+  width:100%;
+  height:auto;
+  vertical-align: middle;
+}
+
+.slick-arrow{
+  z-index: 999; /* prev버튼은 위치 이동시 이미지 뒤로 숨겨짐 */
+  position:absolute;  /* 원하는 위치에 지정  */
+  top: 50%; 
+  width: 70px;
+  height: 70px; 
+  transform: translateY(-25px);
+  border:none;
+  background: none;
+}
+.slick-prev3.slick-arrow{ /* prev 이전 */
+	left: 0%!important;
+	outline: none
+    
+}
+.slick-next3.slick-arrow{ /* next 다음 */
+	right: 3%!important;
+	outline: none
+}
+
+.slick-prev3::after {
+    position: absolute;
+    content: '';
+    width: 24px; /* 사이즈 */
+    height: 24px; /* 사이즈 */
+    border-top: 5px solid #ff8080; /* 선 두께 */
+    border-right: 5px solid #ff8080; /* 선 두께 */
+    transform: rotate(225deg); /* 각도 */
+    top: 10px;
+}
+
+.slick-next3::after {
+    position: absolute;
+    content: '';
+    width: 24px; /* 사이즈 */
+    height: 24px; /* 사이즈 */
+    border-top: 5px solid #ff8080; /* 선 두께 */
+    border-right: 5px solid #ff8080; /* 선 두께 */
+    transform: rotate(45deg); /* 각도 */
+    top: 10px;
+}
+
+
 
 /** 모달띄운거 **/
 .ticket-details-page {
@@ -6341,12 +6650,12 @@ responsive
 .rez_sum
 {
 	margin-top: 30px;
-	border-top: 1px solid #ccc;
+	/*border-top: 1px solid #ccc;*/
 	border-bottom: 1px solid #ccc;
 	text-align: center;
 	width: 100%;
-	height: 100px;
-	padding: 24px 0;
+	/*height: 100px;*/
+	padding: 0 0 60px 0;
 	margin-bottom: 40px;
 }
 
@@ -6380,7 +6689,15 @@ responsive
 	font-size: 20px;
 	font-weight: 600;
 	padding-top: 3px;
-	color: #f85151
+	color: #f85151;
+}
+
+.sumpay3
+{
+	font-size: 30px;
+	font-weight: 600;
+	/*padding-top: 3px;*/
+	color: #ff4e0d;
 }
 
 .sumbox2
@@ -6544,6 +6861,23 @@ responsive
 	line-height: 30px;
 }
 
+.tbstyle5 span
+{
+	font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    letter-spacing: -0.5px;
+    line-height: 16px;
+    top: 53%;
+    transform: translateY(-50%);
+    position: relative;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .tbstyle
 {
 	font-weight: 600;
@@ -6575,6 +6909,52 @@ responsive
 	font-size: 14px;
 	color: #333;
 	font-weight: 300;
+}
+
+.tbstyle6
+{
+	font-size: 14px;
+	color: #666;
+	font-weight: 500;
+	text-align: center;
+}
+
+.tbstyle7
+{
+	font-size: 14px;
+	color: #ff4e0d;
+	font-weight: 600;
+	text-align: center;
+}
+
+.hsdm_choice
+{
+	width: 100%;
+	padding: 10px 15px;
+	/*text-align: center;*/
+}
+
+.hsdm_choice p
+{
+	font-size: 14px;
+	display: inline-block;
+	padding: 0 10px;
+	
+}
+
+.hsdm_choice span
+{
+	font-weight: 700;
+	border-right: 2px solid #ccc;
+	padding: 0 20px 0 5px;
+
+}
+
+.star_p
+{
+	font-size: 15px;
+    font-weight: 500;
+    color: #555;
 }
 
 
@@ -6621,7 +7001,8 @@ textarea::placeholder {
 
 .comment_tr td
 {
-	padding-top: 15px;
+	padding-top: 25px;
+	width:90%;
 }
 
 .comment_tr2 td
@@ -6645,7 +7026,160 @@ textarea::placeholder {
 	font-size: 16px;
 }
 
+.divB_tb2 span> span
+{
+	padding-left: 5px;
+    font-size: smaller;
+    font-weight: 300;
+    color: #666;
+    letter-spacing: 0.5px;
+}
+
+.rezview
+{
+	font-size: 15px;
+	font-weight: 500;
+	display: inline-block;
+    margin-right: 5px;
+    color: #333;
+    line-height: 32px;
+}
+
+.rezview2
+{
+	font-weight: 600;
+	cursor: pointer;
+	line-height: 16px;
+}
+
+.rezview3
+{
+	font-size: 14px;
+	font-weight: 600;
+	display: inline-block;
+    line-height: 32px;
+}
+
+.rezview2:after 
+{
+	/*after 가상요소*/
+   display:block;/*a요소를 블록 요소라고 선언*/
+   content: '';/*comtent안은 밑줄 디자인을 위해 비워두세요.*/
+   border-bottom: solid 2px #ef775f;
+   transform: scaleX(0);/*크기를 0으로 줌으로써 평상시엔 밑줄 없음*/
+   transition: transform 250ms ease-in-out; /*변형 방식*/
+}
+
+.rezview2:hover:after 
+{
+   transform: scaleX(1);/*a 속성에 hover시 after를 기존 크기로 변경*/
+}
+
+.rez_btn
+{
+	border: none;
+    font-size: 12px;
+    padding: 5px 8px;
+    font-weight: 600;
+    background: #eb5e42;
+    color: #fff;
+    border-radius: 5px;
+    letter-spacing: -0.5px;
+}
+
+.rez_btn2
+{
+	border: none;
+    font-size: 12px;
+    padding: 6px 8px;
+    font-weight: 600;
+    background: #F39E8D;
+    color: #fff;
+    border-radius: 5px;
+    letter-spacing: -0.5px;
+}
+
+.rez_btn3
+{
+	border: none;
+    font-size: 12px;
+    padding: 6px 8px;
+    font-weight: 600;
+    background: #ef775f;
+    color: #fff;
+    border-radius: 5px;
+    letter-spacing: -0.5px;
+}
+
+.rez_btn4
+{
+	border: none;
+    font-size: 12px;
+    padding: 6px 8px;
+    font-weight: 600;
+    background: #5f8fef;
+    color: #fff;
+    border-radius: 5px;
+    letter-spacing: -0.5px;
+}
+
+.last_pay
+{
+	display: inline-block;
+	height: 50px;
+}
+
+.last_pay p
+{
+	font-size: 16px;
+    line-height: 36px;
+    color: #2a2a2a;
+    font-weight: 300;
+    cursor: default;
+}
+
+.last_pay span
+{
+	font-weight: 600;
+}
+
+.cancel_place
+{
+	display: inline-block;
+	padding-left: 10px;
+}
+
+/*
+.btn_paycancel
+{
+	border: none;
+    background: #ff8080;
+    position: relative;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 5px 10px;
+    border-radius: 5px;
+}*/
+
+.btn_paycancel
+{
+	border: none;
+    background: #ff8f78;
+    position: relative;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 20px 22px;
+    border-radius: 13px;
+    top: -18px;
+}
 
 
+#receiverName
+{
+	font-weight: 800;
+    color: #333;
+}
 
 /*보현추가 끝*/

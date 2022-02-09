@@ -6,6 +6,7 @@
 <%@ include file="/WEB-INF/views/include/head.jsp" %>
 <script>
 $(document).ready(function(){
+
 	
 	//우선 페이지 로딩되었을 때 해당 란에 커서가 가게 해야 함.
 	$("#hiBbsTitle").focus();
@@ -25,7 +26,11 @@ $(document).ready(function(){
 		if($.trim($("#hiBbsTitle").val()).length <=0 )
 		{
 			//값이 없음
-			alert("제목을 입력하세요.");
+			//alert("제목을 입력하세요.");
+			Swal.fire({ 
+				icon: 'warning',
+				text: '제목을 입력하세요.'
+			});
 			$("#hiBbsTitle").val("");
 			$("#hiBbsTitle").focus();
 			
@@ -35,13 +40,20 @@ $(document).ready(function(){
 		
 		if($.trim($("#hiBbsContent").val()).length <=0)
 		{
-			alert("내용을 입력하세요");
+			//alert("내용을 입력하세요");
+			Swal.fire({ 
+				icon: 'warning',
+				text: '내용을 입력하세요.'
+			});
 			$("#hiBbsContent").val("");
 			$("#hiBbsContent").focus();
 			
 			$("#btnWrite").prop("disabled", false);
 			return;
 		}
+		
+		var str = $("#hiBbsContent").val().replace(/(?:\r\n|\r|\n)/g,'<br>');
+		$("#hiBbsContent").val(str);
 		
 		//ajax 통신으로 갈 것!
 		//기존에는 키와 속성을 쌍으로 보냈음. 근데 이제는 form객체를 통으로 보낼 것
@@ -67,35 +79,65 @@ $(document).ready(function(){
 			{
 				if(response.code == 0)
 				{
-					alert("게시물이 등록되었습니다.");
+					//alert("게시물이 등록되었습니다.");
 					//리스트 페이지로 돌아갈 때는 가져온 값을 가져가야 하지만,
 					//글쓰기를 눌렀을 때는, 가져온 값을 가져가면 내가 쓴 글이 안보임
 					//그래서 넣어줘서 보내지 않음
-					location.href = "/board/reviews";
+					//location.href = "/board/reviews";
+					Swal.fire({ 
+						icon: 'success',
+						text: '게시물이 등록되었습니다.'
+					}).then(function(){
+						location.href = "/board/reviews";
+					});
 				}
 				else if(response.code == 400)
 				{
-					alert("파라미터값이 올바르지 않습니다.");
+					//alert("파라미터값이 올바르지 않습니다.");
 					//버튼 활성화 처리
-					$("#btnWrite").prop("disabled", false);
+					//$("#btnWrite").prop("disabled", false);
+					Swal.fire({ 
+						icon: 'error',
+						text: '파라미터 값이 잘못되었습니다..'
+					}).then(function(){
+						$("#btnWrite").prop("disabled", false); //수정버튼 활성화
+					});
 				}
 				else
 				{
-					alert("게시물 등록 중 오류가 발생했습니다.");
-					$("#btnWrite").prop("disabled", false);
+					//alert("게시물 등록 중 오류가 발생했습니다."+response.code);
+					//$("#btnWrite").prop("disabled", false);
+					Swal.fire({ 
+						icon: 'error',
+						text: '게시물 등록 중 오류가 발생했습니다.'
+					}).then(function(){
+						$("#btnWrite").prop("disabled", false); //수정버튼 활성화
+					});
 				}
 			},
 			error:function(error)
 			{
 				icia.common.error(error);
-				alert("게시물 등록 중 오류가 발생했습니다. Ajax");
-				$("#btnWrite").prop("disabled", false);
+				//alert("게시물 등록 중 오류가 발생했습니다. Ajax");
+				//$("#btnWrite").prop("disabled", false);
+				Swal.fire({ 
+					icon: 'error',
+					text: '게시물 등록 중 오류가 발생했습니다. Ajax'
+				}).then(function(){
+					$("#btnWrite").prop("disabled", false); //수정버튼 활성화
+				});
 			}
 		});
 		//ajax 통신 끝
 	});
 	
 });
+
+var str = document.getElementById("hiBbsContent").value;
+
+str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+
+document.getElementById("hiBbsContent").innerHTML = str;
 </script>
 </head>
 <body>
@@ -136,10 +178,14 @@ $(document).ready(function(){
 		   <h2></h2>
 		   <form name="writeForm" id="writeForm" method="post" enctype="multipart/form-data">
 		      <div class="row">
-		      	<div class="col-lg-6">
+		      	<div class="col-lg-4">
+		      		<input type="hidden" name="rezNo" id="rezNo" value="${rezNo }"/>
+			      <input type="text" name="rezNo12" id="rezNo12" maxlength="20" value="예약번호 : ${rezNo}" style="ime-mode:active;" class="form-control mb-2 nickInput" placeholder="" readonly />		      	
+		      	</div>
+		      	<div class="col-lg-4">
 			      <input type="text" name="userName" id="userName" maxlength="20" value="${wdUser.userNickname}" style="ime-mode:active;" class="form-control mb-2 nickInput" placeholder="" readonly />		      	
 		      	</div>
-		      	<div class="col-lg-6">
+		      	<div class="col-lg-4">
 			      <input type="text" name="userEmail" id="userEmail" maxlength="30" value="${wdUser.userEmail}" style="ime-mode:inactive;" class="form-control mb-2 emailInput" placeholder="" readonly />		      	
 		      	</div>
 		      </div>
@@ -147,7 +193,7 @@ $(document).ready(function(){
 		      
 		      <input type="text" name="hiBbsTitle" id="hiBbsTitle" maxlength="100" style="ime-mode:active;" class="form-control mb-2" placeholder="제목을 입력해주세요." required />
 		      <div class="form-group">
-		         <textarea class="form-control" rows="10" name="hiBbsContent" id="hiBbsContent" style="ime-mode:active;" placeholder="내용을 입력해주세요" required></textarea>
+		         <textarea class="form-control" rows="10" name="hiBbsContent" id="hiBbsContent" style="ime-mode:active; white-space:pre-wrap;" placeholder="내용을 입력해주세요" required></textarea>
 		      </div>
 		      <input type="file" id="hiBbsFile" name="hiBbsFile" class="form-control mb-2"  placeholder="파일을 선택하세요." required style="/*display: none;*/"/>
 별점을 선택해 주세요 : <select id="starScore" name="starScore">

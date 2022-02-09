@@ -18,22 +18,20 @@
 </resultMap>
 <!-- 드레스 resultMap 끝 -->
 
-<!-- 첨부파일 
 <resultMap id="WDDressFileMap" type="com.icia.web.model.WDDressFile">
 	<id column="D_SEQ" property="dSeq" />
-	<id column="D_CODE" property="dCode" />
+	<id column="DC_CODE" property="dcCode" />
 	<result column="D_FILE_SEQ" property="dFileSeq" />
-	<result column="D_FILE_NAME" property="dfileName" />
+	<result column="D_FILE_NAME" property="dFileName" />
 	<result column="D_FILE_ORG_NAME" property="dFileOrgName" />
 	<result column="D_FILE_EXT" property="dFileExt" />
 	<result column="D_FILE_SIZE" property="dFileSize" />
 	<result column="REG_DATE" property="regDate" />
 </resultMap>
- 첨부파일 -->
 
 <!-- 드레스 조회 시작 -->
 <select id="dressList" parameterType="com.icia.web.model.WDDress" resultMap="WDDressResultMap">
-SELECT
+SELECT 
     DC_CODE,
     D_NO,
     DC_NAME,
@@ -42,11 +40,11 @@ SELECT
     DC_NUMBER,
     D_IMGNAME,
     D_PRICE,
-    D_CONTENT,
     DC_CONTENT,
+    D_CONTENT,
     D_DISCOUNT
-FROM (SELECT 
-            ROWNUM AS RNUM,
+FROM (SELECT
+            ROWNUM RNUM,
             DC_CODE,
             D_NO,
             DC_NAME,
@@ -55,8 +53,8 @@ FROM (SELECT
             DC_NUMBER,
             D_IMGNAME,
             D_PRICE,
-            D_CONTENT,
             DC_CONTENT,
+            D_CONTENT,
             D_DISCOUNT
         FROM (SELECT
                     A.DC_CODE AS DC_CODE,
@@ -72,24 +70,36 @@ FROM (SELECT
                     NVL(A.D_DISCOUNT, 0) AS D_DISCOUNT
                 FROM
                     WD_DRESS A, WD_DRESS_COM B
-                WHERE
-                    A.DC_CODE = B.DC_CODE
-<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
-   <choose>                
-      <when test='searchType == "1"'> 
+                WHERE 
+                    1=1
                 AND
-                    B.DC_NAME LIKE '%' || #{searchValue} || '%'
-      </when>
-      <when test='searchType == "2"'>
-                AND 
-                    B.DC_LOCATION LIKE '%' || #{searchValue} || '%'
-		</when>
-	</choose>
-</if> 
-                 
-                ORDER BY A.D_NAME DESC)) 
+                    A.DC_CODE = B.DC_CODE
+	            <if test='wDate != null and wDate != ""'>   
+	            AND    
+	                 A.D_NO NOT IN (SELECT
+                         			  NVL(D_NO, ' ') AS D_NO
+                                  FROM
+                                      WD_REZ
+                                  WHERE
+                                      WDATE = #{wDate}
+                                  AND
+                                  	REZ_STATUS = 'Y')
+	            </if> 
+ <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+ 	<choose>
+ 		<when test='searchType =="1"'>
+ 			AND 
+ 				B.DC_NAME LIKE '%' || #{searchValue} || '%'
+ 		</when>
+ 		<when test='searchType == "2"'>
+ 			AND
+ 				B.DC_LOCATION LIKE '%' || #{searchValue} || '%'
+ 		</when>
+ 	</choose>
+ </if>                           
+                ORDER BY A.D_NAME DESC))
 WHERE
-    RNUM <![CDATA[>=]]> #{startRow}
+    RNUM  <![CDATA[>=]]> #{startRow}
 AND
     RNUM <![CDATA[<=]]> #{endRow}
 </select>
@@ -103,6 +113,17 @@ FROM
     WD_DRESS A, WD_DRESS_COM B
 WHERE
     A.DC_CODE = B.DC_CODE
+<if test='wDate != null and wDate != ""'>   
+AND    
+     A.D_NO NOT IN (SELECT
+            			  NVL(D_NO, ' ') AS D_NO
+                     FROM
+                         WD_REZ
+                     WHERE
+                         WDATE = #{wDate}
+                     AND
+                     	REZ_STATUS = 'Y')
+</if> 
 <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
    	<choose>                
       	<when test='searchType == "1"'> 
@@ -226,5 +247,239 @@ FROM(SELECT
 WHERE
     ROWNUM <![CDATA[<=]]> 4
 </select>
+<!-- 예약되어있는 날짜에 드레스 검색시 드레스 뜨지않게하기 시작 -->
+<select id="dressRez" parameterType="com.icia.web.model.WDDress" resultMap="WDDressResultMap">
+SELECT 
+            DC_CODE,
+            D_NO,
+            D_NAME,
+            D_LOCATION,
+            D_IMGNAME,
+            D_PRICE,
+            D_CONTENT,
+            D_DISCOUNT
+FROM (SELECT
+            ROWNUM RNUM,
+            DC_CODE,
+            D_NO,
+            D_NAME,
+            D_LOCATION,
+            D_IMGNAME,
+            D_PRICE,
+            D_CONTENT,
+            D_DISCOUNT
+            
+        FROM (SELECT
+                    DC_CODE AS DC_CODE,
+                    NVL(D_NO, '') AS D_NO,
+                    NVL(D_NAME, '') AS D_NAME,
+                    NVL(D_LOCATION, '') AS D_LOCATION,
+                    NVL(D_IMGNAME, '') AS D_IMGNAME,
+                    NVL(D_PRICE, 0) AS D_PRICE,
+                    NVL(D_CONTENT, '') AS D_CONTENT,
+                    NVL(D_DISCOUNT, '') AS D_DISCOUNT
+
+                FROM
+                    WD_DRESS
+                WHERE 
+                    1=1
+<if test='wDate != null and wDate != ""'> 
+                AND
+                    D_NO NOT IN (SELECT
+                                        D_NO
+                                    FROM
+                                        WD_REZ
+                                    WHERE
+                                        WDATE LIKE #{wDate}
+                AND
+                    D_NAME LIKE #{dName}
+                AND
+                	REZ_STATUS = 'Y'
+                				)
+</if>                	
+                                       
+ <if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+ 	<choose>
+ 		<when test='searchType =="1"'>
+ 			AND 
+ 				D_NAME LIKE '%' || #{searchValue} || '%'
+ 		</when>
+ 		<when test='searchType == "2"'>
+ 			AND
+ 				D_LOCATION LIKE '%' || #{searchValue} || '%'
+ 		</when>
+ 	</choose>
+ </if>             
+ 		ORDER BY 
+ 			DC_CODE ASC
+ 		))
+ 		D_NO
+		WHERE
+		    RNUM  <![CDATA[>=]]> #{startRow}
+		AND
+		    RNUM <![CDATA[<=]]> #{endRow}
+</select>
+<!-- 예약되어있는 날짜에 드레스 검색시 드레스 뜨지않게하기 끝 -->
+
+<!-- 가장 마지막 드레스샵 코드 불러오기 시작 -->
+<select id="maxDCCode" resultType="string">
+SELECT 
+    MAX(DC_CODE)
+FROM
+    WD_DRESS_COM
+</select>
+<!-- 가장 마지막 드레스샵 코드 불러오기 끝 -->
+
+<!-- 가장 마지막 드레스 코드 불러오기 시작 -->
+<select id="maxDCode" resultType="string">
+SELECT
+    NVL(MAX(A.D_NO), 0) AS D_NO
+FROM
+    WD_DRESS A
+</select>
+<!-- 가장 마지막 드레스샵 코드 불러오기 끝 -->
+
+<!-- 드레스샵 추가 인서트문 시작 -->
+<insert id="dressComInsert" parameterType="com.icia.web.model.WDDress">
+INSERT INTO WD_DRESS_COM (
+    DC_CODE,
+    DC_NAME,
+    DC_LOCATION,
+    DC_NUMBER,
+    DC_CONTENT
+) VALUES (
+    #{dcCode},
+    #{dcName},
+    #{dcLocation},
+    #{dcNumber},
+    #{dcContent}
+)
+</insert>
+<!-- 드레스샵 추가 인서트문 끝 -->
+
+<!-- 드레스 추가 인서트문 시작 -->
+<insert id="dressInsert" parameterType="com.icia.web.model.WDDress">
+INSERT INTO WD_DRESS (
+    DC_CODE,
+    D_NO,
+    D_NAME,
+    D_IMGNAME,
+    D_PRICE,
+    D_CONTENT,
+    D_DISCOUNT
+) VALUES (
+    #{dcCode},
+    #{dNo},
+    #{dName},
+    #{dImgname},
+    #{dPrice},
+    #{dContent},
+    #{dDiscount}
+)
+</insert>
+<!-- 드레스 추가 인서트문 끝 -->
+
+<!-- 드레스업체 조회 -->
+<select id="dNoAndName" resultMap="WDDressResultMap">
+SELECT
+    DC_CODE,
+    NVL(DC_NAME, '') AS DC_NAME
+FROM
+    WD_DRESS_COM
+</select>
+<!-- 드레스업체조회 끝 -->
+
+<!-- 드레스업체조회 : 업체만 조회: DC_CODE -->
+<select id="onlyDressComSelect" parameterType="string" resultMap="WDDressResultMap">
+SELECT
+    DC_CODE,
+    DC_NAME,
+    DC_LOCATION,
+    DC_NUMBER,
+    DC_IMGNAME,
+    DC_CONTENT
+FROM
+    WD_DRESS_COM
+WHERE
+    DC_CODE = #{value}
+</select>
+<!-- 드레스업체조회 끝 -->
+
+<!-- 드레스업체 삭제 시작 -->
+<delete id="onlyDressComDelete" parameterType="string">
+DELETE FROM WD_DRESS_COM
+WHERE
+        DC_CODE = #{value}
+</delete>
+<!-- 드레스 업체 삭제 끝 -->
+
+<!-- 드레스 삭제 시작 : 딜리트,업데이트,인서트는 int니까 파라미터타입을 쓸필요가없어여 ? 이건스트링인데 ? -->
+<delete id="onlyDressDelete" parameterType="com.icia.web.model.WDDress">
+DELETE FROM WD_DRESS
+WHERE
+    DC_CODE = #{dcCode}
+AND
+    D_NO = #{dNo}
+</delete>
+<!-- 드레스 삭제 끝 -->
+
+<!-- 드레스업체 수정 시작 -->
+<update id="dressComUpdate" parameterType="com.icia.web.model.WDDress">
+UPDATE WD_DRESS_COM
+SET
+    DC_NAME = #{dcName},
+    DC_LOCATION = #{dcLocation},
+    DC_NUMBER = #{dcNumber},
+    DC_CONTENT = #{dcContent}
+WHERE
+    DC_CODE = #{dcCode}
+</update>
+<!-- 드레스업체 수정 끝 -->
+
+<!-- 드레스 수정 시작 -->
+<update id="dressUpdate" parameterType="com.icia.web.model.WDDress">
+UPDATE WD_DRESS
+SET
+    D_NAME = #{dName},
+    D_PRICE = #{dPrice},
+    D_CONTENT = #{dContent},
+    D_DISCOUNT = #{dDiscount}
+WHERE
+    DC_CODE = #{dcCode}
+AND
+    D_NO = #{dNo}
+</update>
+<!-- 드레스 수정 끝 -->
+
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+<select id="maxImgName" resultType="string">
+SELECT
+    NVL(MAX(D_IMGNAME), 0) D_IMGNAME
+FROM
+    WD_DRESS
+</select>
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+
+<!-- 드레스 파일 삽입 -->
+<insert id="dressFileInsert" parameterType="com.icia.web.model.WDDressFile">
+INSERT INTO WD_DRESS_FILE (
+    DC_CODE,
+    D_FILE_SEQ,
+    D_FILE_NAME,
+    D_FILE_ORG_NAME,
+    D_FILE_EXT,
+    D_FILE_SIZE,
+    REG_DATE
+) VALUES (
+    #{dcCode},
+    #{dFileSeq},
+    #{dFileName},
+    #{dFileOrgName},
+    #{dFileExt},
+    #{dFileSize},
+    SYSDATE
+)
+</insert>
+<!-- 드레스 파일 삽입 -->
 
 </mapper>
