@@ -15,6 +15,11 @@ public class WDComment implements Serializable{
 	private String uNickName;
 	private String uEmail;
 	
+	private long startRow;
+	private long endRow;
+	
+	private String status;
+	
 	public WDComment() {
 		parentSeq = 0;
 		commentSeq = 0;
@@ -24,6 +29,10 @@ public class WDComment implements Serializable{
 		
 		uNickName = "";
 		uEmail = "";
+		startRow = 0;
+		endRow = 0;
+		
+		status = "";
 	}
 
 	public long getParentSeq() {
@@ -81,8 +90,31 @@ public class WDComment implements Serializable{
 	public void setuEmail(String uEmail) {
 		this.uEmail = uEmail;
 	}
-	
-	
-	
 
+	public long getStartRow() {
+		return startRow;
+	}
+
+	public void setStartRow(long startRow) {
+		this.startRow = startRow;
+	}
+
+	public long getEndRow() {
+		return endRow;
+	}
+
+	public void setEndRow(long endRow) {
+		this.endRow = endRow;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	
+	
 }

@@ -103,9 +103,11 @@ public class WDNBoardService
 	 public int nBoardDelete(long bSeq)
 	 {
 		 int count = 0;
-		 try {
-		 WDNBoard wdNBoard = wdNBoardDao.nBoardSelect(bSeq);
-		 	 }
+		 try 
+		 {
+			 count = wdNBoardDao.nBoardDelete(bSeq);
+		 	 
+		 }
 		 catch(Exception e)
 		 {
 			 logger.error("[WDNBoardService] nBoardDelete Exception", e);

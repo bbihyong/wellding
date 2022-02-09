@@ -64,7 +64,7 @@ h1{
     -o-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
     -ms-box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.1);
     display: inline-block;
-    margin: 85px 0;
+    margin: 10px 0 100px;
     border-radius: 12px;
 }
 /*------------------------------------------------------------------
@@ -80,10 +80,9 @@ h1{
 
 .join_form
 {
-	
- width: 100%;
-text-align: center;
-
+	width: 100%;
+	text-align: center;
+	background: #feede8;
 }
 
 .input {

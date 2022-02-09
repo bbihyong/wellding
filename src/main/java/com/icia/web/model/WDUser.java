@@ -149,14 +149,6 @@ public class WDUser implements Serializable
 		this.regDate = regDate;
 	}
 
-	public String getMarrtDate() {
-		return marrytDate;
-	}
-
-	public void setMarrtDate(String marrtDate) {
-		this.marrytDate = marrtDate;
-	}
-
 	public int getUserPoint() {
 		return userPoint;
 	}

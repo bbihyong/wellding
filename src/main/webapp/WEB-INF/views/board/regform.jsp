@@ -13,20 +13,28 @@
 
 $(document).ready(function(){
 
-	$("#btnReg").prop("disabled", true);
+	//$("#btnReg").prop("disabled", true);
 
-		$("#btnEmailCheck").on("click",function(){
+	$("#btnEmailCheck").on("click",function(){
 			var emailtest = $("#email").val();
 
 			if ($.trim(emailtest).length == 0) {
-				alert('이메일을 입력해주세요');
+				//alert('이메일을 입력해주세요');
+				Swal.fire({ 
+					icon: 'warning',
+					text: '이메일을 입력하세요.'
+				});
 				$("#email").val("");
 				$("#email").focus();
 				return;
 			}
 
 			if (!fn_validateEmail(emailtest)) {
-				alert("이메일을 제대로 입력해주세요.");
+				//alert("이메일을 제대로 입력해주세요.");
+				Swal.fire({ 
+					icon: 'error',
+					text: '이메일을 제대로 입력해주세요.'
+				});
 				$("#email").val("");
 				$("#email").focus();
 				return;
@@ -41,8 +49,7 @@ $(document).ready(function(){
 				//document.contact.action = "/board/check.do";
 				//document.contact.submit();
 				var form = $("#contact")[0];
-				var formData = new FormData(
-						form);
+				var formData = new FormData(form);
 
 				$.ajax({
 							type : "POST",
@@ -60,12 +67,34 @@ $(document).ready(function(){
 							{
 								if (response.code == 0) 
 								{
-									alert("이메일이 전송 되었습니다.");
+									//alert("이메일이 전송 되었습니다.");
+									const Toast = Swal.mixin({
+									    toast: true,
+									    position: 'center-center',
+									    showConfirmButton: false,
+									    timer: 2000,
+									    timerProgressBar: true,
+									    didOpen: (toast) => {
+									        toast.addEventListener('mouseenter', Swal.stopTimer);
+									        toast.addEventListener('mouseleave', Swal.resumeTimer);
+									    }
+									});
+									
+									Toast.fire({
+									    icon: 'success',
+									    title: '이메일이 전송되었습니다!'
+									});
 								} 
 								else 
 								{
-									alert("이메일 발송실패");
-									$("#btnEmailCheck").prop("disabled", false);
+									//alert("이메일 발송실패");
+									//$("#btnEmailCheck").prop("disabled", false);
+									Swal.fire({ 
+										icon: 'error',
+										text: '이메일 발송 실패!'
+									}).then(function(){
+										$("#btnEmailCheck").prop("disabled", false);
+									});
 								}
 							},
 							complete : function(data) 
@@ -79,17 +108,19 @@ $(document).ready(function(){
 						});
 			 }
 		});
-
+	
 	$("#id").focus();
+	
 	// 모든 공백 체크 정규식
 	var emptCheck = /\s/g;
 	// 영문 대소문자, 숫자로만 이루어진 4~12자리 정규식
-	var idPwCheck = /^[a-zA-Z0-9]{3,12}$/;
+	var idPwCheck = /^[a-zA-Z0-9]{4,12}$/;
+	var pwCheck = /^[a-zA-Z0-9]{4,12}$/;
 
 	$("#id").keyup(function(e) {
 
 		if ($("#id").val().length <= 0) 
-		{
+		{	
 			$('p').eq(0).text("아이디를 입력해 주세요");
 			$('p').eq(0).css('color', 'red');
 			$("#id").focus();
@@ -120,7 +151,8 @@ $(document).ready(function(){
 
 	});
 
-	$("#pwd1").keydown(function(e) 
+	//$("#pwd1").keydown(function(e) 
+	$("#pwd1").keyup(function(e) 
 	{
 
 		if ($("#pwd1").val().length <= 0) 
@@ -140,7 +172,7 @@ $(document).ready(function(){
 			return;
 		}
 
-		else if (!idPwCheck.test($("#pwd1").val())) 
+		else if (!pwCheck.test($("#pwd1").val())) 
 		{
 			$('p').eq(1).text("비밀번호는 영문 대소문자와 숫자로 4~12자리 입니다.");
 			$('p').eq(1).css('color', 'red');
@@ -224,8 +256,28 @@ $(document).ready(function(){
 
 		});
 	});
-	$("#btnReg").on("click", function() {
-
+	
+	
+	$("#btnReg").on("click", function(){
+		
+	      if($.trim($("#id").val()).length <= 0 )
+	      {
+	         //값이 없음
+	        // alert("제목을 입력하세요.");
+				Swal.fire({ 
+					icon: 'warning',
+					title: '정보가 입력되지 않았습니다!',
+					text: '모든 정보를 입력해야 회원가입이 완료됩니다.'
+				});
+	         $("#id").val("");
+	         $("#id").focus();
+	         
+	         $("#btnReg").prop("disabled", true);
+	         return;
+	      }
+	    var inputValue = $("input[name='gender']:checked").val();
+	      
+	      
 		$.ajax({
 			type : "POST",
 			url : "/user/regProc",
@@ -237,9 +289,11 @@ $(document).ready(function(){
 				year : $("#year").val(),
 				month : $("#month").val(),
 				day : $("#day").val(),
-				gender : $("#gender").val(),
+				gender : inputValue,
 				nickname : $("#nickname").val(),
-				email : $("#email").val()
+				email : $("#email").val(),
+				uCheck : $("#checkinput").val(),
+				
 			},
 			datatype : "JSON",
 			beforeSend : function(xhr) {
@@ -249,22 +303,46 @@ $(document).ready(function(){
 			{
 				if (response.code == 0) 
 				{
-					alert("회원가입이 완료되었습니다.");
-					location.href = "/board/login";
+					//alert("회원가입이 완료되었습니다.");
+					//location.href = "/board/login";
+					Swal.fire({ 
+						icon: 'success',
+						text: '회원가입이 완료되었습니다.'
+					}).then(function(){
+						location.href = "/board/login";
+					});
 				} 
 				else if (response.code == 400) 
 				{
-					alert("회원가입 중 오류가 발생했습니다..");
-					location.href = "/board/regform";
+					//alert("회원가입 중 오류가 발생했습니다..");
+					//location.href = "/board/regform";
+					Swal.fire({ 
+						icon: 'error',
+						text: '회원가입 중 오류가 발생했습니다..'
+					}).then(function(){
+						location.href = "/board/regform";
+					});
 				} 
 				else if (response.code == 500) 
 				{
-					alert("회원가입 중 오류가 발생했습니다.");
-					location.href = "/board/regform";
+					//alert("회원가입 중 오류가 발생했습니다.");
+					//location.href = "/board/regform";
+					Swal.fire({ 
+						icon: 'error',
+						text: '회원가입 중 오류가 발생했습니다.'
+					}).then(function(){
+						location.href = "/board/regform";
+					});
 				} 
 				else {
-					alert("오류가 발생했습니다.");
-					$("#id").focus();
+					//alert("오류가 발생했습니다.");
+					//$("#id").focus();
+					Swal.fire({ 
+						icon: 'error',
+						text: '오류가 발생했습니다.'
+					}).then(function(){
+						$("#id").focus();
+					});
 				}
 			},
 			complete : function(data) 
@@ -282,9 +360,16 @@ $(document).ready(function(){
 
 	$("#btnCC").on("click", function() 
 	{
-		alert("회원가입이 취소되었습니다.");
-		location.href = "/";
+		//alert("회원가입이 취소되었습니다.");
+		Swal.fire({ 
+			icon: 'error',
+			text: '회원가입이 취소되었습니다.'
+		}).then(function(){
+			location.href = "/";
+		});
+		
 	});
+	
 });
 
 function imnotok() {
@@ -445,11 +530,11 @@ function fn_validateEmail(value) {
 
 				<dt>성별</dt>
 				<dd class="two_selector">
-					<label class="selector"><input type="radio" name="gender" id="gender" value="M">
+					<label class="selector"><input type="radio" name="gender" value="M">
 						<span>남자</span>
 					</label> 
 					<label class="selector">
-						<input type="radio" name="gender" id="gender" value="F">
+						<input type="radio" name="gender" value="F">
 						<span>여자</span>
 					</label>
 				</dd>
@@ -478,7 +563,7 @@ function fn_validateEmail(value) {
 				<div class="button_area">
 					<button class="btn_type1" id="btnReg">가입하기</button>
 					<button class="btn_type2" id="btnCC">취소</button>
-					<input type="hidden" id="pwd" name="pwd" value="" />
+					
 				</div>
 			</dl>
 		</div>

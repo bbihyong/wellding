@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.icia.web.model.EmailDTO;
 import com.icia.web.model.Response;
+import com.icia.web.model.WDExpert;
 import com.icia.web.model.WDUser;
 import com.icia.web.service.EmailService;
+import com.icia.web.service.WDExpertService;
 import com.icia.web.service.WDUserService;
+import com.icia.web.util.HttpUtil;
 
 @Controller
 //@RequestMapping("/board/*")
@@ -26,22 +29,36 @@ public class EmailController
 	@Autowired
 	private WDUserService wduserService;
 	
+	@Autowired
+	private WDExpertService wdExpertService;
+	
 	@RequestMapping("/board/send.do")
-	public String send(EmailDTO dto, Model model)
-	{
+	public String send(EmailDTO dto, Model model,HttpServletRequest request)
+	{	
+		
+		String eCode = HttpUtil.get(request, "eCode", "");
+		WDExpert wdExpert = null;
+		
+		wdExpert = wdExpertService.expertSelect(eCode);
+		
+		model.addAttribute("wdExpert",wdExpert);
 		try
 		{
 			emailService.sendMail(dto); //이메일발송
-			model.addAttribute("message", "이메일이 발송되었습니다.");
+			System.out.println("여긴타니111111111");
+			model.addAttribute("message", " 플래너에게 이메일 발송이 완료되었습니다.");
 		}
 		catch(Exception e)
 		{
+			System.out.println("여긴타니222222222222");
 			e.printStackTrace();
 			model.addAttribute("message", "이메일이 발송실패,,");
 		}
 		
-		return "/board/gosu";
+		System.out.println("여긴타니33333333");
+		return "/board/gosu2";
 	}
+
 	
 	@RequestMapping("/board/check.do")
 	@ResponseBody
@@ -89,6 +106,50 @@ public class EmailController
 		return ajaxResponse;
 	}
 	
+	@RequestMapping("/board/tpwd.do")
+	@ResponseBody
+	public Response<Object> tpwd(EmailDTO dto, Model model,HttpServletRequest request)
+	{
+		Response<Object> ajaxResponse = new Response<Object>();
+		
+		String userId = HttpUtil.get(request, "id","");
+		String userName = HttpUtil.get(request, "name", "");
+		String userEmail = HttpUtil.get(request, "email", "");
+		
+		WDUser wdUser = new WDUser(); 
+		
+		try
+		{
+			wdUser.setUserId(userId);;
+			wdUser.setUserName(userName);
+			wdUser.setUserEmail(userEmail);
+			
+			WDUser tempUser = null;
+			tempUser = wduserService.findPwdSelectUser(wdUser);
+			if(tempUser == null) {
+				ajaxResponse.setResponse(400, "Bad Request");
+				return ajaxResponse;
+			}
+			
+			String pwdTemp = emailService.pwdMail(dto);
+			
+			wdUser.setUserPwd(pwdTemp);
+			if(wduserService.findPwd(wdUser) > 0)
+			{
+				ajaxResponse.setResponse(0, "Success");
+			}
+			else {
+				ajaxResponse.setResponse(-1, "Fail");
+			}			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			ajaxResponse.setResponse(-1, "Fail");
+		}
+		
+		return ajaxResponse;
+	}
 	
 	
 }

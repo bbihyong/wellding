@@ -47,10 +47,11 @@ public class WDRez implements Serializable
 	private long dDiscount;
 	private String dImgName;
 	private String dContent;
-	
 	private String sDate;
-	
-	
+	private String searchType;
+	private String searchValue;
+	private long startRow;
+	private long endRow;
 	
 	public WDRez() {
 		  rezNo = "";
@@ -94,9 +95,61 @@ public class WDRez implements Serializable
 		  dImgName = "";
 		  dContent = "";
 		  sDate = "";
+		  searchType = "";
+		  searchValue = "";
+		  startRow = 0;
+		  endRow = 0;
 	}
 
 	
+
+	public long getStartRow() {
+		return startRow;
+	}
+
+
+
+	public long getEndRow() {
+		return endRow;
+	}
+
+
+
+	public void setStartRow(long startRow) {
+		this.startRow = startRow;
+	}
+
+
+
+	public void setEndRow(long endRow) {
+		this.endRow = endRow;
+	}
+
+
+
+	public String getSearchType() {
+		return searchType;
+	}
+
+
+
+	public String getSearchValue() {
+		return searchValue;
+	}
+
+
+
+	public void setSearchType(String searchType) {
+		this.searchType = searchType;
+	}
+
+
+
+	public void setSearchValue(String searchValue) {
+		this.searchValue = searchValue;
+	}
+
+
 
 	public String gethContent() {
 		return hContent;

@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.icia.web.dao.WDMakeUpDao;
 import com.icia.web.dao.WDRezDao;
+import com.icia.web.model.WDDress;
 import com.icia.web.model.WDMakeUp;
+import com.icia.web.model.WDMakeUpFile;
 import com.icia.web.model.WDRez;
 
 @Service("wdMakeUpService")
@@ -46,7 +48,23 @@ public class WDMakeUpService
 		
 		return count;
 	}
-
+	
+	//총 메이크업 업체 수
+	public long makeUpListCountmr(WDMakeUp wdMakeUp) 
+	{
+		long count = 0;
+		
+		try 
+		{
+			count = wdMakeUpDao.makeUpListCountmr(wdMakeUp);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDMakeUpService] makeUpListCountmr Exception", e);
+		}
+		
+		return count;
+	}
 	
 	//메이크업 업체 가져오기
 	public List<WDMakeUp> makeUpList(WDMakeUp wdMakeUp)
@@ -60,6 +78,23 @@ public class WDMakeUpService
 		catch(Exception e) 
 		{
 			logger.error("[WDMakeUpService] makeUpList Exception", e);
+		}
+		
+		return list;
+	}
+	
+	//메이크업 업체 가져오기 - 예약된곳 제외
+	public List<WDMakeUp> makeUpListMinusRez(WDMakeUp wdMakeUp)
+	{
+		List<WDMakeUp> list = null;
+		
+		try 
+		{
+			list = wdMakeUpDao.makeUpListMinusRez(wdMakeUp);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDMakeUpService] makeUpListMinusRez Exception", e);
 		}
 		
 		return list;
@@ -98,4 +133,103 @@ public class WDMakeUpService
    		return cnt;
    	}
 	
+    //메이크업 글쓰기
+   	@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
+    public int makeupInsert(WDMakeUp wdMakeUp) throws Exception
+    {
+       int count = 0;
+       
+       count = wdMakeUpDao.makeupInsert(wdMakeUp);
+       
+       if(count > 0 && wdMakeUp.getWdMakeUpFile() != null)
+       {
+    	   WDMakeUpFile wdMakeUpFile = wdMakeUp.getWdMakeUpFile();
+    	   
+    	   wdMakeUpDao.makeupFileInsert(wdMakeUpFile);
+       }
+
+       return count;
+    }
+    
+    //메이크업 마지막 코드 불러오기
+    public String makeupMax()
+    {
+       String mCode = "";
+       
+       try
+       {
+          mCode = wdMakeUpDao.makeupMax();
+       }
+       catch(Exception e)
+       {
+          logger.error("[WDMakeUpService] makeupMax Exception 너냐?", e);
+       }
+       
+       return mCode;
+    }
+    
+    //메이크업 수정
+    public int makeupUpdate(WDMakeUp wdMakeUp)
+    {
+    	int count = 0;
+    	
+    	try
+    	{
+    		count = wdMakeUpDao.makeupUpdate(wdMakeUp);
+    	}
+    	catch(Exception e)
+    	{
+    		logger.error("[WDMakeUpService] wdAdmUserUpdate Exception", e);
+    	}
+    	return count;
+    }
+    
+  //메이크업 업체 조회
+  	public WDMakeUp onlyMakeupComSelect(String mCode)
+  	{
+  		WDMakeUp wdMakeup = null;
+  		
+  		try
+  		{
+  			wdMakeup = wdMakeUpDao.onlyMakeupComSelect(mCode);
+  		}
+  		catch(Exception e)
+  		{
+  			logger.error("[WDMakeUpService] onlyMakeupComSelect Exception", e);
+  		}
+  		
+  		return wdMakeup;
+  	}
+    
+  //메이크업 업체 삭제
+  	public int onlyMakeupComDelete(String mCode)
+  	{
+  		int count = 0;
+  		
+  		try
+  		{
+  			count = wdMakeUpDao.onlyMakeupComDelete(mCode);
+  		}
+  		catch(Exception e)
+  		{
+  			logger.error("[WDMakeUpService] onlyMakeupComDelete Exception", e);
+  		}
+  		return count;
+  	}
+  	
+  	public String maxImgName() {
+  		String imgName = "";
+  		
+  		try {
+  			imgName = wdMakeUpDao.maxImgName();
+  		}
+  		catch(Exception e)
+  		{
+  			logger.error("[WDMakeUpService] maxImgName Exception", e);
+  		}
+  		
+  		return imgName;
+  	}
+	
+   	
 }

@@ -61,7 +61,7 @@ public class WDMakeUpController
 	private WDUserService wdUserService;
 	
 	private static final int LIST_COUNT = 9;
-	private static final int PAGE_COUNT = 10;
+	private static final int PAGE_COUNT = 3;
 	
 	//메이크업 업체 불러와서 화면에 보여주는 메소드
 	@RequestMapping(value="/hsdm/makeUp")
@@ -97,6 +97,11 @@ public class WDMakeUpController
 		String searchValue = HttpUtil.get(request, "searchValue", "");
 		long curPage = HttpUtil.get(request, "curPage", (long)1);
 		
+		String year = HttpUtil.get(request, "year", "");
+		String month = HttpUtil.get(request, "month", "");
+		String day = HttpUtil.get(request, "day", "");
+		String wDate = year + month + day;
+		
 		String mCode = HttpUtil.get(request, "mCode", "");
 		
 		long totalCount = 0;
@@ -118,7 +123,11 @@ public class WDMakeUpController
 			searchValue = "";
 		}
 		
-		totalCount = wdMakeUpService.makeUpListCount(search);
+		search.setmCode(mCode);
+		search.setwDate(wDate);
+		
+		//totalCount = wdMakeUpService.makeUpListCount(search);
+		totalCount = wdMakeUpService.makeUpListCountmr(search);
 		
 		logger.debug("============totalCount : "+ totalCount + "===========================");
 		
@@ -133,7 +142,10 @@ public class WDMakeUpController
 			search.setStartRow(paging.getStartRow());
 			search.setEndRow(paging.getEndRow());
 			
-			list = wdMakeUpService.makeUpList(search);
+			search.setwDate(wDate); //일단하드코딩!
+			
+			///list = wdMakeUpService.makeUpList(search);
+			list = wdMakeUpService.makeUpListMinusRez(search); //예약내역 제외한 목록 불러오기
 		}
 		
 		model.addAttribute("list", list);
@@ -141,6 +153,9 @@ public class WDMakeUpController
 		model.addAttribute("searchValue", searchValue);
 		model.addAttribute("curPage", curPage);
 		model.addAttribute("paging", paging);
+		model.addAttribute("year", year);
+		model.addAttribute("month", month);
+		model.addAttribute("day", day);
 		
 		return "/hsdm/makeUp";
 	}
@@ -152,7 +167,12 @@ public class WDMakeUpController
 		/*********상단에 닉넴 보여주기 시작*********/
 		//쿠키 확인
 		String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+		String year = HttpUtil.get(request, "year", "");
+		String month = HttpUtil.get(request, "month", "");
+		String day = HttpUtil.get(request, "day", "");
+		String wDate = year+month+day;
 		
+		System.out.println(wDate+"=============================______________++++++++++++++");
 		//로그인 했을 때와 안했을 때를 구분해서 페이지를 보여주려 함.
 		//로그인 체크용. 0 => 로그인 x, 혹은 없는 계정; 1 => 로그인 정보 있는 계정
 		int loginS = 0;
@@ -203,6 +223,7 @@ public class WDMakeUpController
 		model.addAttribute("searchType", searchType);
 		model.addAttribute("searchValue", searchValue);
 		model.addAttribute("curPage", curPage);
+		model.addAttribute("wDate", wDate);
 		
 		/*랜덤추가*/
 		model.addAttribute("studioRandom", studioRandom);
@@ -225,6 +246,9 @@ public class WDMakeUpController
 	   String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
 	   String mCode = HttpUtil.get(request, "mCode", "");
 	   int mPlusNum = HttpUtil.get(request, "mPlusNum", 0);
+	   
+	   String wDate = HttpUtil.get(request, "wDate", "");
+	   System.out.println(wDate+"Proc++++++++++++++++++++++++======================");
 	   
 	   //존재하는 유저인지부터 체크
 	   WDUser wdUser = null;
@@ -251,6 +275,18 @@ public class WDMakeUpController
 				   wdRez.setUserId(wdUser.getUserId());
 				   wdRez.setmCode(mCode);
 				   wdRez.setmPlusNum(mPlusNum);
+				   
+				   //의수 추가
+				   //wDate 넣어주기
+				   //검색조건에 wDate를 줬다면, 그 값을, 아니면 회원가입 시 wDate로 입력
+				   if(!StringUtil.equals(wDate, "") && wDate != null) 
+				   {
+					   wdRez.setwDate(wDate);
+				   }
+				   else 
+				   {
+					   wdRez.setwDate(wdUser.getMarrytDate());
+				   }
 				   
 				   //한번에 인서트->업데이트!
 				   try 
@@ -300,6 +336,19 @@ public class WDMakeUpController
 						   //wdRez객체에 홀코드 예식장코드 담음.
 						   wdRez.setmCode(mCode);
 						   wdRez.setmPlusNum(mPlusNum);
+						   
+						   //의수 추가
+						   //wDate 넣어주기
+						   //검색조건에 wDate를 줬다면, 그 값을, 아니면 회원가입 시 wDate로 입력
+						   if(!StringUtil.equals(wDate, "") && wDate != null) 
+						   {
+							   wdRez.setwDate(wDate);
+						   }
+						   else 
+						   {
+							   wdRez.setwDate(wdUser.getMarrytDate());
+						   }
+						   
 						   if(wdRezService.rezMakeupInsert(wdRez) >0 ) 
 						   {
 							   System.out.println("여긴타니 11,11,11,11");

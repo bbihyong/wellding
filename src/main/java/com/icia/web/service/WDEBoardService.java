@@ -5,12 +5,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.icia.common.util.FileUtil;
 import com.icia.web.dao.WDEBoardDao;
+import com.icia.web.model.WDBoardFile;
 import com.icia.web.model.WDEBoard;
+import com.icia.web.model.WDEBoardFile;
 
 @Service("wdEBoardService")
 public class WDEBoardService 
@@ -19,6 +23,10 @@ public class WDEBoardService
 	
 	@Autowired
 	private WDEBoardDao wdEBoardDao;
+	
+	//파일 저장경로
+	@Value("#{env['upload.save.event']}") 
+	private String UPLOAD_SAVE_EVENT;
 	
 	//총 게시물 수
 	public long eBoardListCount(WDEBoard wdEBoard)
@@ -53,30 +61,28 @@ public class WDEBoardService
 	      
 	      return list;
 	}
-	//이벤트 글 등록
-	//@Transactional(propagation=Propagation.REQUIRED, rollbackFor=Exception.class)
-	public int eBoardInsert(WDEBoard wdEBoard) //throws Exception
-	{
-		int count = 0;
-		
-		try {
-		count=wdEBoardDao.eBoardInsert(wdEBoard);
-			}
-		catch(Exception e) 
-		{
-			logger.error("[WDEBoardService] eBoardInsert Exception", e);
-		}
-		
-		return count;
-	}
-	
-	//이벤트 글 수정
-	// @Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
-	 public int eBoardUpdate(WDEBoard wdEBoard)
+	//이벤트 글 등록(관리자)
+	public int eBoardInsert(WDEBoard wdEBoard) throws Exception
 	 {
 		 int count = 0;
 		 
 		 try
+		 {
+			 count = wdEBoardDao.eBoardInsert(wdEBoard);
+		 }
+		 catch(Exception e)
+		 {
+			 logger.error("[WDNBoardService] nBoardInsert Exception", e);
+		 }
+		 return count;
+	 }
+		 
+	 //이벤트 글쓰기 수정(관리자) 
+	 public int eBoardUpdate(WDEBoard wdEBoard) 
+	 {
+		 int count = 0;
+		 
+		 try 
 		 {
 		 count = wdEBoardDao.eBoardUpdate(wdEBoard);
 		 }
@@ -84,25 +90,109 @@ public class WDEBoardService
 		 {
 			 logger.error("[WDEBoardService] eBoardUpdate Exception", e);
 		 }
-		 
+		 return count;
+	 }
+	 
+	 //이벤트 글쓰기 삭제(관리자)
+	 public int eBoardDelete(long bSeq)
+	 {
+		 int count = 0;
+		 try 
+		 {
+			 count = wdEBoardDao.eBoardDelete(bSeq);
+		 	 
+		 }
+		 catch(Exception e)
+		 {
+			 logger.error("[WDEBoardService] eBoardDelete Exception", e);
+		 }
 		 return count;
 	 }
 	
-	//이벤트 글 삭제
-	//@Transactional(propagation=Propagation.REQUIRED,rollbackFor=Exception.class)
-	public int eBoardDelete(long eBSeq) 
+	 //이벤트 글(eBoard) 첨부파일 삭제(관리자)
+	 	public int eBoardFileDelete(long bSeq)
+		{
+			int count = 0;
+			
+			try
+			{
+				count = wdEBoardDao.eBoardFileDelete(bSeq);
+			}
+			catch(Exception e)
+			{
+				logger.error("[WDEBoardService] eBoardFileDelete Exception", e);
+			}
+			
+			return count;
+		}
+	 	
+	 	//이벤트 글(eventFile) 첨부파일 삭제(관리자)
+	 	public int eventFileDelete(String fileName)
+		{
+			int count = 0;
+			
+			try
+			{
+				count = wdEBoardDao.eventFileDelete(fileName);
+			}
+			catch(Exception e)
+			{
+				logger.error("[WDEBoardService] eventFileDelete Exception", e);
+			}
+			
+			return count;
+		}
+	
+	//이벤트 글 첨부파일 조회(관리자)
+	public WDEBoardFile eBoardFileSelect(long eBSeq)
+	{
+		WDEBoardFile wdEBoardFile = null;
+		
+		try
+		{
+			wdEBoardFile = wdEBoardDao.eBoardFileSelect(eBSeq);
+		}
+		catch(Exception e)
+		{
+			logger.error("[WDEBoardService] eBoardFileSelect Exception", e);
+		}
+		
+		return wdEBoardFile;
+	}
+	
+	//이벤트 글 첨부파일 삽입(관리자)
+	public int eBoardFileInsert(WDEBoardFile wdEBoardFile)
 	{
 		int count = 0;
 		
-		try {
-		WDEBoard wdEBoard = wdEBoardDao.eBoardSelect(eBSeq);
-			}
+		try
+		{
+			count = wdEBoardDao.eBoardFileInsert(wdEBoardFile);
+		}
 		catch(Exception e)
 		{
-			logger.error("[WDEBoardService] eBoardDelete Exception", e);
+			logger.error("[WDEBoardService] eBoardFileInsert Exception", e);
 		}
+		
 		return count;
 	}
+	
+	//이벤트 글 첨부파일 DB삽입(관리자)
+		public int eBoardFileUpdate(WDEBoard wdEBoard)
+		{
+			int count = 0;
+			
+			try
+			{
+				count = wdEBoardDao.eBoardFileUpdate(wdEBoard);
+			}
+			catch(Exception e)
+			{
+				logger.error("[WDEBoardService] eBoardFileInsert Exception", e);
+			}
+			
+			return count;
+		}
 	
 	//게시물 조회
 	   public WDEBoard eBoardSelect(long eBSeq) 
@@ -143,6 +233,39 @@ public class WDEBoardService
 		   
 		   return wdEBoard;
 	   }
+	   
+	 //이벤트 이미지 가장 넘버링
+		public String maxImgName() {
+		
+		String maxName = "";
+			
+		try 
+		{
+			maxName = wdEBoardDao.maxImgName();
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDEBoardService] maxImgName Exception", e);
+		}
+			return maxName;
+		}
+		
+		 //이벤트 이미지 넘버 조회
+		public String searchImgName(long eBSeq) {
+		
+		String imgName = "";
+			
+		try 
+		{
+			imgName = wdEBoardDao.searchImgName(eBSeq);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDEBoardService] searchImgName Exception", e);
+		}
+			return imgName;
+		}	
+
 }
 	
 

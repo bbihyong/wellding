@@ -30,113 +30,136 @@ import com.icia.web.util.HttpUtil;
 
 @Controller("WDHallController")
 public class WDHallController {
-	
-	private static Logger logger= LoggerFactory.getLogger(WDHallController.class);
-	
-	   //쿠키명
-	   @Value("#{env['auth.cookie.name']}")
-	   private String AUTH_COOKIE_NAME;
-	   
-		@Autowired
-		private WDUserService wdUserService;
-	   
-	   //파일저장경로
-	   @Value("#{env['upload.save.dir']}")
-	   private String UPLOAD_SAVE_DIR;
-	   
-	   @Autowired
-	   private WDHallService wdHallService;
-	   
-	   @Autowired
-	   private WDRezService wdRezService;
-	   
-	   private static final int LIST_COUNT = 9; //한 페이지의 게시물 수
-	   private static final int PAGE_COUNT = 3; //페이징 수
-	   
-	   @RequestMapping(value="/hsdm/halllist")
-	   public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		   
-		   String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
-		   
-			//조회항목(1:웨딩홀 이름, 2: 홀 이름)
-			String searchType = HttpUtil.get(request, "searchType", "");
-			//조회값
-			String searchValue = HttpUtil.get(request, "searchValue", "");
-			//현재 페이지
-			long curPage = HttpUtil.get(request, "curPage", (long)1);
-		    String whCode = HttpUtil.get(request, "WHCode", "");
-		    String hCode = HttpUtil.get(request, "HCode", "");
-			
-			
-			WDUser wdUser = null;
-			wdUser = wdUserService.userSelect(cookieUserId);
-			
-			if(wdUser != null) {
-				model.addAttribute("wdUser",wdUser);
-			}
-		   
-		   long totalCount = 0;
-		   List<WDHall> list = null;
-		   
-		   
-		   Paging paging = null;
-		   WDHall wdHall = new WDHall();
-		   
-		   System.out.println("서치 타입 : "+ searchType);
-		   System.out.println("서치 밸류 : "+ searchValue);
-		   
-			if(!StringUtil.isEmpty(searchType) && !StringUtil.isEmpty(searchValue))
-			{
-				wdHall.setSearchType(searchType);
-				wdHall.setSearchValue(searchValue);
-				System.out.println("들어갔음");
-			}
-			else
-			{
-				searchType = "";
-				searchValue = "";
-			}
-			
-		   wdHall.setWHCode(whCode);
-		   
-		   totalCount = wdHallService.WDHallListCount(wdHall);
-		   
-		   logger.debug("totalCount : " + totalCount);
-		   
-		   if(totalCount > 0) {
-			   paging = new Paging("/hsdm/halllist", totalCount, LIST_COUNT, PAGE_COUNT, curPage, "curPage"); //페이징처리 : 인수값이 있다 = 생성자가 있다
-			   
-				paging.addParam("searchType", searchType);
-				paging.addParam("searchValue", searchValue);
-				paging.addParam("curPage", curPage);
-				
-				wdHall.setStartRow(paging.getStartRow());
-				wdHall.setEndRow(paging.getEndRow());
-			   
-			   list = wdHallService.WDHallList(wdHall);
-		   }
-		   
-			model.addAttribute("list", list);
-			model.addAttribute("searchType", searchType);
-			model.addAttribute("searchValue", searchValue);
-			model.addAttribute("curPage", curPage);
-			model.addAttribute("paging",paging);
-		   
-		   return "/hsdm/halllist";
-	   }
-	   
-	   @RequestMapping(value="/hsdm/HallView")
-	   public String hallView(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
-		   
-		   //조회항목(1:웨딩홀 이름, 2: 홀 이름)
-			String searchType = HttpUtil.get(request, "searchType", "");
-			//조회값
-			String searchValue = HttpUtil.get(request, "searchValue", "");
-			//현재 페이지
-			long curPage = HttpUtil.get(request, "curPage", (long)1);
+   
+   private static Logger logger= LoggerFactory.getLogger(WDHallController.class);
+   
+      //쿠키명
+      @Value("#{env['auth.cookie.name']}")
+      private String AUTH_COOKIE_NAME;
+      
+      @Autowired
+      private WDUserService wdUserService;
+      
+      //파일저장경로
+      @Value("#{env['upload.save.dir']}")
+      private String UPLOAD_SAVE_DIR; 
+      
+      @Autowired
+      private WDHallService wdHallService;
+      
+      @Autowired
+      private WDRezService wdRezService;
+      
+      private static final int LIST_COUNT = 9; //한 페이지의 게시물 수
+      private static final int PAGE_COUNT = 3; //페이징 수
+      
+      @RequestMapping(value="/hsdm/halllist")
+      public String list(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+         
+         String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+         
+         //조회항목(1:웨딩홀 이름, 2: 홀 이름)
+         String searchType = HttpUtil.get(request, "searchType", "");
+         //조회값
+         String searchValue = HttpUtil.get(request, "searchValue", "");
+         //현재 페이지
+         long curPage = HttpUtil.get(request, "curPage", (long)1);
+          String whCode = HttpUtil.get(request, "WHCode", "");
+          String hCode = HttpUtil.get(request, "HCode", "");
+          
+          //결혼날짜 폼 데이터 가져오기
+          String year = HttpUtil.get(request, "year", "");
+          String month = HttpUtil.get(request, "month", "");
+          String day = HttpUtil.get(request, "day", "");
+          //결혼날짜 합치기
+          String wDate = year+month+day;
+         
+         
+         WDUser wdUser = null;
+         wdUser = wdUserService.userSelect(cookieUserId);
+         
+         if(wdUser != null) {
+            model.addAttribute("wdUser",wdUser);
+         }
+         
+         long totalCount = 0;
+         List<WDHall> list = null;
+         
+         
+         Paging paging = null;
+         WDHall wdHall = new WDHall();
+         
+         System.out.println("서치 타입 : "+ searchType);
+         System.out.println("서치 밸류 : "+ searchValue);
+         
+         if(!StringUtil.isEmpty(searchType) && !StringUtil.isEmpty(searchValue))
+         {
+            wdHall.setSearchType(searchType);
+            wdHall.setSearchValue(searchValue);
+            System.out.println("들어갔음");
+         }
+         else
+         {
+            searchType = "";
+            searchValue = "";
+         }
+         //결혼날짜 객체에 세팅
+         if(!StringUtil.isEmpty(wDate)) {
+            wdHall.setwDate(wDate);
+         }
+         else {
+            wDate = "";
+         }
+         
+         wdHall.setWHCode(whCode);
+         
+         totalCount = wdHallService.WDHallListCount(wdHall);
+         
+         logger.debug("totalCount : " + totalCount);
+         
+         if(totalCount > 0) {
+            paging = new Paging("/hsdm/halllist", totalCount, LIST_COUNT, PAGE_COUNT, curPage, "curPage"); //페이징처리 : 인수값이 있다 = 생성자가 있다
+            
+            paging.addParam("searchType", searchType);
+            paging.addParam("searchValue", searchValue);
+            paging.addParam("curPage", curPage);
+            
+            wdHall.setStartRow(paging.getStartRow());
+            wdHall.setEndRow(paging.getEndRow());
+            
+            list = wdHallService.WDHallList(wdHall);
+         }
+            
+          model.addAttribute("year",year);
+          model.addAttribute("month",month);
+          model.addAttribute("day",day);
+         model.addAttribute("list", list);
+         model.addAttribute("searchType", searchType);
+         model.addAttribute("searchValue", searchValue);
+         model.addAttribute("curPage", curPage);
+         model.addAttribute("paging",paging);
+         
+         return "/hsdm/halllist";
+      }
+      
+      @RequestMapping(value="/hsdm/HallView")
+      public String hallView(ModelMap model, HttpServletRequest request, HttpServletResponse response) {
+         
+         //조회항목(1:웨딩홀 이름, 2: 홀 이름)
+         String searchType = HttpUtil.get(request, "searchType", "");
+         //조회값
+         String searchValue = HttpUtil.get(request, "searchValue", "");
+         //현재 페이지
+         long curPage = HttpUtil.get(request, "curPage", (long)1);
 
 		   String whCode = HttpUtil.get(request, "WHCode", "");
 		   String hCode = HttpUtil.get(request, "HCode", "");
+		   
+		   //의수 추가
+		   //검색 조건에 날짜가 있으면 받아야 함
+		   String year = HttpUtil.get(request, "year", "");
+		   String month = HttpUtil.get(request, "month", "");
+		   String day = HttpUtil.get(request, "day", "");
 		   
 		   String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
 		   
@@ -179,6 +202,9 @@ public class WDHallController {
 			   model.addAttribute("subImg",subImg);
 			   model.addAttribute("searchType", searchType);
 			   model.addAttribute("searchValue", searchValue);
+			   model.addAttribute("year", year);
+			   model.addAttribute("month", month);
+			   model.addAttribute("day", day);
 			   model.addAttribute("curPage", curPage);
 		   }		   
 		   
@@ -198,12 +224,22 @@ public class WDHallController {
 		   String whCode = HttpUtil.get(request, "whCode", "");
 		   String hCode = HttpUtil.get(request, "hCode", "");
 		   
+		    //결혼날짜 폼 데이터 가져오기
+		    String year = HttpUtil.get(request, "year", "");
+		    String month = HttpUtil.get(request, "month", "");
+		    String day = HttpUtil.get(request, "day", "");
+		    //결혼날짜 합치기
+		    String wDate = year+month+day;
+		   
+		    System.out.println("==================================wDate : "+wDate+"year "+year+" month "+month+" day "+ day);
+		   
 		   //존재하는 유저인지부터 체크
 		   WDUser wdUser = null;
 		   
 		   WDRez wdRez = null;
 		   
 		   wdUser = wdUserService.userSelect(cookieUserId);
+		   
 		   
 		   if(wdUser != null) 
 		   {
@@ -223,6 +259,19 @@ public class WDHallController {
 					   wdRez.setUserId(wdUser.getUserId());
 					   wdRez.sethCode(hCode);
 					   wdRez.setWhCode(whCode);
+					   
+					   //의수 추가
+					   //wDate 넣어주기
+					   //검색조건에 wDate를 줬다면, 그 값을, 아니면 회원가입 시 wDate로 입력
+					   if(!StringUtil.equals(wDate, "") && wDate != null) 
+					   {
+						   wdRez.setwDate(wDate);
+					   }
+					   else 
+					   {
+						   wdRez.setwDate(wdUser.getMarrytDate());
+					   }
+					   
 					   
 					   //한번에 인서트->업데이트!
 					   try 
@@ -273,6 +322,20 @@ public class WDHallController {
 							   //wdRez객체에 홀코드 예식장코드 담음.
 							   wdRez.sethCode(hCode);
 							   wdRez.setWhCode(whCode);
+							   
+							   //의수 추가
+							   //wDate 넣어주기
+							   //검색조건에 wDate를 줬다면, 그 값을, 아니면 회원가입 시 wDate로 입력
+							   if(!StringUtil.equals(wDate, "") && wDate != null) 
+							   {
+								   wdRez.setwDate(wDate);
+							   }
+							   else 
+							   {
+								   wdRez.setwDate(wdUser.getMarrytDate());
+							   }
+							   System.out.println("=======================이거 몇뜨니??? 몇뜰까??"+wdRez.getwDate());
+							   
 							   if(wdRezService.rezHallInsert(wdRez) >0 ) 
 							   {
 								   System.out.println("여긴타니 11,11,11,11");
@@ -312,3 +375,4 @@ public class WDHallController {
 		   return ajaxResponse;
 	   }
 }
+

@@ -23,6 +23,8 @@ public class WDEBoard implements Serializable
 	private long startRow;		//시작 ROWNUM
 	private long endRow;		//끝 ROWNUM
 	
+	private WDEBoardFile wdEBoardFile;
+	
 	public WDEBoard()
 	{
 		eBSeq = 0;
@@ -37,8 +39,18 @@ public class WDEBoard implements Serializable
 		startRow = 0;
 		endRow = 0;
 		eBSubImgName = "";
+		wdEBoardFile = null;
 	}
 	
+	public WDEBoardFile getWdEBoardFile() {
+		return wdEBoardFile;
+	}
+
+
+
+	public void setWdEBoardFile(WDEBoardFile wdEBoardFile) {
+		this.wdEBoardFile = wdEBoardFile;
+	}
 
 	public String geteBSubImgName() {
 		return eBSubImgName;
@@ -150,6 +162,5 @@ public class WDEBoard implements Serializable
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-	
-	
+
 }

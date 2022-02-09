@@ -4,7 +4,7 @@
 
 
  <!-- *** 욱채수정Footer *** -->
- <footer>
+ <footer style="width: 100%;">
     <div class="container">
         <div class="row">
             <div class="col-lg-4">
@@ -34,11 +34,11 @@
                         <div class="col-lg-6">
                             <div class="menu">
                                 <ul>
-                                    <li><a href="index.html" class="active">메인페이지</a></li>
+                                    <li><a href="/" class="active">메인페이지</a></li>
                                     <li><a id="terms" href="/include/Terms" data-lightbox="Terms" data-title="My caption">이용약관</a></li>
                                     <li><a id="policy" href="/include/PrivacyPolicy" data-lightbox="Privacy Policy" data-title="My caption">개인정보처리방침</a></li>
-                                    <li><a href="/about">오시는 길</a></li> 
-                                    <li><a href="">고객센터</a></li> 
+                                    <li><a href="/about/map">오시는 길</a></li> 
+                                    <!--li><a href="">고객센터</a></li --> 
                                 </ul>
                             </div>
                         </div>
@@ -65,6 +65,12 @@
   </div>
 </div>
 </footer>
+
+<!-- top버튼 시작 -->
+<a href="#" class="top_btn">
+	<div class="ttt"></div>
+</a>
+<!-- top버튼 끝 -->
 <!-- 욱채 수정 푸터 종료 -->
 
 
@@ -93,12 +99,13 @@
     <script src="../resources/js/accordions.js"></script>
     <script src="../resources/js/owl-carousel.js"></script>
 
-    <script>
+<script>
 function termsofuse(){
    $('#MoaModal .modal-content').load("/Termsofuse");
    $('#MoaModal').modal();
 }
 </script>
+
     
 
 
@@ -150,6 +157,48 @@ function termsofuse(){
 			      }
 			   });
 	});
+	
+	
+	(function() {
+        var w = window;
+        if (w.ChannelIO) {
+          return (window.console.error || window.console.log || function(){})('ChannelIO script included twice.');
+        }
+        var ch = function() {
+          ch.c(arguments);
+        };
+        ch.q = [];
+        ch.c = function(args) {
+          ch.q.push(args);
+        };
+        w.ChannelIO = ch;
+        function l() {
+          if (w.ChannelIOInitialized) {
+            return;
+          }
+          w.ChannelIOInitialized = true;
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.async = true;
+          s.src = 'https://cdn.channel.io/plugin/ch-plugin-web.js';
+          s.charset = 'UTF-8';
+          var x = document.getElementsByTagName('script')[0];
+          x.parentNode.insertBefore(s, x);
+        }
+        if (document.readyState === 'complete') {
+          l();
+        } else if (window.attachEvent) {
+          window.attachEvent('onload', l);
+        } else {
+          window.addEventListener('DOMContentLoaded', l, false);
+          window.addEventListener('load', l, false);
+        }
+      })();
+      ChannelIO('boot', {
+        "pluginKey": "bbd5d963-74f6-4e11-b6b5-c295137656c1"
+      });
+	
+	
 </script>    
 
 

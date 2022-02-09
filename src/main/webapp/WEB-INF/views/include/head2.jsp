@@ -1,26 +1,83 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ include file="/WEB-INF/views/include/taglib.jsp" %>
+
     
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-
-    <link rel="stylesheet" href="../resources/css/open-iconic-bootstrap.min.css">
-    <link rel="stylesheet" href="../resources/css/animate.css">
+    <meta name="description" content="">
+    <meta name="author" content="Tooplate">
     
-    <link rel="stylesheet" href="../resources/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="../resources/css/owl.theme.default.min.css">
-    <link rel="stylesheet" href="../resources/css/magnific-popup.css">
+    <!-- 파비콘 -->
+     <link href="../resources/images/favicon3.png" rel="icon">
+    <!-- 끝 -->
+    
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oooh+Baby&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script type="text/javascript" src="../resources/js/icia.common.js"></script>
+    <script type="text/javascript" src="../resources/js/icia.ajax.js"></script>
+      
+    <!-- alert창 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    
+    <!-- 보현폰트 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Nanum+Brush+Script&family=Noto+Sans+KR:wght@300&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	
+	<!-- 의수 -->
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=The+Nautigal&display=swap" rel="stylesheet">
+	
+    <title>Wellding</title>
+   
 
-    <link rel="stylesheet" href="../resources/css/aos.css">
+    <!-- Additional CSS Files -->
 
-    <link rel="stylesheet" href="../resources/css/ionicons.min.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="../resources/css/bootstrap-datepicker.css">
-    <link rel="stylesheet" href="../resources/css/jquery.timepicker.css">
+    <link rel="stylesheet" type="text/css" href="../resources/css/font-awesome.css">
+    
+ 
+
+    <link rel="stylesheet" type="text/css" href="../resources/css/owl-carousel.css">
+    
+    <link rel="stylesheet" type="text/css" href="../resources/css/jquery.colorbox.css">
+    
+    <link rel="stylesheet" href="../resources/css/tooplate-artxibition.css">
+
+    <!--의수 추가  bx슬라이더-->
+    
+    <link rel="stylesheet" href="../resources/css/jquery.bxslider2.css">
 
     
-    <link rel="stylesheet" href="../resources/css/flaticon.css">
-    <link rel="stylesheet" href="../resources/css/icomoon.css">
-    <link rel="stylesheet" href="../resources/css/style.css">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+    <script src="../resources/js/jquery-3.5.1.js"></script>
+    
+    <!-- 보현추가 -->
+    <!-- <link rel="stylesheet" type="text/css" href="../resources/css/slick.css" />
+	<link rel="stylesheet" type="text/css" href="../resources/css/slick-theme.css" />-->
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+	
+	<link rel="stylesheet" type="text/css" href="../resources/css/bootstrap-theme.min.css">
+	<link type="text/css" href="../resources/css/jquery.colorbox.css" rel="stylesheet" />
+	<link rel="stylesheet" href="../resources/css/admin.css">	
+	
+
+<!--
+
+Tooplate 2125 ArtXibition
+
+https://www.tooplate.com/view/2125-artxibition
+
+-->
+
+
+
+

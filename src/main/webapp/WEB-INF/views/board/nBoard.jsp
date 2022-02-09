@@ -113,21 +113,34 @@ function fn_list(curPage)
                 <div class="col-lg-12" style="border-bottom: 1px solid black; margin-bottom: 20px;">
                     <ul>
                         <li>
-                            <table class="table table-hover">
+                            <table class="table table-hover" style="margin-bottom: 0;">
                                 <thead>
                                     <tr style="background-color: #e9e8e8;">
                                     <th scope="col" class="text-center" style="width:10%">번호</th>
-                                    <th scope="col" class="text-center" style="width:50%">제목</th>
+                                    <th scope="col" class="text-center" style="width:42%">제목</th>
                                     <th scope="col" class="text-center" style="width:20%">작성자</th>
-                                    <th scope="col" class="text-center" style="width:10%">날짜</th>
+                                    <th scope="col" class="text-center" style="width:18%">날짜</th>
                                     <th scope="col" class="text-center" style="width:10%">조회</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <c:if test="${!empty list}">
+                                    <tr>
+                                         <td style="text-align:center">
+                                         	<div class="pink_boxx">
+                                            	<a href="/board/covid"><span style="color:white;">공지</span></a>
+                                         	</div>
+                                         </td>
+                                         <td style="text-align:left; height: 30px; line-height: 30px;">
+                                         	<a href="/board/covid">COVID-19관련 공지사항</a>
+                                         </td>
+                                         <td style="text-align:center; height: 30px; line-height: 30px;">admin</td>
+                                         <td style="text-align:center; height: 30px; line-height: 30px;">2021.12.29 15:29</td>
+                                         <td style="text-align:center; height: 30px; line-height: 30px;">-</td>
+                                    </tr>
                                        <c:forEach var="hiBoard" items="${list}" varStatus="status">   
                                             <tr>
-                                                <td style="text-align:center">
+                                                <td style="text-align:center;">
                                                     <a href="javascript:void(0)" onclick="fn_view(${hiBoard.bSeq})">
                                                         <c:out value="${hiBoard.bSeq}" />
                                                     </a>
@@ -140,7 +153,7 @@ function fn_list(curPage)
                                                 <td style="text-align:center"><fmt:formatNumber type="number" maxFractionDigits="3" value="${hiBoard.bReadCnt}" /></td>
                                             </tr>
                                        </c:forEach>
-                                    </c:if>      
+                                    </c:if>
                                 </tbody>
                             </table>
                         </li>

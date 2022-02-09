@@ -64,6 +64,7 @@
         <property name="dataSource" ref="dataSource" />
     </bean>
     <!-- 트랜잭션 메니져 설정 종료 -->
+ 
 
     <!-- 어노테이션 트랜잭션 사용 시작 -->
     <tx:annotation-driven transaction-manager="transactionManager" />

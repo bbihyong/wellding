@@ -224,8 +224,8 @@ button {
 }
 
 button:focus {
-	outline: 1px dotted;
-	outline: 5px auto -webkit-focus-ring-color
+	/*outline: 1px dotted;
+	outline: 5px auto -webkit-focus-ring-color*/
 }
 
 button, input, optgroup, select, textarea {
@@ -558,7 +558,7 @@ pre code {
 	flex-wrap: wrap;
 	margin-right: -15px;
 	margin-left: -15px;
-	width: 100%;
+	/*width: 100%;*/
 }
 
 .no-gutters {
@@ -1645,13 +1645,14 @@ pre code {
 }
 
 .table td, .table th {
-	padding: 10px 30px 10px 30px;
+	padding: 10px;/*10px 30px 10px 30px;*/
 	/*vertical-align: top;*/
 	border-top: 1px solid #dedede;
+	cursor: default;
 }
 
 .table thead th {
-	vertical-align: bottom;
+	/*vertical-align: bottom;*/
 	border-bottom: 2px solid #dee2e6
 }
 
@@ -1831,7 +1832,8 @@ pre code {
 }
 
 .table-active, .table-active>td, .table-active>th {
-	background-color: rgba(0, 0, 0, .075)
+	/*background-color: rgba(0, 0, 0, .075)*/
+	cursor: default;
 }
 
 .table-hover .table-active:hover {
@@ -2477,7 +2479,7 @@ textarea.form-control {
 	user-select: none;
 	background-color: transparent;
 	border: 1px solid transparent;
-	padding: .375rem .75rem;
+	padding: .75rem .75rem;
 	font-size: 1rem;
 	line-height: 1.5;
 	border-radius: .25rem;
@@ -2498,7 +2500,7 @@ textarea.form-control {
 
 .btn.focus, .btn:focus {
 	outline: 0;
-	box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25)
+	/*box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .25)*/
 }
 
 .btn.disabled, .btn:disabled {
@@ -5014,7 +5016,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 	padding: .5rem .75rem;
 	margin-left: -1px;
 	line-height: 1.25;
-	color: #007bff;
+	color: #f5a4aa;
 	background-color: #fff;
 	border: 1px solid #dee2e6
 }
@@ -5047,7 +5049,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 .page-item.active .page-link {
 	z-index: 3;
 	color: #fff;
-	/*background-color: #007bff;*/
+	background-color: #f5a4aa;
 }
 
 .page-item.disabled .page-link {

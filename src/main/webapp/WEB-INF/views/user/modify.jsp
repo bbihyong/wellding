@@ -103,15 +103,53 @@
 					xhr.setRequestHeader("AJAX", "true");
 				},
 				success : function(response) {
-					if (response.code == 0) {
-						alert("회원수정이 완료되었습니다");
-						location.href = "/";
-					} else if (response.code == 400) {
-						alert("파라미터 값이 잘못되어 있습니다.");
-						location.href = "/";
-					} else {
-						alert("오류가 발생했습니다");
-						location.href = "/";
+					if(response.code == 0)
+		               {
+		                  //alert("회원수정이 완료되었습니다.");
+		                  //location.href = "/board/login";
+							Swal.fire({ 
+								icon: 'success',
+								text: '회원수정이 완료되었습니다.'
+							}).then(function(){
+								location.href = "/user/modify";
+							});
+		               } 
+		               else if(response.code == 400)
+		               {
+		                  //alert("회원수정 중 오류가 발생했습니다..");
+		                  //$("#pwd1").focus();
+							Swal.fire({ 
+								icon: 'error',
+								text: '회원수정 중 오류가 발생했습니다..'
+							}).then(function(){
+								$("#pwd1").focus();
+								return;
+							});
+		               }
+		               else if(response.code == 500)
+		               {
+		                  //alert("회원수정 중 오류가 발생했습니다.");
+		                 // $("#pwd1").focus();
+							Swal.fire({ 
+								icon: 'error',
+								text: '회원수정 중 오류가 발생했습니다..'
+							}).then(function(){
+								$("#pwd1").focus();
+								return;
+							});
+		               }
+		               else
+		               {
+		                  //alert("오류가 발생했습니다.");
+		                  ///$("#pwd1").focus();
+							Swal.fire({ 
+								icon: 'error',
+								text: '회원수정 중 오류가 발생했습니다..'
+							}).then(function(){
+								$("#pwd1").focus();
+								return;
+							});
+
 					}
 				},
 				complete : function(data) {
@@ -121,22 +159,34 @@
 					icia.common.error(error);
 				}
 			});
+		
+		      
 		});
 		
 	   $("#btn_cc").on("click", function(){
-			 alert("회원정보수정이 취소되었습니다.");
+			 //alert("회원정보수정이 취소되었습니다.");
+			  Swal.fire({ 
+				  icon: 'warning',
+				  text: '회원정보 수정이 취소되었습니다.'
+			  });
 			 location.href = "/user/wishlist";
 	   });
-	   
- 		
-	  
 	   
 	   $("#cou").on("click",function(){
 		    var option="width = 1000, height = 500, top = 100, left = 200, location = no, menubar = no, scrollbars=no";
 		    window.open("/board/Coupon", "PopUP", option); 
-		});   
-	  
+		});  
+	   
 	});
+	   
+	   
+function fn_validateEmail(value)
+{
+  var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
+  
+  return emailReg.test(value);
+}
+	
 </script>
 
 </head>
@@ -156,29 +206,30 @@
     </div>
     
 	<div class="container-fluid">
-		<div class="row">
-			<div class="col-lg-12 bcline">
+		<div class="row" style="background:#feede8;">
+			<div class="col-lg-12">
 				
 				<div class="row">
-					
-					<div class="col-lg-1">
-					</div>
+					<div class="col-lg-1"></div>
 					
 					<div class="col-lg-10">
 						<h2 style="font-family: 'Bitter', serif; margin-top: 50px; padding-left: 10px;">My Page</h2>
 						<nav class="bcItem">
-							<ol class="breadcrumb bc" >
-								<li class="breadcrumb-item">
-									<a href="/user/wishlist" id="basket">장바구니</a>
+							<ol class="breadcrumb bc" style="background: #feede8;">
+								<li class="breadcrumb-item" >
+									<a href="/user/payList">결제내역</a>
 								</li>
-								<li class="breadcrumb-item">
-									<a href="/user/wishlist"  id="payment">결제내역</a>
+								<li class="breadcrumb-item" >
+									<a href="/user/payCancelList">취소내역</a>
 								</li>
 								<li class="breadcrumb-item">
 									<a href="javascript:void(0)" id="cou">쿠폰보유현황</a>
 								</li>
+								<li class="breadcrumb-item active" style="position: relative; top: -2px; margin-left:4px;">
+									<a href="javascript:void(0)" id="modify" style="font-size: large; font-weight: bold; color: #000;">회원정보수정</a>
+								</li>
 								<li class="breadcrumb-item">
-									<a href="/user/modify" id="modify" >회원정보수정</a>
+									<a href="/user/userDrop">회원탈퇴</a>
 								</li>
 							</ol>
 						</nav>
@@ -186,6 +237,10 @@
 					</div>
 					<div class="col-lg-1">
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 					
 					
 
@@ -201,16 +256,16 @@
 			<dd>
 				<div class="input">
 					<input type="password" id="pwd1" name="pwd1"
-						placeholder="비밀번호를 입력해 주세요" maxlength="20">
+						value="${wdUser.userPwd}" maxlength="20">
 				</div>
-				<p class="msg">비밀번호를 입력해 주세오.</p>
+				<p class="msg">비밀번호를 입력해 주세요.</p>
 
 			</dd>
 			<dt>비밀번호 확인</dt>
 			<dd>
 				<div class="input">
 					<input type="password" id="pwd2" name="pwd2"
-						placeholder="비밀번호를 다시 한번 입력해 주세요" maxlength="20">
+						value="${wdUser.userPwd}" maxlength="20">
 				</div>
 				<p class="msg">비밀번호를 다시 입력해 주세요</p>
 			</dd>
@@ -218,14 +273,14 @@
 			<dt>이름</dt>
 			<dd>
 				<div class="input">
-					<input type="text" id="name" name="name" placeholder="이름을 입력해주세요">
+					<input type="text" id="name" name="name" value="${wdUser.userName}">
 				</div>
 			</dd>
 			
 			<dt>전화번호</dt>
 			<dd>
 				<div class="input">
-					<input type="text" id="number" placeholder="전화번호를 입력해주세요">
+					<input type="text" id="number" value="${wdUser.userNumber}">
 				</div>
 				<p class="msg"></p>
 			</dd>
@@ -233,75 +288,79 @@
 			<dt>닉네임</dt>
 			<dd>
 				<div class="input">
-					<input type="text" id="nickname" placeholder="닉네임을 입력해주세요">
+					<input type="text" id="nickname" value="${wdUser.userNickname}">
 				</div>
 				<p class="msg">
 				<p class="msg"></p>
-				</dd-->
+				</dd>
 				<!--이메일 주석-->
 			<dt>이메일</dt>
 			<dd>
 				<div class="input">
 					<input id="email" data-bind="email" type="text"
-						placeholder="이메일을 입력해주세요" value="">
+
+						value="${wdUser.userEmail}" value="">
 				</div>
 				<p class="msg"></p>
 				
 			<dt>결혼예정일</dt>
 			<dd class="date">
-				<select id="year" class="year">
-					<option>년도</option>
-					<option value="2022">2022</option>
-					<option value="2023">2023</option>
-				</select> <select id="month" class="month">
-					<option>월</option>
-					<option value="01">1</option>
-					<option value="02">2</option>
-					<option value="03">3</option>
-					<option value="04">4</option>
-					<option value="05">5</option>
-					<option value="06">6</option>
-					<option value="07">7</option>
-					<option value="08">8</option>
-					<option value="09">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-				</select> <select id="day" class="day">
-					<option>일</option>
-					<option value="01">1</option>
-					<option value="02">2</option>
-					<option value="03">3</option>
-					<option value="04">4</option>
-					<option value="05">5</option>
-					<option value="06">6</option>
-					<option value="07">7</option>
-					<option value="08">8</option>
-					<option value="09">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-					<option value="12">12</option>
-					<option value="13">13</option>
-					<option value="14">14</option>
-					<option value="15">15</option>
-					<option value="16">16</option>
-					<option value="17">17</option>
-					<option value="18">18</option>
-					<option value="19">19</option>
-					<option value="20">20</option>
-					<option value="21">21</option>
-					<option value="22">22</option>
-					<option value="23">23</option>
-					<option value="24">24</option>
-					<option value="25">25</option>
-					<option value="26">26</option>
-					<option value="27">27</option>
-					<option value="28">28</option>
-					<option value="29">29</option>
-					<option value="30">30</option>
-					<option value="31">31</option>
+				<select id="year" class="year" >
+					<option value="">년도</option>
+                    <option value="2022" <c:if test="${year eq '2022'}">selected</c:if>>2022</option>
+                    <option value="2023" <c:if test="${year eq '2023'}">selected</c:if>>2023</option>
+				</select> 
+				<select id="month" class="month">
+					<option value="">월</option>
+                    <option value="01" <c:if test="${month eq '01'}">selected</c:if>>1</option>
+                    <option value="02" <c:if test="${month eq '02'}">selected</c:if>>2</option>
+                    <option value="03" <c:if test="${month eq '03'}">selected</c:if>>3</option>
+                    <option value="04" <c:if test="${month eq '04'}">selected</c:if>>4</option>
+                    <option value="05" <c:if test="${month eq '05'}">selected</c:if>>5</option>
+                    <option value="06" <c:if test="${month eq '06'}">selected</c:if>>6</option>
+                    <option value="07" <c:if test="${month eq '07'}">selected</c:if>>7</option>
+                    <option value="08" <c:if test="${month eq '08'}">selected</c:if>>8</option>
+                    <option value="09" <c:if test="${month eq '09'}">selected</c:if>>9</option>
+                    <option value="10" <c:if test="${month eq '10'}">selected</c:if>>10</option>
+                    <option value="11" <c:if test="${month eq '11'}">selected</c:if>>11</option>
+                    <option value="12" <c:if test="${month eq '12'}">selected</c:if>>12</option>
+				</select>
+			   <select id="day" class="day">
+					<option value="">일</option>
+                    <option value="01" <c:if test="${day eq '01'}">selected</c:if>>1</option>
+                    <option value="02" <c:if test="${day eq '02'}">selected</c:if>>2</option>
+                    <option value="03" <c:if test="${day eq '03'}">selected</c:if>>3</option>
+                    <option value="04" <c:if test="${day eq '04'}">selected</c:if>>4</option>
+                    <option value="05" <c:if test="${day eq '05'}">selected</c:if>>5</option>
+                    <option value="06" <c:if test="${day eq '06'}">selected</c:if>>6</option>
+                    <option value="07" <c:if test="${day eq '07'}">selected</c:if>>7</option>
+                    <option value="08" <c:if test="${day eq '08'}">selected</c:if>>8</option>
+                    <option value="09" <c:if test="${day eq '09'}">selected</c:if>>9</option>
+                    <option value="10" <c:if test="${day eq '10'}">selected</c:if>>10</option>
+                    <option value="11" <c:if test="${day eq '11'}">selected</c:if>>11</option>
+                    <option value="12" <c:if test="${day eq '12'}">selected</c:if>>12</option>
+                    <option value="13" <c:if test="${day eq '13'}">selected</c:if>>13</option>
+                    <option value="14" <c:if test="${day eq '14'}">selected</c:if>>14</option>
+                    <option value="15" <c:if test="${day eq '15'}">selected</c:if>>15</option>
+                    <option value="16" <c:if test="${day eq '16'}">selected</c:if>>16</option>
+                    <option value="17" <c:if test="${day eq '17'}">selected</c:if>>17</option>
+                    <option value="18" <c:if test="${day eq '18'}">selected</c:if>>18</option>
+                    <option value="19" <c:if test="${day eq '19'}">selected</c:if>>19</option>
+                    <option value="20" <c:if test="${day eq '20'}">selected</c:if>>20</option>
+                    <option value="21" <c:if test="${day eq '21'}">selected</c:if>>21</option>
+                    <option value="22" <c:if test="${day eq '22'}">selected</c:if>>22</option>
+                    <option value="23" <c:if test="${day eq '23'}">selected</c:if>>23</option>
+                    <option value="24" <c:if test="${day eq '24'}">selected</c:if>>24</option>
+                    <option value="25" <c:if test="${day eq '25'}">selected</c:if>>25</option>
+                    <option value="26" <c:if test="${day eq '26'}">selected</c:if>>26</option>
+                    <option value="27" <c:if test="${day eq '27'}">selected</c:if>>27</option>
+                    <option value="28" <c:if test="${day eq '28'}">selected</c:if>>28</option>
+                    <option value="29" <c:if test="${day eq '29'}">selected</c:if>>29</option>
+                    <option value="30" <c:if test="${day eq '30'}">selected</c:if>>30</option>
+                    <option value="31" <c:if test="${day eq '31'}">selected</c:if>>31</option>
 				</select>
 			</dd>
+		
 
 			<div class="button_area">
 				<button class="btn_type" id="btn">수정</button>
@@ -311,7 +370,7 @@
 			<div class="footer">
 				<div class="copyright">COPYRIGHT. WELLDING INC. ALL RIGHTS RESERVED</div>
 			</div>
-			
+		</dl>
 	</div>
 	
 		<%@ include file="/WEB-INF/views/include/footer.jsp" %>

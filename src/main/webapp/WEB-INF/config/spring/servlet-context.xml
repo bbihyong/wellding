@@ -10,37 +10,37 @@
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/mvc
-		 				   http://www.springframework.org/schema/mvc/spring-mvc.xsd">
-		 				   
-	<!-- 어노테이션 service, controller 스캔 시작 -->
+                      http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+                      
+   <!-- 어노테이션 service, controller 스캔 시작 -->
     <context:component-scan base-package="com.icia.web.controller" />
     <!-- 어노테이션 service, controller 스캔 종료 -->
     
     <mvc:annotation-driven>
-   		<mvc:message-converters>
-      		<bean class="org.springframework.http.converter.json.GsonHttpMessageConverter">
-    			<property name="gson">
-                	<bean class="org.springframework.http.converter.json.GsonFactoryBean">
-                		<property name="serializeNulls" value="true" />
-                		<property name="prettyPrinting" value="true" />
-                	</bean>
-            	</property>
-      		</bean>
-      	</mvc:message-converters>
+         <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.GsonHttpMessageConverter">
+             <property name="gson">
+                   <bean class="org.springframework.http.converter.json.GsonFactoryBean">
+                      <property name="serializeNulls" value="true" />
+                      <property name="prettyPrinting" value="true" />
+                   </bean>
+               </property>
+            </bean>
+         </mvc:message-converters>
     </mvc:annotation-driven>
     
     <!-- url 매핑 시작 (이미지, 자바스트립트, 스타일시트 디렉토리)-->
     <mvc:resources mapping="/resources/**" location="/WEB-INF/views/resources/" />
     <!-- url 매핑 종료 -->
     
-	<!-- Interceptors 시작 -->
+   <!-- Interceptors 시작 -->
     <mvc:interceptors>
-    	<!-- 브라우저 캐쉬 설정 시작 -->
+       <!-- 브라우저 캐쉬 설정 시작 -->
         <mvc:interceptor>
-        	<mvc:mapping path="/**" />
+           <mvc:mapping path="/**" />
             <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
-		        <property name="cacheSeconds" value="0" />
-		    </bean>    
+              <property name="cacheSeconds" value="0" />
+          </bean>    
         </mvc:interceptor>
         <!-- 브라우저 캐쉬 설정 종료 -->
         
@@ -49,77 +49,184 @@
             <mvc:mapping path="/**" />
             <mvc:exclude-mapping path="/resources/**" />
             <bean id="authInterceptor" class="com.icia.web.interceptor.AuthInterceptor">
-            	<constructor-arg>
-            		<value>#{env['auth.cookie.name']}</value>
-            	</constructor-arg>
-            	<constructor-arg>
-            		<value>#{env['ajax.header.name']}</value>
-            	</constructor-arg>
-            	<constructor-arg> <!-- 인증체크 제외 URL 설정 -->
-            		<list>
-            			<value>/index</value>
-            			<value>/board/login</value>
-            			<value>/board/regform</value>
-            			<value>/user/loginOut</value>
-            			<value>/user/regProc</value>
-            			<value>/user/idCheck</value>
-            			<value>/user/modify</value>
-            			<value>/board/check.do</value>
-            			<value>/user/emailCheck</value>
-            			
+               <constructor-arg>
+                  <value>#{env['auth.cookie.name']}</value>
+               </constructor-arg>
+               <constructor-arg>
+                  <value>#{env['ajax.header.name']}</value>
+               </constructor-arg>
+               <constructor-arg> <!-- 인증체크 제외 URL 설정 -->
+                  <list>
+                     <value>/index</value>
+                     <value>/board/login</value>
+                     <value>/board/regform</value>
+                     <value>/user/loginOut</value>
+                     <value>/user/regProc</value>
+                     <value>/user/idCheck</value>
+                     <value>/user/modify</value>
+                     <value>/board/check.do</value>
+                     <value>/user/emailCheck</value>
+                     <value>/board/eBoardCoupon</value>
 
-            			<value>/board/nBoard</value>
-            			<value>/board/eBoard</value>
-            			<value>/board/eView</value>
-            			<value>/hsdm/studio</value>
-            			<value>/board/fBoard</value>
-            			<value>/hsdm/halllist</value>  
-            			<value>/hsdm/dress</value>
-						<value>/hsdm/HallView</value>
-            			<value>/imokay</value>
-            			<value>/board/fBoardWrite</value>
-            			<value>/board/fBoardView</value>
-            			<value>/about</value>
-            			<value>/board/Coupon</value>
-            			<value>/user/myPage</value>
-            			<value>/popUpRoad</value>
-            			<value>/board/fUpdateForm</value>
-            			<value>/board/updateProc</value>
-            			<value>/board/commentDelete</value>
-            			<value>/board/commentUpdate</value>
+                     <value>/board/nBoard</value>
+                     <value>/board/eBoard</value>
+                     <value>/board/eView</value>
+                     <value>/hsdm/studio</value>
+                     <value>/board/fBoard</value>
+                     <value>/hsdm/halllist</value>  
+                     <value>/hsdm/dress</value>
+                  	 <value>/hsdm/HallView</value>
 
-            			<value>/include/PrivacyPolicy</value>
-            			<value>/include/Terms</value>
-						<value>/user/wishlist</value>
+                     <value>/imokay</value>
+                     <value>/board/fBoardWrite</value>
+                     <value>/board/fBoardView</value>
+                     <value>/about</value>
+                     <value>/board/Coupon</value>
+                     <value>/user/myPage</value>
+                     <value>/popUpRoad</value>
+                     <value>/board/fUpdateForm</value>
+                     <value>/board/updateProc</value>
+                     <value>/board/commentDelete</value>
+                     <value>/board/commentUpdate</value>
+					 <value>/board/CommentProc</value>
+                     <value>/include/PrivacyPolicy</value>
+                     <value>/include/Terms</value>
 
-       			          			
-             			<value>/hsdm/makeUp</value>
-            			<value>/hsdm/dressView</value>   
-            			<value>/hsdm/studioView</value> 
-            			<value>/hsdm/makeupView</value> 
-            			
-            			<value>/board/specialist</value> 
-            			<value>/board/gosu</value>
-            			
-            			<value>/kakao/pay</value>
-	                    <value>/kakao/payReady</value>
-	                    <value>/kakao/paySuccess</value>
-	                    <value>/kakao/payFail</value>
-	                    <value>/kakao/payCancel</value>
-	                    <value>/kakao</value>	
-	                    <value>/user/payMent</value>
-	                    <value>/user/payComplete</value>		
-	                    <value>/user/payList</value>
-	                    <value>/user/payListView</value>
+                     <value>/user/wishlist</value>
 
-						<value>/mng/login</value>
-						<value>/mng/userList</value>
-						<value>/mng/MngUserUpdate</value>
-						<value>/mng/userupdateProc</value>
-						<value>/mng/hsdmList</value>
+                                   
+                      <value>/hsdm/makeUp</value>
+                     <value>/hsdm/dressView</value>   
+                     <value>/hsdm/studioView</value> 
 
-            		</list>
-            	</constructor-arg>
+                     <value>/hsdm/makeupView</value>
+                     <value>/hsdm/hallRezProc</value>
+                     <value>/hsdm/studioRezProc</value>
+                     <value>/hsdm/makeUpRezProc</value>
+                     <value>/hsdm/dressRezProc</value>
+
+                     
+                     <value>/board/specialist</value> 
+                     <value>/board/gosu</value>
+                     <value>/board/gosu2</value>
+                     
+                     <value>/kakao/pay</value>
+                       <value>/kakao/payReady</value>
+                       <value>/kakao/paySuccess</value>
+                       <value>/kakao/payFail</value>
+                       <value>/kakao/payCancel</value>
+                       <value>/kakao</value>   
+                       <value>/user/payMent</value>
+                       <value>/user/payComplete</value>      
+                       <value>/user/payList</value>
+                       <value>/user/payListView</value>
+                       <value>/user/userDrop</value>
+                       <value>/user/userDropProc</value>
+
+                  <value>/mng/login</value>
+                  <value>/mng/userList</value>
+                  <value>/mng/MngUserUpdate</value>
+                  <value>/mng/userupdateProc</value>
+                  <value>/mng/hsdmList</value>
+                  <value>/mng/payMentList</value>
+                  <value>/mng/plusMakeup</value>
+                  <value>/mng/MngMakeupUpdate</value>
+                  
+                  <value>/mng/makeupWrite</value>
+                  <value>/mng/plusWHall</value>
+                  <value>/mng/weddinghallWrite</value>
+                  
+
+                  <value>/mng/plusHall</value>
+                  <value>/mng/hallWrite</value>
+                  <value>/mng/plusDress</value>
+                      <value>/mng/dressWrite</value>
+                      <value>/mng/dressComWrite</value>
+                      
+                      <value>/mng/plusDressCom</value>
+
+                      <value>/mng/plusStudio</value>
+                      <value>/mng/studioWrite</value>
+                      <value>/mng/plusMakeup</value>
+                      
+                      <value>/mng/nBoardList</value>
+                      <value>/mng/eBoardList</value>
+
+                      <value>/mng/boardList</value>
+                      <value>/mng/mngFboardUpdate</value>
+                      <value>/mng/fDelete</value>
+                      <value>/board/fdownload</value>
+                      <value>/mng/deleteCommentProc</value>
+
+                      
+                      <value>/mng/nBoardUpdate</value>
+                      <value>/mng/nBoardUpdateProc</value>
+                      <value>/mng/plusNBoard</value>
+                      <value>/mng/nBoardWrite</value>
+                 
+                      <value>/mng/nBoardDelete</value>
+					  <value>/mng/detailView</value>
+                  
+                  	  <value>/mng/eBoardUpdate</value>
+                      <value>/mng/eBoardUpdateProc</value>
+                      <value>/mng/plusEBoard</value>
+                      <value>/mng/eBoardWrite</value>
+                      <value>/mng/eBoardImgUpdate</value>
+                      <value>/mng/eBoardDelete</value>
+
+                      <value>/mng/mngFboardUpdate</value>
+                      <value>/mng/mngReviewUpdate</value>
+                      <value>/mng/reviewDelete</value>
+                  <value>/mng/updateStudio</value>
+                  
+                  <value>/board/fBoardFileTest</value>
+                  
+                  <value>/mng/WeddingHallUpdate</value>
+                  <value>/mng/WeddingHallDelete</value>
+                  <value>/mng/hallUpdate</value>
+                  <value>/mng/hallDelete</value>
+                  <value>/mng/weddinghallUpdateProc</value>
+                  <value>/mng/hallUpdateProc</value>
+                  
+
+                  <value>/mng/dressComUpdate</value>
+                  <value>/mng/dressComUpdateProc</value>
+                  <value>/mng/dressComDelete</value>
+                  <value>/mng/dressUpdate</value>
+                  <value>/mng/dressUpdateProc</value>
+                  <value>/mng/dressDelete</value>
+                  
+
+                  <value>/mng/makeupupdateProc</value>
+                  <value>/mng/makeupComDelete</value>
+                  <value>/mng/studioDelete</value>
+                  <value>/mng/studioUpdateProc</value>
+                  
+                  <value>/board/qrTest</value>
+                  
+                  <value>/board/foodCpnM</value>
+                  <value>/board/foodCpnF</value>
+
+                  <value>/user/marryUpdate</value>
+                  <value>/user/FindingId</value>
+                  <value>/user/FindingIdProc</value>
+                  <value>/user/FindingPwd</value>
+                  <value>/board/tpwd.do</value>
+                  
+                  <value>/user/payCancelList</value>
+                  <value>/user/payCancelListView</value>
+                  <value>/user/payCancelListView2</value>
+
+                  <value>/board/reviewInfo</value>
+                  <value>/board/covid</value>
+                  
+                  <value>/board/commentReport</value>
+                  <value>/board/commentReportAllow</value>
+                  <value>/mng/report</value>
+
+                  
+                  </list>
+               </constructor-arg>
             </bean>
         </mvc:interceptor>
         <!-- 로그인 체크 인터셉터 종료 -->
@@ -129,11 +236,11 @@
     <!-- ############################### View Resolver 시작 ############################### -->
     <!-- 사용자가 요청한 것에 대한 응답 view를 렌더링하는 역할 -->
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
-    	<property name="order" value="0"/> <!-- 순서 (순서가 작은것 부터 처리된다) -->
+       <property name="order" value="0"/> <!-- 순서 (순서가 작은것 부터 처리된다) -->
     </bean>
     
     <!-- View Resolver 시작 -->
-	<!-- 컨트롤러에서 리턴하는 뷰 이름에 접두사, 접미사를 붙여서 JSP페이지의 경로를 찾는다. -->
+   <!-- 컨트롤러에서 리턴하는 뷰 이름에 접두사, 접미사를 붙여서 JSP페이지의 경로를 찾는다. -->
     <bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView" /> <!-- JSTL 사용 -->
         <property name="prefix" value="/WEB-INF/views" /> <!-- 접두사 -->
@@ -145,13 +252,13 @@
     
     <!-- 파일 다운로드 VIWE 시작 -->
     <bean id="fileDownloadView" class="com.icia.web.view.FileDownloadView"/>
-	<!-- 파일 다운로드 VIWE 종료 -->
+   <!-- 파일 다운로드 VIWE 종료 -->
     
     <!-- 파일 업로드 설정 시작 -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-		<property name="defaultEncoding" value="UTF-8" />
-		<property name="maxUploadSize" value="#{env['upload.max.size']}" /><!-- 파일 업로드 용량제한 (바이트단위) -->
-	</bean>
-	<!-- 파일 업로드 설정 종료 -->
-	 	
+      <property name="defaultEncoding" value="UTF-8" />
+      <property name="maxUploadSize" value="#{env['upload.max.size']}" /><!-- 파일 업로드 용량제한 (바이트단위) -->
+   </bean>
+   <!-- 파일 업로드 설정 종료 -->
+       
 </beans>

@@ -16,6 +16,10 @@ public class WDCoupon implements Serializable
 	private String cEndDate;
 	private String cContent;
 	
+	private String rezNo;
+	private long fCnt;
+	private long mCnt;
+	
 	public WDCoupon() {
 		userId = "";
 		cCode = "";
@@ -25,7 +29,42 @@ public class WDCoupon implements Serializable
 		cStartDate = "";
 		cEndDate = "";
 		cContent = "";
+		
+		rezNo = "";
+		fCnt = 0;
+		mCnt = 0;
 	}
+	
+
+	public String getRezNo() {
+		return rezNo;
+	}
+
+
+	public void setRezNo(String rezNo) {
+		this.rezNo = rezNo;
+	}
+
+
+	public long getfCnt() {
+		return fCnt;
+	}
+
+
+	public void setfCnt(long fCnt) {
+		this.fCnt = fCnt;
+	}
+
+
+	public long getmCnt() {
+		return mCnt;
+	}
+
+
+	public void setmCnt(long mCnt) {
+		this.mCnt = mCnt;
+	}
+
 
 	public String getcContent() {
 		return cContent;
@@ -94,3 +133,4 @@ public class WDCoupon implements Serializable
 	}
 
 }
+

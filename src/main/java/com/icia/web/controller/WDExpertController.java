@@ -144,6 +144,8 @@ public class WDExpertController
 			
 			wdExpert = wdExpertService.expertSelect(eCode);
 			
+			System.out.println("qhgusqkqh"+wdExpert.geteEmail());
+			
 			model.addAttribute("wdExpert", wdExpert);
 			
 			String eImgname = wdExpert.geteImgname();

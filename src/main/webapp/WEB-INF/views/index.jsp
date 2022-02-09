@@ -4,47 +4,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<%@ include file="/WEB-INF/views/include/head.jsp" %>
-	<script>
+   <%@ include file="/WEB-INF/views/include/head.jsp" %>
+   <script>
+   <%
+      if(com.icia.web.util.CookieUtil.getHexValue(request, (String)request.getAttribute("AUTH_COOKIE_NAME")).equals("admin"))
+      {
+   %>
+      location.href = "/mng/userList";
+   <%
+      }
+   %>
+      $(function(){
+         //이벤트 슬라이더
+         $('.post-wrapper3').slick({
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              autoplay: true, //자동넘김
+              autoplaySpeed : 3000, //페이징 속도
+              pauseOnHover : true, //마우스 올리면 움직임
+              prevArrow : "<button type='button' class='slick-prev3'></button>",      // 이전 화살표 모양 설정
+              nextArrow : "<button type='button' class='slick-next3'></button>"      // 다음 화살표 모양 설정
+            });
+      });
+      function fn_view(whCode, hCode)
+      {
+         document.hallForm.WHCode.value = whCode;
+         document.hallForm.HCode.value = hCode;
+         document.hallForm.action = "/hsdm/HallView";  
+         document.hallForm.submit();
+      }
 
-	   function fn_view(whCode, hCode)
-	   {
-	      document.hallForm.WHCode.value = whCode;
-	      document.hallForm.HCode.value = hCode;
-	      document.hallForm.action = "/hsdm/HallView";  
-	      document.hallForm.submit();
-	   }
-
-	   function fn_view3(bSeq)
-	   {
-	   	document.fBoardForm.bSeq.value = bSeq;
-	   	document.fBoardForm.action = "/board/fBoardView";
-	   	document.fBoardForm.submit();
-	   }
-	   
-	   function fn_view2(eBSeq)
-	   {
-	   	document.eBoardForm.eBSeq.value = eBSeq;
-	   	document.eBoardForm.action = "/board/eView";
-	   	document.eBoardForm.submit();
-	   }
-	   
+      function fn_view3(RSeq)
+      {
+         document.fBoardForm.RSeq.value = RSeq;
+         document.fBoardForm.action = "/board/reviewInfo";
+         document.fBoardForm.submit();
+      }
+      
+      function fn_view2(eBSeq)
+      {
+      //alert(eBSeq);
+         document.eBoardForm.eBSeq.value = eBSeq;
+         document.eBoardForm.action = "/board/eView";
+         document.eBoardForm.submit();
+      }
+      
        $(document).ready(function(){
-    	   
-       	var cookieData = document.cookie;
-       	if(cookieData.indexOf("close=Yes") < 0)
-       	{
-	            var option="width = 500, height = 520, top = 100, left = 200, location = no, menubar = no, scrollbars=no, left=70, top=110";
-	            window.open("/popUpRoad", "PopUP", option);        		
-       	}
+
+          var cookieData = document.cookie;
+          if(cookieData.indexOf("close=Yes") < 0)
+          {
+               var option="width = 500, height = 520, top = 100, left = 200, location = no, menubar = no, status=no,toolbar=no, scrollbars=no, left=70, top=110";
+               window.open("/popUpRoad", "PopUP", option);
+
+          }
+
        });
-	</script>
+       
+   </script>
 </head> 
     <body>  
     <!-- 메뉴바 시작 -->
-    	<jsp:include page="/WEB-INF/views/include/navigation.jsp" >
-    	<jsp:param name="userName" value="${wdUser.userNickname}" />
-    	</jsp:include>
+       <jsp:include page="/WEB-INF/views/include/navigation.jsp" >
+       <jsp:param name="userName" value="${wdUser.userNickname}" />
+       </jsp:include>
     <!-- 메뉴바 종료 -->
 
     <!-- ***** Main Banner Area Start ***** -->
@@ -66,70 +89,34 @@
        <div class="coming-events2">
         <div class="container">
             <div class="row">
-				<div class="col-lg-12">
-			        <div class="bestWedding">
-			          <h2>Wellding's Best</h2>
-			          <p>Best Wedding Hall</p>
-			        </div>
+            <div class="col-lg-12">
+                 <div class="bestWedding">
+                   <h2>Wellding's Best</h2>
+                   <p>Best Wedding Hall</p>
+                 </div>
                 </div>
                 <c:forEach var="hallList" items="${hall}" varStatus="status">
-	                <div class="col-lg-4" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')">
-	                    <div class="event-item2">
-	                        <div class="thumb2">
-	                             <a href="javascript:void(0)" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')" ><img src="/resources/hsdm/${hallList.HImgName}" alt=""></a>	              
-	                        </div>
-	                        <div class="down-content2">
-	                            <a href="event-details.html"><h4>${hallList.HName}</h4></a>
-	                            <ul>
-	                                <li class="main_location"><i class="fa fa-map-marker"></i> <p>${hallList.WHLocation}</p></li>
-	                                <li class="main_person"><i class="fa fa-user"></i> ${hallList.HMax}명 수용 가능</li>
-	                                <li class="m_h_price"><i class="fa fa-krw" aria-hidden="true"></i>
-	                                <fmt:formatNumber type="number" maxFractionDigits="3" value="${hallList.HPrice}" />
-	                                </li>
-	                            </ul>
-		                        <div class="main-white-button">
-		                            <a href="javascript:void(0)" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')" >VIEW MORE ▶</a>
-		                        </div>
-	                        </div>
-	                    </div>
-	                </div>
+                   <div class="col-lg-4" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')">
+                       <div class="event-item2">
+                           <div class="thumb2">
+                                <a href="javascript:void(0)" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')" ><img src="/resources/images/hallrepimage/${hallList.HImgName}" alt=""></a>                 
+                           </div>
+                           <div class="down-content2">
+                               <a href="event-details.html"><h4>${hallList.HName}</h4></a>
+                               <ul>
+                                   <li class="main_location"><i class="fa fa-map-marker"></i> <p>${hallList.WHLocation}</p></li>
+                                   <li class="main_person"><i class="fa fa-user"></i> ${hallList.HMax}명 수용 가능</li>
+                                   <li class="m_h_price"><i class="fa fa-krw" aria-hidden="true"></i>
+                                   <fmt:formatNumber type="number" maxFractionDigits="3" value="${hallList.HPrice}" />
+                                   </li>
+                               </ul>
+                              <div class="main-white-button">
+                                  <a href="javascript:void(0)" onclick="fn_view('${hallList.WHCode}', '${hallList.HCode}')" >VIEW MORE ▶</a>
+                              </div>
+                           </div>
+                       </div>
+                   </div>
                 </c:forEach>             
-                
-                
-                <!--  div class="col-lg-4">
-                    <div class="event-item">
-                        <div class="thumb">
-                            <a href="event-details.html"><img src="resources/images/201.jpg" alt=""></a>
-                        </div>
-                        <div class="down-content">
-                            <a href="event-details.html"><h4>더 에스비 웨딩컨벤션</h4></a>
-                            <ul>
-                                <li><i class="fa fa-map-marker"></i> 서울 동작구 보라매로 길 15 전문건설회관</li>
-                                <li><i class="fa fa-user"></i> 650명 수용 가능</li>
-                            </ul>
-	                        <div class="main-white-button">
-	                            <a href="ticket-details.html">VIEW MORE ▶</a>
-	                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <div class="event-item">
-                        <div class="thumb">
-                            <a href="event-details.html"><img src="resources/images/305.jpg" alt=""></a>
-                        </div>
-                        <div class="down-content">
-                            <a href="event-details.html"><h4>벨라비타</h4></a>
-                            <ul>
-                                <li><i class="fa fa-map-marker"></i> 서울 강남고 봉은사로 302</li>
-                                <li><i class="fa fa-user"></i> 300명 수용 가능</li>
-                            </ul>
-	                        <div class="main-white-button">
-	                            <a href="ticket-details.html">VIEW MORE ▶</a>
-	                        </div>
-                        </div>
-                    </div>
-                </div-->
             </div>
         </div>
     </div>
@@ -141,10 +128,10 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-12">
-			        <div class="category">
-			          <h2>SDM category</h2>
-			          <p>Wedding Collection</p>
-			        </div>
+                 <div class="category">
+                   <h2>SDM category</h2>
+                   <p>Wedding Collection</p>
+                 </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="venue-item">
@@ -159,20 +146,20 @@
                 <div class="col-lg-4">
                     <div class="venue-item">
                         <div class="thumb sdmimg">
-                        	<a href="/hsdm/dress">
-	                            <img src="/resources/images/D10.jpg" width="100%" height="auto">
-	                        	<a class="sdm_title" href="/hsdm/dress">Dress</a>                       	
-                        	</a>
+                           <a href="/hsdm/dress">
+                               <img src="/resources/images/D10.jpg" width="100%" height="auto">
+                              <a class="sdm_title" href="/hsdm/dress">Dress</a>                          
+                           </a>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="venue-item">
                         <div class="thumb sdmimg">
-                      		<a href="/hsdm/makeUp">
-	                            <img src="/resources/images/M00.jpg" width="100%" height="auto">
-	                        	<a class="sdm_title" href="/hsdm/makeUp">Makeup</a>
-                        	</a>
+                            <a href="/hsdm/makeUp">
+                               <img src="/resources/images/M00.jpg" width="100%" height="auto">
+                              <a class="sdm_title" href="/hsdm/makeUp">Makeup</a>
+                           </a>
                         </div>
                     </div>
                 </div>
@@ -185,25 +172,37 @@
     <div class="slider">
        <div class="row">
            <div class="col-lg-12">
-		      <div class="category">
-		        <h2>wellding promotion</h2>
-		        <p>Event & Promotion</p>
-		      </div>
+            <div class="category">
+              <h2>wellding promotion</h2>
+              <p>Event & Promotion</p>
+            </div>
            </div>
          </div>  
-        <div class="innerbox">
+        <!-- div class="innerbox">
             <ul class="bxslider" style="text-align: center;"> 
              <c:forEach var="eboard" items="${wdEBoard}" varStatus="status">
                 <li><a href=""><a href="javascript:void(0)" onclick="fn_view2(${eboard.eBSeq})">
                 <img src="/resources/board/${eboard.eBImgName}" style="width: 80%; height: 350px;" /></a></li> 
              </c:forEach>
                 <!--li><img src="resources/images/305.jpg" style="width: 80%; height: 350px;" /></li> 
-                <li><img src="resources/images/608.jpg" style="width: 80%; height: 350px;" /></li--> 
+                <li><img src="resources/images/608.jpg" style="width: 80%; height: 350px;" /></li> 
             </ul>
-        </div>
+        </div-->
+   <div class="left-image-hall">        
+        <div class="post-slider3">
+             <div class="post-wrapper3">
+             <c:forEach var="eboard" items="${wdEBoard}" varStatus="status">
+                <li>
+                   <a href="javascript:void(0)" onclick="fn_view2(${eboard.eBSeq})">
+                     <div class="post3"><img src="/resources/board/${eboard.eBImgName}" style="width: 100%; height: 350px;" alt="" /></div>
+                  </a>
+               </li> 
+              </c:forEach>
+             </div>
+      </div>
         </div>
     </div>
-
+      
     <!--의수수정중 끝-->
     
     <!-- 김동욱 수정 시작 + 보현수정 -->
@@ -211,9 +210,10 @@
     <div class="amazing-venues">
         <div class="container">
             <div class="row">
-                <div class="col-lg-auto">
+                <div class="col-lg-6">
                     <div class="left-content">
-                        <iframe width="530" height="300" src="https://www.youtube.com/embed/kqUUPueWUxE?autoplay=1&amp;mute=1" title="video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <!--<iframe width="530" height="300" src="https://www.youtube.com/embed/kqUUPueWUxE?autoplay=1&amp;mute=1" title="video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+                         <div style="width:530px; height:300px; background:#000;"><video width="530" height="300" src="/resources/images/video/wedding.mp4" controls autoplay muted loop></video></div>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -223,46 +223,18 @@
                             <p>Wellding Reviews</p>
                           </div>
                           
-                          <div class="text-button"><a href="show-events-details.html"><span id="plusssss">더 보기</span></a></div>
+                          <div class="text-button"><a href="/board/login"><span id="plusssss">더 보기</span></a></div>
                         <div class="lisylebox">
                             <ul class="listyle">
-                               <c:forEach var="fboard" items="${wdFBoard}" varStatus="status"> 
+                               <c:forEach var="review" items="${wdReviewList}" varStatus="status"> 
                                 <li>
                                     <div class="board">
-                                        <div class="btitle active"><a href="javascript:void(0)" onclick="fn_view3(${fboard.bSeq})"><c:out value="${fboard.bTitle}"/></a></div>
-                                        <div class="bwriter"><p><c:out value="${fboard.userId}"/></p></div>
-                                        <div class="bdate"><p><c:out value="${fboard.regDate}"/></p></div>
+                                        <div class="btitle active"><a href="javascript:void(0)" onclick="fn_view3(${review.RSeq})"><c:out value="${review.RTitle}"/></a></div>
+                                        <div class="bwriter"><p><c:out value="${review.UNickName}"/></p></div>
+                                        <div class="bdate"><p><c:out value="${review.regDate}"/></p></div>
                                     </div>
                                 </li>
                                </c:forEach> 
-                                <!-- li>
-                                    <div class="board">
-                                        <div class="btitle"><a href="#">자유게시판 내용? 글을 더 써도 이제 안내려가요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</a></div>
-                                        <div class="bwriter"><p>bohyong2</p></div>
-                                        <div class="bdate"><p>21.12.28</p></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="board">
-                                        <div class="btitle"><a href="#">board 클래스로 CSS를 추가해서 길이가 넘어가면 생략표시가 나오게 해봤어요!!!!!!!!!!!!!!!</a></div>
-                                        <div class="bwriter"><p>bohyong2</p></div>
-                                        <div class="bdate"><p>21.12.28</p></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="board">
-                                        <div class="btitle"><a href="#">그러면 저는 짜장면을 먹고 올게요 여러분들 다들 맛저하세여~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</a></div>
-                                        <div class="bwriter"><p>bohyong2</p></div>
-                                        <div class="bdate"><p>21.12.28</p></div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="board">
-                                        <div class="btitle"><a href="#">우리는 이것보다 더 잘할수있다.</a></div>
-                                        <div class="bwriter"><p>bohyong2</p></div>
-                                        <div class="bdate"><p>21.12.28</p></div>
-                                    </div>
-                                </li-->
                             </ul>
                         </div>
                     </div>
@@ -271,64 +243,6 @@
         </div>
     </div>
     <!-- 김동욱 수정 끝 -->
-
-    
-    <!-- 보현수정 시작 : 커뮤니티 및 위치 
-    <section id="contact" class="contact">
-      <div class="container" data-aos="fade-up">
-		<div class="row">
-            <div class="left-content section-title">
-            <h2>Contact</h2>
-            <p><i class="fa fa-map-marker"></i> &nbsp;Contact Us</p>
-            </div>
-		</div>
-
-      	
-      </div>
-      
-	 <div data-aos="fade-up" class="locationnn">
-	       	<iframe style="border:0; width: 100%; height: 400px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3167.926340073514!2d126.67291905107739!3d37.438844839088915!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b799896635d33%3A0x931a5cb92c2d607c!2zKOyjvCnsnbjsspzsnbzrs7Qg7JWE7Lm0642w66-4!5e0!3m2!1sko!2skr!4v1639291920490!5m2!1sko!2skr" frameborder="0" allowfullscreen></iframe>
-	  </div> 
-   
-   	<div class="container" data-aos="fade-up">
-		<div class="row">
-            <div class="adress_all">
-            	<p><i class="fa fa-map-marker"></i>&nbsp; 인천광역시 미추홀구 매소홀로488번길 6-32 태승빌딩 5층 &nbsp;|&nbsp; (지번) 인천광역시 미추홀구 학익동 663-1 태승빌딩 5층 &nbsp;&nbsp;&nbsp;&nbsp; <i class="fa fa-clock-o"></i> Monday-Friday 09:00 to 18:00 &nbsp;&nbsp;&nbsp;&nbsp; <span>tel.</span> 032-876-3332</p>
-            </div>
-         </div>
-	</div>
-   
-      
-      
-      </section>
-보현수정 끝 : 커뮤니티 및 위치 -->
-
-    <!-- *** Subscribe ***
-   <div class="subscribe">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-4">
-                    <h4>웰딩에 문의사항이 있으신가요? :-)</h4>
-                </div>
-                <div class="col-lg-8">
-                    <form id="subscribe" action="" method="get">
-                        <div class="row">
-                          <div class="col-lg-9">
-                            <fieldset>
-                              <input name="email" type="text" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your Email Address" required="">
-                            </fieldset>
-                          </div>
-                          <div class="col-lg-3">
-                            <fieldset>
-                              <button type="submit" id="form-submit" class="main-dark-button">Submit</button>
-                            </fieldset>
-                          </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> -->
     
     <!-- 홀 랭킹 뷰를 위한 폼 -->
     <form name="hallForm" id="hallForm" method="post">
@@ -339,8 +253,8 @@
  
    <!-- 게시글 상세 페이지를 위한 폼 -->
    <form name="fBoardForm" id="fBoardForm" method="post">
-			<input type="hidden" name="bSeq" value="" />
-	</form>
+         <input type="hidden" name="RSeq" value="" />
+   </form>
    <!-- 게시글 상세 페이지를 위한 폼 -->
 
    <form name="eBoardForm" id="eBoardForm" method="post">
@@ -349,7 +263,7 @@
 
 
  <!-- *** 욱채수정Footer 시작 *** -->
- 	<%@ include file="/WEB-INF/views/include/footer.jsp" %>
+    <%@ include file="/WEB-INF/views/include/footer.jsp" %>
  <!-- *** 욱채수정Footer 종료 *** -->
   </body>
 </html>

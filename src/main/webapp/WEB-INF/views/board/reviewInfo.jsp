@@ -16,11 +16,12 @@ text-align: center;
 }
 /*별점 시작*/
 span.star-prototype, span.star-prototype > * {
-    height: 35px; 
+    height: 34px; 
     /*background: url(http://i.imgur.com/YsyS5y8.png) 0 -16px repeat-x;*/
     background: url(../resources/images/star1234.png) 0 -35px repeat-x;
     width: 170px;
     display: inline-block;
+    vertical-align: middle;
 }
  
 span.star-prototype > * {
@@ -52,7 +53,7 @@ $(document).ready(function(){
 		document.bbsForm.action = "/board/reviewUpdate";
 		document.bbsForm.submit();
 	});
-	
+/*	
 	$("#btnDelete").on("click", function(){
 		if(confirm("정말 삭제 하시겠습니까?") == true)
 		{
@@ -106,6 +107,108 @@ $(document).ready(function(){
 			
 		}
 	});	
+*/	$("#btnDelete").on("click", function(){
+		Swal.fire({
+			   title: '정말 삭제 하시겠습니까?',
+			   text: '다시 되돌릴 수 없습니다. 신중하세요.',
+			   icon: 'warning',
+			   
+			   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+			   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+			   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+			   confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+			   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+			   
+			   reverseButtons: false, // 버튼 순서 거꾸로
+			   
+			}).then(result => {
+				   // 만약 Promise리턴을 받으면,
+				   if (result.isConfirmed) 
+				   { // 만약 모달창에서 confirm 버튼을 눌렀다면
+						$.ajax({
+							type:"POST",
+							url:"/board/reviewDelete",
+							data:
+							{
+								RSeq: <c:out value="${wdReview.RSeq}" />
+							},
+							datatype:"JSON",
+							beforeSend:function(xhr){
+								xhr.setRequestHeader("AJAX", "true");
+							},
+							success:function(response){
+								if(response.code == 0)
+								{
+									//alert("게시물이 삭제되었습니다.");
+									//location.href = "/board/reviews";
+									Swal.fire({ 
+										icon: 'success',
+										text: '게시물이 삭제되었습니다.'
+									}).then(function(){
+										location.href = "/board/reviews";
+									});
+								}
+								else if(response.code == 400)
+								{
+									//alert("로그인이 되어있지 않습니다.");
+									//location.href = "/board/reviews";
+									Swal.fire({ 
+										icon: 'error',
+										text: '로그인이 되어있지 않습니다.'
+									}).then(function(){
+										location.href = "/board/reviews";
+									});
+									
+								}
+								else if(response.code == 404)
+								{
+									//alert("게시물을 찾을 수 없습니다.");
+									//location.href = "/board/reviews";
+									Swal.fire({ 
+										icon: 'error',
+										text: '게시물을 찾을 수 없습니다.'
+									}).then(function(){
+										location.href = "/board/reviews";
+									});
+								}
+								else if(response.code == 405)
+								{
+									//alert("사용자의 게시물이 아닙니다.");
+									//location.href = "/board/reviews";
+									Swal.fire({ 
+										icon: 'error',
+										text: '사용자의 게시물이 아닙니다.'
+									}).then(function(){
+										location.href = "/board/reviews";
+									});
+								}
+								else
+								{
+									//alert("게시물 삭제 중 오류가 발생했습니다.");
+									Swal.fire({ 
+										icon: 'error',
+										text: '게시물 삭제 중 오류가 발생했습니다.'
+									});
+									//.then(function(){location.href = "/board/reviews";});
+								}
+							},
+							complete:function(data){
+								icia.common.log(data);
+							},
+							error:function(xhr, status, error)
+							{
+								icia.common.error(error);
+							}
+						});
+				   } 
+				   else if (result.isDismissed) 
+				   { // 만약 모달창에서 cancel 버튼을 눌렀다면
+					   location.href = "/board/reviews";
+				   }
+				   // ...
+				});
+	});
+	
 	</c:if>
     
 });
@@ -122,10 +225,22 @@ $(document).ready(function(){
             </div>
         </div>
     </div>
-    <br />
+    <!-- br />
     <h2 class="Wtitle">Review</h2>
     <p style="text-align:center">여러분들의 노하우를 공유해보세요</p>
-    <br />
+    <br />-->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="section-heading" style="padding: 20px 0;">
+                        <div class="category2">
+                            <p>Review</p>
+                        </div>
+                        <p style="text-align:center; margin-top: 10px;">여러분들의 웰딩 후기를 공유해보세요</p>
+                    </div>
+                </div>
+            </div>
+        </div>  
 
 <div class="container">
    <div class="row" style="margin-right:0; margin-left:0;">
@@ -133,21 +248,29 @@ $(document).ready(function(){
       <table class="table">
          <thead>
             <tr class="table-active dongdong">
-               <td style="width:60%">
+               <td style="width:80%; padding: 25px 25px; font-size: 17px; font-weight: 800;font-size: #333;">
                   <c:out value="${wdReview.RTitle}"/>
                </td>
-               <td style="width:40%" class="text-right">
+               <td style="width:20%; padding: 25px 25px;" class="text-right">
                                          조회 : <fmt:formatNumber type="number" maxFractionDigits="3" value="${wdReview.RReadCnt}" />
                </td>
             </tr>
             <tr>
-               <td style="width:60%">
+               <td style="width:70%; padding: 15px 25px; font-size: 15px; color: #444;">
                	작성자 : <c:out value="${wdReview.UNickName}"/>
                </td>
-               <td style="width:40%" class="text-right">
+               <td style="width:30%; padding: 15px 20px;" class="text-right">
                   <div>${wdReview.regDate}</div>
                </td>
-            </tr>   
+            </tr> 
+            <tr>
+            	<td colspan="2" class="hsdm_choice">
+	            	<p>홀 : <span>${hsdmName.hName }</span></p>
+	            	<p>스튜디오 : <span>${hsdmName.sName }</span></p>
+	            	<p>드레스 : <span>${hsdmName.dName }</span></p>
+	            	<p>메이크업 : <span style="border-right: none;">${hsdmName.mName }</span></p>
+            	</td>
+            </tr>  
 
          </thead>
          <tbody>
@@ -156,10 +279,10 @@ $(document).ready(function(){
             </tr>
             <tr>
                <td colspan="2" style="text-align:center">
-	               <div style="padding:10px">
-	               	<div>
+	               <div style="padding:10px; margin-bottom: 40px;">
+	               	<div style="width: 100%; height: auto; white-space: pre-line">
 	               	<c:if test="${!empty wdReview.reviewFile}">
-	               	<img src="../resources/upload/${wdReview.reviewFile.rFileName }">
+	               	<img src="../resources/upload/${wdReview.reviewFile.rFileName }" style="width: 100%; height: auto; padding: 30px;">
 	               	<br>
 	               	</c:if>
 	               		<c:out value="${wdReview.RContent}" />
@@ -173,7 +296,7 @@ $(document).ready(function(){
          <tr>
          <td colspan="2">
          <!-- 별점은 여기에  -->
-         	평가 : <span class="star-prototype">${wdReview.RScore }</span>
+         	<p class="star_p">평가 : <span class="star-prototype">${wdReview.RScore }</span></p>
          </td>
          </tr>
          <tr>

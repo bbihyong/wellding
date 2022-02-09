@@ -1,5 +1,6 @@
 package com.icia.web.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -96,5 +97,135 @@ public class WDCommentService {
 		
 		return count;
 	}
+	
+	//게시물 댓글 개수 체크
+	public int commentListCount(long parentSeq) 
+	{
+		int count = 0;
+		try {
+			count = wdCommentDao.commentListCount(parentSeq);
+		}
+		catch(Exception e) {
+			logger.error("[WDCommentService] commentListCount Exception", e);
+		}	
+		
+		return count;
+		
+	}	
+	
+	//댓글 전부 불러오기 시작
+	public List<WDComment> commentTotalSelect(HashMap<String, Object> map)
+	{
+		List<WDComment> list = null;
+		
+		try 
+		{
+			list = wdCommentDao.commentTotalSelect(map);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentTotalSelect Exception", e);
+		}
+		
+		return list;
+	}
+	
+	//신고 댓글 불러오기 
+		public List<WDComment> ReportcommentTotalSelect(WDComment wdComment)
+		{
+			List<WDComment> list = null;
+			
+			try 
+			{
+				list = wdCommentDao.ReportcommentTotalSelect(wdComment);
+			}
+			catch(Exception e) 
+			{
+				logger.error("[WDCommentService] ReportcommentTotalSelect Exception", e);
+			}
+			
+			return list;
+		}
+	
+	//댓글 총 수 가져오기 시작
+	public int commentTotalCnt() 
+	{
+		int count = 0;
+		
+		try 
+		{
+			count = wdCommentDao.commentTotalCnt();
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentTotalCnt Exception", e);
+		}
+		
+		return count;
+	}
+	
+	//신고 댓글 총 수 가져오기 시작
+		public int ReportcommentTotalCnt() 
+		{
+			int count = 0;
+			
+			try 
+			{
+				count = wdCommentDao.ReportcommentTotalCnt();
+			}
+			catch(Exception e) 
+			{
+				logger.error("[WDCommentService] ReportcommentTotalCnt Exception", e);
+			}
+			
+			return count;
+		}
+	
+	
+	
 
+	//관리자 페이지에서 댓글 삭제 시작
+	public int commentDelAdm(WDComment wdComment) 
+	{
+		int cnt = 0;
+		
+		try 
+		{
+			cnt = wdCommentDao.commentDelAdm(wdComment);
+		}
+		catch(Exception e) 
+		{
+			logger.error("[WDCommentService] commentDelAdm Exception", e);
+		}
+		
+		return cnt;
+	}
+	
+	//댓글 신고버튼 클릭
+	public int commentReport(WDComment wdComment) {
+		int count = 0;
+		
+		try {
+			count = wdCommentDao.commentReport(wdComment);
+		}
+		catch(Exception e) {
+			logger.error("[WDCommentService] commentReport Exception", e);
+		}	
+		
+		return count;
+	}
+	
+	//관리자 댓글신고 확인
+	public int commentReportAllow(WDComment wdComment) {
+		int count = 0;
+		
+		try {
+			count = wdCommentDao.commentReportAllow(wdComment);
+		}
+		catch(Exception e) {
+			logger.error("[WDCommentService] commentReportAllow Exception", e);
+		}	
+		
+		return count;
+	}
 }

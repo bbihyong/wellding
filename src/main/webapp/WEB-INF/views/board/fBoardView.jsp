@@ -31,8 +31,9 @@ $(document).ready(function(){
 		document.bbsForm.action = "/board/fUpdateForm";
 		document.bbsForm.submit();
 	});
-	
+/*	
 	$("#btnDelete").on("click", function(){
+		
 		if(confirm("정말 삭제 하시겠습니까?") == true)
 		{
 			//정말 삭제하겠다고 했을 때, ajax 통신
@@ -81,9 +82,107 @@ $(document).ready(function(){
 					icia.common.error(error);
 				}
 			});
-			
+		
 		}
 	});	
+*/	
+	$("#btnDelete").on("click", function(){
+		Swal.fire({
+			   title: '정말 삭제 하시겠습니까?',
+			   text: '다시 되돌릴 수 없습니다. 신중하세요.',
+			   icon: 'warning',
+			   
+			   showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+			   confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+			   cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+			   confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+			   cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+			   
+			   reverseButtons: false, // 버튼 순서 거꾸로
+			   
+			}).then(result => {
+				   // 만약 Promise리턴을 받으면,
+				   if (result.isConfirmed) 
+				   { // 만약 모달창에서 confirm 버튼을 눌렀다면
+						//정말 삭제하겠다고 했을 때, ajax 통신
+						$.ajax({
+							type:"POST",
+							url:"/board/delete",
+							data:
+							{
+								bSeq: <c:out value="${wdFBoard.bSeq}" />
+							},
+							datatype:"JSON",
+							beforeSend:function(xhr){
+								xhr.setRequestHeader("AJAX", "true");
+							},
+							success:function(response){
+								if(response.code == 0)
+								{
+									//alert("게시물이 삭제되었습니다.");
+									//location.href = "/board/fBoard";
+									Swal.fire({ 
+										icon: 'success',
+										text: '게시물이 삭제되었습니다.'
+									}).then(function(){
+										location.href = "/board/fBoard";
+									});
+								}
+								else if(response.code == 400)
+								{
+									//alert("로그인이 되어있지 않습니다.");
+									//이동할 필요 없음
+									Swal.fire({ 
+										icon: 'error',
+										text: '로그인이 되어있지 않습니다.'
+									});
+								}
+								else if(response.code == 404)
+								{
+									//alert("게시물을 찾을 수 없습니다.");
+									//location.href = "/board/fBoard";
+									Swal.fire({ 
+										icon: 'error',
+										text: '게시물을 찾을 수 없습니다.'
+									}).then(function(){
+										location.href = "/board/fBoard";
+									});
+								}
+								else if(response.code == 405)
+								{
+									//alert("사용자의 게시물이 아닙니다.");
+									//location.href = "/board/fBoard";
+									Swal.fire({ 
+										icon: 'error',
+										text: '사용자의 게시물이 아닙니다.'
+									}).then(function(){
+										location.href = "/board/fBoard";
+									});
+								}
+								else
+								{
+									//alert("게시물 삭제 중 오류가 발생했습니다.");
+									Swal.fire({ 
+										icon: 'error',
+										text: '게시물 삭제 중 오류가 발생했습니다.'
+									});
+								}
+							},
+							complete:function(data){
+								icia.common.log(data);
+							},
+							error:function(xhr, status, error)
+							{
+								icia.common.error(error);
+							}
+						});
+				   }
+				   else if (result.isDismissed) 
+				   { // 만약 모달창에서 cancel 버튼을 눌렀다면
+					   location.href = "/board/fBoard";
+				   }
+			});
+	});
 	</c:if>
 	
 	
@@ -92,7 +191,11 @@ $(document).ready(function(){
   	  $("#btnComment").prop("disabled", true);// 수정 버튼 비활성화 
   	  
   	  if($.trim($("#wdFBoardComment").val()).length <= 0){
-  		  alert("댓글내용을 입력하세요.");
+  		 // alert("댓글내용을 입력하세요.");
+			Swal.fire({ 
+				icon: 'warning',
+				text: '댓글내용을 입력하세요.'
+			});
   		  $("#wdFBoardComment").val("");
   		  $("#wdFBoardComment").focus();
   		  $("#btnComment").prop("disabled", false);
@@ -116,29 +219,61 @@ $(document).ready(function(){
 	            success:function(response){
 	               if(response.code == 0)
 	               {
-	                  alert("댓글이 등록 되었습니다.");
-	                  document.bbsForm.action = "/board/fBoardView";
-	                  document.bbsForm.submit();
-	                  $("#btnComment").prop("disabled", false);
+	                  //alert("댓글이 등록 되었습니다.");
+	                  //document.bbsForm.action = "/board/fBoardView";
+	                 // document.bbsForm.submit();
+	                 // $("#btnComment").prop("disabled", false);
+						Swal.fire({ 
+							icon: 'success',
+							text: '댓글이 등록되었습니다.'
+						}).then(function(){
+			                  document.bbsForm.action = "/board/fBoardView";
+			                  document.bbsForm.submit();
+			                  $("#btnComment").prop("disabled", false);
+						});
 	               }
 	               else if(response.code == 400)
 	               {
-	                  alert("파라미터 값이 올바르지 않습니다.");
-	                  $("#btnComment").prop("disabled", false);
+	                  //alert("파라미터 값이 올바르지 않습니다.");
+	                  //$("#btnComment").prop("disabled", false);
+						Swal.fire({ 
+							icon: 'error',
+							text: '파라미터 값이 올바르지 않습니다.'
+						}).then(function(){
+							$("#btnComment").prop("disabled", false);
+						});
 	               }
 	               else if(response.code == 406)
 	               {
-	            	  alert("로그인이 되어있지 않습니다."); 
+	            	  //alert("로그인이 되어있지 않습니다."); 
+						Swal.fire({ 
+							icon: 'error',
+							text: '로그인이 되어있지 않습니다.'
+						}).then(function(){
+							$("#btnComment").prop("disabled", false);
+						});
 	               }
 	               else if(response.code == 404)
 	               {
-	                  alert("게시물을 찾을수 없습니다.");
-	                  location.href = "/board/fBoard";
+	                  //alert("게시물을 찾을수 없습니다.");
+	                  //location.href = "/board/fBoard";
+						Swal.fire({ 
+							icon: 'error',
+							text: '게시물을 찾을 수 없습니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
 	               }
 	               else
 	               {
-	                  alert("댓글 등록 중 오류가 발생했습니다.");
-	                  $("#btnComment").prop("disabled", false);
+	                  //alert("댓글 등록 중 오류가 발생했습니다.");
+	                  //$("#btnComment").prop("disabled", false);
+						Swal.fire({ 
+							icon: 'error',
+							text: '댓글 등록 중 오류가 발생했습니다.'
+						}).then(function(){
+							$("#btnComment").prop("disabled", false);
+						});
 	               }
 	            },
 	            complete:function(data){
@@ -173,23 +308,48 @@ function commentDelete(cSeq){
 	            success:function(response){
 	                if(response.code == 0)
 	                {
-	                   alert("댓글이 삭제되었습니다.");
-	                   document.bbsForm.action = "/board/fBoardView";
-		               document.bbsForm.submit();
+	                   //alert("댓글이 삭제되었습니다.");
+	                   //document.bbsForm.action = "/board/fBoardView";
+		               //document.bbsForm.submit();
+						Swal.fire({ 
+							icon: 'success',
+							text: '댓글이 삭제되었습니다.'
+						}).then(function(){
+			                  document.bbsForm.action = "/board/fBoardView";
+			                  document.bbsForm.submit();
+						});
 	                }
 	                else if(response.code == 400)
 	                {
-	                   alert("로그인이 되어있지 않습니다.");
-	                   location.href = "/board/fBoard";
+	                   //alert("로그인이 되어있지 않습니다.");
+	                   //location.href = "/board/fBoard";
+						Swal.fire({ 
+							icon: 'error',
+							text: '사용자의 게시물이 아닙니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
 	                }
 	                else if(response.code == 404)
 	                {
-	                   alert("댓글을 찾을 수 없습니다.");
-	                   location.href = "/board/fBoard";
+	                   //alert("댓글을 찾을 수 없습니다.");
+	                   //location.href = "/board/fBoard";
+						Swal.fire({ 
+							icon: 'error',
+							text: '사용자의 게시물이 아닙니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
 	                }
 	                else
 	                {
-	                   alert("댓글 삭제 중 오류가 발생했습니다.");
+	                   //alert("댓글 삭제 중 오류가 발생했습니다.");
+						Swal.fire({ 
+							icon: 'error',
+							text: '사용자의 게시물이 아닙니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
 	                }
 	             },
 	            complete:function(data){
@@ -202,7 +362,7 @@ function commentDelete(cSeq){
 }
 
 function commentUpdate(cSeq,tagId){
-	
+
 
 	
 	if (!$("#updateComment").length > 0) 
@@ -222,10 +382,16 @@ function commentUpdate(cSeq,tagId){
 		  document.commentForm.cSeq.value = cSeq;
 		  
 	  	  if($.trim($("#updateComment").val()).length <= 0){
-	  		  alert("댓글내용을 입력하세요.");
-	  		  $("#updateComment").val("");
-	  		  $("#updateComment").focus();
-	  		  return;
+	  		  //alert("댓글내용을 입력하세요.");
+			Swal.fire({ 
+				icon: 'warning',
+				text: '댓글내용을 입력하세요.'
+			}).then(function(){
+				$("#updateComment").val("");
+		  		  $("#updateComment").focus();
+		  		  return;
+			});
+	  		  
 	  	  }
 		  
 	  	document.commentForm.upComment.value = $("#updateComment").val();
@@ -247,26 +413,54 @@ function commentUpdate(cSeq,tagId){
 		            success:function(response){
 		                if(response.code == 0)
 		                {
-		                   alert("댓글이 수정되었습니다.");
-		                   document.bbsForm.action = "/board/fBoardView";
-			               document.bbsForm.submit();
+		                   //alert("댓글이 수정되었습니다.");
+		                  // document.bbsForm.action = "/board/fBoardView";
+			               //document.bbsForm.submit();
+							Swal.fire({ 
+								icon: 'success',
+								text: '댓글이 수정되었습니다.'
+							}).then(function(){
+				                  document.bbsForm.action = "/board/fBoardView";
+				                  document.bbsForm.submit();
+							});
 		                }
 		                else if(response.code == 400)
 		                {
-		                   alert("로그인이 되어있지 않습니다.");
-		                   document.bbsForm.action = "/board/fBoardView";
-			               document.bbsForm.submit();
+		                   //alert("로그인이 되어있지 않습니다.");
+		                   //document.bbsForm.action = "/board/fBoardView";
+			               //document.bbsForm.submit();
+		        			Swal.fire({ 
+		        				icon: 'warning',
+		        				text: '로그인이 되어있지 않습니다.'
+		        			}).then(function(){
+		        				document.bbsForm.action = "/board/fBoardView";
+					            document.bbsForm.submit();
+		        			});
 		                }
 		                else if(response.code == 404)
 		                {
-		                   alert("댓글을 찾을 수 없습니다.");
-		                   document.bbsForm.action = "/board/fBoardView";
-			               document.bbsForm.submit();
+		                   //alert("댓글을 찾을 수 없습니다.");
+		                   //document.bbsForm.action = "/board/fBoardView";
+			               //document.bbsForm.submit();
+		        			Swal.fire({ 
+		        				icon: 'warning',
+		        				text: '댓글을 찾을 수 없습니다.'
+		        			}).then(function(){
+		        				$("#updateComment").val("");
+		        				document.bbsForm.action = "/board/fBoardView";
+					            document.bbsForm.submit();
+		        			});
 		                }
 		                else
 		                {
-		                   alert("댓글 수정 중 오류가 발생했습니다.");
-		                   location.href = "/board/fBoard";
+		                   //alert("댓글 수정 중 오류가 발생했습니다.");
+		                   //location.href = "/board/fBoard";
+		        			Swal.fire({ 
+		        				icon: 'warning',
+		        				text: '댓글 수정 중 오류가 발생했습니다.'
+		        			}).then(function(){
+		        				location.href = "/board/fBoard";
+		        			});
 		                }
 		             },
 		            complete:function(data){
@@ -279,6 +473,94 @@ function commentUpdate(cSeq,tagId){
 	}
     
 }
+
+function commentReport(cSeq,tagId)
+{
+	document.commentForm.cSeq.value = cSeq;
+	
+	  var form = $("#commentForm")[0];
+	  var formData = new FormData(form);
+	 
+	  $.ajax({
+	            type:"POST",
+	            url:"/board/commentReport",
+	            data:formData,
+	            processData:false,
+	  			contentType:false,
+	  		    cache:false,
+	  		    timeout:600000,
+	            beforeSend:function(xhr){
+	               xhr.setRequestHeader("AJAX", "true");
+	            },
+	            success:function(response){
+	                if(response.code == 0)
+	                {
+	                   //alert("댓글이 삭제되었습니다.");
+	                   //document.bbsForm.action = "/board/fBoardView";
+		               //document.bbsForm.submit();
+						Swal.fire({ 
+							icon: 'success',
+							text: '신고가 접수되었습니다.'
+						}).then(function(){
+			                  document.bbsForm.action = "/board/fBoardView";
+			                  document.bbsForm.submit();
+						});
+	                }
+	                else if(response.code == -1)
+	                {
+	                   //alert("로그인이 되어있지 않습니다.");
+	                   //location.href = "/board/fBoard";
+						Swal.fire({ 
+							icon: 'error',
+							text: '이미 신고된 댓글입니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
+	                }
+	                else if(response.code == 404)
+	                {
+	                   //alert("댓글을 찾을 수 없습니다.");
+	                   //location.href = "/board/fBoard";
+						Swal.fire({ 
+							icon: 'error',
+							text: '오류가 발생하였습니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
+	                }
+	                else if(response.code == 400)
+	                {
+	                   //alert("댓글 삭제 중 오류가 발생했습니다.");
+						Swal.fire({ 
+							icon: 'error',
+							text: '오류가 발생하였습니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
+	                }
+	                else
+	                	{
+	                	Swal.fire({ 
+							icon: 'error',
+							text: '오류가 발생하였습니다.'
+						}).then(function(){
+							location.href = "/board/fBoard";
+						});
+	                }
+	                	
+	             },
+	            complete:function(data){
+	               icia.common.log(data);
+	            },
+	            error:function(xhr, status, error){
+	               icia.common.error(error);
+	            }
+	         });
+
+}
+
+	
+
 </script>
 </head>
 <body>
@@ -327,7 +609,7 @@ function commentUpdate(cSeq,tagId){
 						<tr>
 							<td colspan="2" style="text-align: center; padding-bottom: 10px; background:#efefef;">
 								<!-- 첨부파일은 있을 때만 보여주면 됨 -->
-									<div style="width: 100%; border:none; font-size: 14px; text-align: right; padding-right: 10px; padding-top: 10px;">
+									<div style="width: 100%; border:none; font-size: 14px; text-align: right; padding-right: 10px;">
 										<!-- GET방식으로 넘어감 --> 
 										<a href="/board/download?bSeq=${wdFBoard.wdBoardFile.bSeq}" style="color: #0080ff;">
 											[첨부파일]&nbsp; ${wdFBoard.wdBoardFile.fileOrgName}
@@ -338,7 +620,10 @@ function commentUpdate(cSeq,tagId){
 					</c:if>
 						<tr>
 							<td colspan="2" style="text-align: center">	
-								<div style="padding: 30px 20px; text-align: left; font-size: 16px;">
+								<div style="padding: 30px 20px; text-align: left; font-size: 16px;  white-space: pre-line;">
+								<c:if test="${!empty wdFBoard.wdBoardFile}">
+			                        <img src="../resources/upload/${wdFBoard.wdBoardFile.fileName }" style="width: 50%;" /> <br />
+			                    </c:if>
 										<c:out value="${wdFBoard.bContent}" />
 								</div>
 							</td>
@@ -350,7 +635,7 @@ function commentUpdate(cSeq,tagId){
 							<tr>
 								<td colspan="2" style="border-top:none; padding-bottom: 25px; padding-left:inherit; padding-right:inherit;">
 									<textarea class="form-control" rows="3" name="wdFBoardComment" id="wdFBoardComment" style="ime-mode: active; resize: none; width:90%; float:left; height:76px; font-size:14px;" placeholder="댓글을 입력해주세요" required></textarea>
-									<button type="button" id="btnComment" class="btn btn-secondary" style="float:left; width:100px; margin-left:5px; height: 76px; border: none; background: #ff957d; font-size:15px; font-weight:600;">댓글등록</button>
+									<button type="button" id="btnComment" class="btn btn-secondary" style="float:left; width:100px; margin-left:5px; height: 77px; border: none; background: #ff957d; font-size:15px; font-weight:600; margin-top: 11px;">댓글등록</button>
 								</td>
 							</tr>
 
@@ -361,18 +646,21 @@ function commentUpdate(cSeq,tagId){
 										<td class="comment_td2" style="border-top:none;">${comment.wdFBoardComment }</td>
 									</tr>
 									<tr class="comment_tr2">
-										<td class="comment_td" style="border-top:none; border-right:2px solid #ccc; padding-right:10px; font-weight:600;">${comment.uNickName }</td>
-										<td class="comment_td" style="border-top:none; margin-left: 10px; letter-spacing:0.5px;">${comment.regDate }</td>
+										<td class="comment_td" style="border-top:none; border-right:2px solid #ccc; /*padding-right:10px;*/ font-weight:600; line-height: 0px;">${comment.uNickName }</td>
+										<td class="comment_td" style="border-top:none; margin-left: 10px; letter-spacing:0.5px; line-height: 0px;">${comment.regDate }</td>
 
-										<td style="border-top:none; position:relative; top: -18px; right:10px;">
+										<td style="border-top:none; position:relative; top: -15px; right:5px;">
 											<c:if test="${cookieUserId eq comment.userId }">
 												<button type="button" class="btn btn-secondary btnCommentD" onclick="commentDelete(${comment.commentSeq})" style="margin-rignt:10px;">삭제</button>
 												<button type="button" class="btn btn-secondary btnCommentU" onclick="commentUpdate(${comment.commentSeq},'update${comment.commentSeq }')">수정</button>
 											</c:if>
+											<c:if test="${cookieUserId ne comment.userId}">
+											<button type="button" class="btn btn-secondary btnCommentD" onclick="commentReport(${comment.commentSeq})" style="margin-rignt:10px;">신고</button>
+											</c:if>
 										</td>
 									</tr>
 									<tr>
-										<td id="update${comment.commentSeq }" colspan="2" style="border-top:none;"></td>
+										<td id="update${comment.commentSeq }" colspan="2" style="border-top:none; padding-top:0px; padding-bottom:0px;"></td>
 									</tr>
 								</c:forEach>
 							</c:if>
@@ -411,10 +699,10 @@ function commentUpdate(cSeq,tagId){
 
 
 	<form name="bbsForm" id="bbsForm" method="post">
-		<input type="hidden" name="bSeq" value="${bSeq}" /> <input
-			type="hidden" name="searchType" value="${searchType}" /> <input
-			type="hidden" name="searchValue" value="${searchValue}" /> <input
-			type="hidden" name="curPage" value="${curPage}" />
+		<input type="hidden" name="bSeq" value="${bSeq}" /> 
+		<input type="hidden" name="searchType" value="${searchType}" /> 
+		<input type="hidden" name="searchValue" value="${searchValue}" /> 
+		<input type="hidden" name="curPage" value="${curPage}" />
 	</form>
 
 	<!-- *** 욱채수정Footer 시작 *** -->

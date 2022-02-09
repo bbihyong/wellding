@@ -28,5 +28,36 @@ public interface WDHallDao {
 	//동일회사 홀 리스트 조회 선택된 홀 제외
 	public List<WDHall> hallSameCom(WDHall wdHall);
 	
+	//웨딩홀 추가
+	public int weddinghallInsert(WDHall wdHall);
+	
+	//웨딩홀 마지막 wh코드 불러오기
+	public String maxWHCode();
+	
+	//홀 마지막 h코드 불러오기
+	public long maxHCode(String whCode);
+	
+	//홀 추가 인서트
+	public int hallInsert(WDHall wdHall);
+	
+	//홀 코드 이름 조회
+	public List<WDHall> whNameAndCode();
 																																																																																																																																													
+	//예약 성공 시 해당 예약번호의 홀 REZCOUNT +1해주기
+	public int rezCountPlus(String rezNo);
+	
+	public WDHall onlyWeddingHall(String whCode);
+	
+	public int weddingHallDelete(String whCode);
+	
+	public int hallDelete(WDHall wdHall);
+	
+	public int weddinghallUpdate(WDHall wdHall);
+	
+	public int hallUpdate(WDHall wdHall);
+	
+	public String maxImgName();
+	
+	//홀 파일 삽입
+	public int hallFileInsert(WDHallFile wdHallFile);
 }

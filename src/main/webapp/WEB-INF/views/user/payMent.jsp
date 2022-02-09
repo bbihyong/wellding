@@ -36,45 +36,103 @@
        document.rezForm.submit();
     }
 
-//카카오페이 추가
+//결제 옵션 추가
 $(document).ready(function(){
-   $("#couponChoice").change(function(){
+		$("#couponChoice").change(function(){
+		
+		   //쿠폰 가격
+		   var price = $("#couponChoice").val();
+		   //쿠폰 코드 가져오기
+		   var couponCode = $("#couponChoice > option:selected").attr("value2");
+		   
+		   $("#couponValue").val(price);
+	   });
+		
+      //포인트 사용범위 제한
+      $("#pointValue").keyup(function(){
+    	  var val = $(this).val();
+    	  if((val < 0) || (val > ${wdUser.userPoint}))
+    	  {
+    		  //alert("범위를 초과하였습니다.");
+    		  //$(this).val("");
+				Swal.fire({ 
+					icon: 'error',
+					text: '포인트 사용범위를 초과하였습니다.'
+				}).then(function(){
+					$("#pointValue").val("");
+					$("#pointValue").fucus();
 
-      //쿠폰 가격
-      var price = $("#couponChoice").val();
-      //쿠폰 코드 가져오기
-      var couponCode = $("#couponChoice > option:selected").attr("value2");
-      
-      $("#couponValue").val(price);
-   });
-
+				});
+    	  }
+      });
+	      
+	      
       //적용 선택시 금액 리프레쉬
-   $("#couponSelect").on("click", function(){
+	  $("#couponSelect").on("click", function(){
+	     
+	     var price = $("#couponChoice").val();
+	     
+	     var point = $("#pointValue").val();
+	     
+	  	  if(point < 0)
+		  {
+				Swal.fire({ 
+					icon: 'error',
+					text: '포인트 사용범위를 초과하였습니다.'
+				}).then(function(){
+					return;
+				});
+				
+				//return;
+				
+		  }
+	     
+	     var pointMax = ${wdUser.userPoint} - point;
+	     
+	     //총액
+	     var aftPPn = Math.round(${wdRez.hPrice *(1- wdRez.hDiscount*0.01) + (wdRez.hFood * wdRez.hMin) + wdRez.sPrice *(1- wdRez.sDiscount*0.01) + wdRez.dPrice *(1- wdRez.dDiscount*0.01) + wdRez.mPrice * (1- wdRez.mDiscount*0.01)+ (wdRez.mPlus*wdRez.mPlusNum)});
+	     
+	  	  if(aftPPn < point)
+		  {
+				Swal.fire({ 
+					icon: 'error',
+					text: '사용하시는 포인트가 총 주문금액보다 많습니다.'
+				}).then(function(){
+					$("#pointValue").val("");
+					$("#pointValue").focus();
+				});
+				
+				return;
+		  }
+	     
+	     pointMax = pointMax.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",") ;
+	     
+	     document.getElementById("pointBox").innerHTML = pointMax;
+	     
+	     var ddong = Math.round(${wdRez.hPrice - (wdRez.hPrice *(1- wdRez.hDiscount*0.01)) + wdRez.sPrice - (wdRez.sPrice *(1- wdRez.sDiscount*0.01)) + wdRez.dPrice - (wdRez.dPrice *(1- wdRez.dDiscount*0.01)) + wdRez.mPrice - (wdRez.mPrice *(1- wdRez.mDiscount*0.01))}) + parseInt(price) + Number(point);
+	           
+	     ddong = ddong.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+	     
+	     document.getElementById("sale").innerHTML= ddong+"원";
+	    
+	     aftPPn = aftPPn - parseInt(price) - Number(point);
+	     $("#totalAmount").val(aftPPn);
+	     
+	     var aftPP = aftPPn.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+	     
+	     document.getElementById("totalPriceAfter").innerHTML = aftPP+"원";
+	     
+	  });
       
-      var price = $("#couponChoice").val();
-      
-      var ddong = ${wdRez.hPrice - (wdRez.hPrice *(1- wdRez.hDiscount*0.01)) + wdRez.sPrice - (wdRez.sPrice *(1- wdRez.sDiscount*0.01)) + wdRez.dPrice - (wdRez.dPrice *(1- wdRez.dDiscount*0.01)) + wdRez.mPrice - (wdRez.mPrice *(1- wdRez.mDiscount*0.01))} + parseInt(price);
-            
-      ddong = ddong.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-      
-      document.getElementById("sale").innerHTML= ddong+"원";
-      
-      //총액
-      var aftPPn = ${wdRez.hPrice *(1- wdRez.hDiscount*0.01) + (wdRez.hFood * wdRez.hMin) + wdRez.sPrice *(1- wdRez.sDiscount*0.01) + wdRez.dPrice *(1- wdRez.dDiscount*0.01) + wdRez.mPrice *(1- wdRez.mDiscount*0.01)+ (wdRez.mPlus*wdRez.mPlusNum)} - parseInt(price);
-      
-      $("#totalAmount").val(aftPPn);
-      
-      var aftPP = aftPPn.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
-      
-      document.getElementById("totalPriceAfter").innerHTML = aftPP+"원";
-      
-   });
 
-   $("#btnPay").on("click", function(){
-      $("#btnPay").prop("disabled", true); //버튼비활성화
       
-    //쿠폰 코드 가져오기
+      
+	  $("#btnPay").on("click", function(){
+	     $("#btnPay").prop("disabled", true); //버튼비활성화
+      
+		//쿠폰 코드 가져오기
       var couponCode = $("#couponChoice > option:selected").attr("value2");
+	  var point = $("#pointValue").val();
       
       ///////ajax
       icia.ajax.post({
@@ -99,6 +157,8 @@ $(document).ready(function(){
                var couponNum = couponCode;
                var rezNo = response.data.rezNo;
                var rezFullPrice = response.data.rezFullPrice;
+               var rezPoint = point;
+
                
                $("#orderId").val(orderId);
                $("#tId").val(tId);
@@ -108,16 +168,73 @@ $(document).ready(function(){
                $("#cCode").val(couponNum);
                $("#rezNo").val(rezNo);
                $("#rezFullPrice").val(rezFullPrice);
+               $("#rezPoint").val(rezPoint);
+
                
-               var win = window.open('', 'kakaoPopUp', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=540,height=700,left=100,top=100');
+               var win = window.open('', 'kakaoPopUp', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=540,height=650,left=100,top=100');
                
                $("#kakaoForm").submit();
                $("#btnPay").prop("disabled", false);
             }
+            else if(response.code == 500)
+            {
+            	//해당 날짜에 해당 홀이 이미 결제되어있음
+            	//alert("이미 해당 날짜에 결제된 홀이 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.");
+				Swal.fire({ 
+					icon: 'warning',
+					text: '이미 해당 날짜에 결제된 홀이 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.'
+				}).then(function(){
+					$("#btnPay").prop("disabled", false);
+					return;
+				});
+            }
+            else if(response.code == 501)
+            {
+            	//해당 날짜에 해당 스튜디오가 이미 결제되어있음
+            	//alert("이미 해당 날짜에 결제된 스튜디오가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.");
+				Swal.fire({ 
+					icon: 'warning',
+					text: '이미 해당 날짜에 결제된 스튜디오가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.'
+				}).then(function(){
+					$("#btnPay").prop("disabled", false);
+					return;
+				});
+            }
+            else if(response.code == 502)
+            {
+            	//해당 날짜에 해당 드레스가 이미 결제되어있음
+            	//alert("이미 해당 날짜에 결제된 드레스가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.");
+				Swal.fire({ 
+					icon: 'warning',
+					text: '이미 해당 날짜에 결제된 드레스가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.'
+				}).then(function(){
+					$("#btnPay").prop("disabled", false);
+					return;
+				});
+            }
+            else if(response.code == 503)
+            {
+            	//해당 날짜에 해당 메이크업 업체가 이미 결제되어있음
+            	//alert("이미 해당 날짜에 결제된 메이크업 업체가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.");
+				Swal.fire({ 
+					icon: 'warning',
+					text: '이미 해당 날짜에 결제된 메이크업 업체가 장바구니에 있습니다. 장바구니에서 제거 후 결제를 진행해주세요.'
+				}).then(function(){
+					$("#btnPay").prop("disabled", false);
+					return;
+				});
+            }
             else
             {
-               alert("오류가 발생하였습니다.");
-               $("#btnPay").prop("disabled", false);
+               ///alert("오류가 발생하였습니다.");
+               //$("#btnPay").prop("disabled", false);
+				Swal.fire({ 
+					icon: 'error',
+					text: '오류가 발생했습니다.'
+				}).then(function(){
+					$("#btnPay").prop("disabled", false);
+					return;
+				});
             }
          },
          error: function(error)
@@ -134,7 +251,36 @@ function movePage()
    location.href = "/user/payComplete";
 }
 
-</script>  
+//인풋박스 입력시 세자리마다 컴마찍는 함수
+    function comma(str) {
+        str = String(str);
+        return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,');
+    }
+
+    function uncomma(str) {
+        str = String(str);
+        return str.replace(/[^\d]+/g, '');
+    } 
+    
+    function inputNumberFormat(obj) {
+        obj.value = comma(uncomma(obj.value));
+    }
+    
+    function inputOnlyNumberFormat(obj) {
+        obj.value = onlynumber(uncomma(obj.value));
+    }
+    
+    function onlynumber(str) {
+	    str = String(str);
+	    return str.replace(/(\d)(?=(?:\d{3})+(?!\d))/g,'$1');
+	}
+</script>
+<style>
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+</style>
 </head>
     
 <body>
@@ -182,7 +328,8 @@ function movePage()
                         <table class="table tableWish">
                      <tr>
                         <div class="rez_sta">
-                           <h5 class="rez_date">예약일자 &nbsp;&nbsp; <span>${wdRez.rezDate}</span></h5>
+                           
+						   <h5 class="rez_date">결혼예정일자 &nbsp;&nbsp; <span>${year}-${month}-${day}</span></h5>									
                            <h5 class="rez_number">예약번호&nbsp;&nbsp; <span>${wdRez.rezNo}</span></h5>
                         </div>
                      </tr>
@@ -354,21 +501,37 @@ function movePage()
                      <div class="col-lg-1"></div>
                      <div class="col-lg-1"></div>
                      <div class="col-lg-10">
-                     <div class="col-lg-10" style="text-align: right; max-width:100%;">
-                     
-                     <!-- 쿠폰 가져오기 -->
-                        쿠폰 선택
-                     <select name="couponChoice" id="couponChoice">
-                        <option value="0">선택</option>
-                        
-                     <c:forEach var="coupon" items="${couponList}" varStatus="status">
-                        <option value="${coupon.cPrice}" value2="${coupon.cCode}">${coupon.cName}</option>
-                     </c:forEach>
-                     </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        할인금액 <input type="text" name="couponValue" id="couponValue" value="">
-      
-                     <button name="couponSelect" id="couponSelect">적용</button>
-      
+                     <div class="select_cnc">
+	                     <!-- 쿠폰 가져오기 -->
+	                     <div class="select_coupon">
+							쿠폰 
+		                     <select name="couponChoice" id="couponChoice" style="width:120px;">
+		                        <option value="0">선택</option>
+		                        
+		                     <c:forEach var="coupon" items="${couponList}" varStatus="status">
+		                        <option value="${coupon.cPrice}" value2="${coupon.cCode}">${coupon.cName}</option>
+		                     </c:forEach>
+		                     </select>&nbsp;&nbsp;&nbsp;
+							할인금액 <input type="text" name="couponValue" id="couponValue" value="" readonly>
+		      
+		                     <!-- <button name="couponSelect" id="couponSelect" style="border: solid 1px black; background:white; position:relative; color:black;">적용</button> -->
+	                     </div>
+	                     <div class="select_line"></div>
+	                     <!-- 포인트 가져오기 -->
+	                     <div class="select_point">
+	                     	보유포인트 :&nbsp;<span name="pointBox" id="pointBox" style="display:inline-block; width:90px; color:red;"><fmt:formatNumber type="number" maxFractionDigits="0" value="${wdUser.userPoint}" /></span> Point
+		                     <span>
+		                     	<span style="color: #999; font-weight: 300;">/</span> 사용포인트&nbsp;<input type="number" name="pointValue" id="pointValue" style="width:130px" value="0" min="0" max="${wdUser.userPoint}" />&nbsp;point
+		                     	<!--<input type="text" name="pointValue" id="pointValue" style="width:100px" value="" min="0" max="${wdUser.userPoint}" onkeyup="inputNumberFormat(this);" />-->
+		                     </span>
+	                     	<!-- <button name="pointSelect" id="pointSelect" style="border: solid 1px black; background:white; position:relative; color:black;">적용</button> -->
+						 </div>
+						 
+						 <!-- 적용버튼 -->
+	                     <div class="selectcnc_btn">
+	                     	<button name="couponSelect" id="couponSelect">적용</button>
+	                     </div>
+						 
                      </div>
 
 
@@ -406,7 +569,7 @@ function movePage()
                      <!-- 총 주문금액 변수 i에 넣어서  totalAmount 에 넣어주기-->
                      <fmt:parseNumber var="i" type="number" value="${wdRez.hPrice *(1- wdRez.hDiscount*0.01) + (wdRez.hFood * wdRez.hMin) + wdRez.sPrice *(1- wdRez.sDiscount*0.01) + wdRez.dPrice *(1- wdRez.dDiscount*0.01) + wdRez.mPrice *(1- wdRez.mDiscount*0.01)+ (wdRez.mPlus*wdRez.mPlusNum)}" />
                      <!-- 카카오 페이 버튼 추가 -->
-                     <button type="button" id="btnPay" style="border:0px; background:none; position:relative; top:-18px;" title="카카오페이">
+                     <button id="btnPay" class="kakaopay_btnnn" title="카카오페이">
                      <img src="../resources/images/icons/kakaoPay.png" style="width: 80px;">
                      </button>
                   </div>
@@ -440,9 +603,11 @@ function movePage()
       <input type="hidden" name="orderId" id="orderId" value="" />
       <input type="hidden" name="tId" id="tId" value="" />
       <input type="hidden" name="pcUrl" id="pcUrl" value="" />
-      <input type="hidden" name="cCode" id="cCode" value="" />	<!-- 동욱 추가 -->
+      <input type="hidden" name="cCode" id="cCode" value="" />   <!-- 동욱 추가 -->
       <input type="hidden" name="rezNo" id="rezNo" value="" />
       <input type="hidden" name="rezFullPrice" id="rezFullPrice" value="" />
+      <input type="hidden" name="rezPoint" id="rezPoint" value="" />
+
    </form>
    
 </div>

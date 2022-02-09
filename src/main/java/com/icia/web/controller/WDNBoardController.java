@@ -37,8 +37,8 @@ public class WDNBoardController
 	@Autowired
 	private WDUserService wdUserService;
 	
-	private static final int LIST_COUNT = 5;		//한 페이지의 게시물 수
-	private static final int PAGE_COUNT = 5;		//페이징 수
+	private static final int LIST_COUNT = 10;		//한 페이지의 게시물 수
+	private static final int PAGE_COUNT = 3;		//페이징 수
 	
 	@RequestMapping(value="/board/nBoard")
 	public String nBoard(ModelMap model, HttpServletRequest request, HttpServletResponse response)
@@ -123,6 +123,9 @@ public class WDNBoardController
 			//하이보드객체에다가 방금 한 하이보드서비스에 있는 보드뷰 받아올거야 ~!
 		}
 		
+		String content = nBoard.getbContent().replaceAll("<br>", "\r\n");
+	    nBoard.setbContent(content);
+		
 		model.addAttribute("bSeq", bSeq);
 		model.addAttribute("nBoard", nBoard);
 		model.addAttribute("searchType", searchType);
@@ -132,4 +135,38 @@ public class WDNBoardController
 		
 		return "/board/nBoardView";
 	}
+	
+	//코로나 공지사항
+	@RequestMapping(value="/board/covid")
+	public String covid(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		/*********상단에 닉넴 보여주기 시작*********/
+		//쿠키 확인
+		String cookieUserId = CookieUtil.getHexValue(request, AUTH_COOKIE_NAME);
+		
+		//로그인 했을 때와 안했을 때를 구분해서 페이지를 보여주려 함.
+		//로그인 체크용. 0 => 로그인 x, 혹은 없는 계정; 1 => 로그인 정보 있는 계정
+		int loginS = 0;
+		WDUser wdUser = null;
+		
+		if(wdUserService.wdUserIdCount(cookieUserId) >0) 
+		{
+			//쿠키 아이디로 된 유저 정보가 db에 존재함.
+			wdUser = wdUserService.userSelect(cookieUserId);
+			if(wdUser != null) 
+			{
+				//객체가 비어있지 않으면 보여줄 유저의 정보를 담은 객체를 넘기고, 로그인 상태에 1을 넣어줌.
+				loginS = 1;
+				model.addAttribute("wdUser", wdUser);
+			}
+		}
+		else 
+		{
+			loginS = 0;
+		}
+		/**********상단에 닉넴 보여주기 끝***********/
+		
+		return "/board/covid";
+	}
+	
 }

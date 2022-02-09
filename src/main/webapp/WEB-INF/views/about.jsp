@@ -7,6 +7,19 @@
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=The+Nautigal&display=swap');
 </style>
+<script>
+	$(document).ready(function(){
+		var map = $("#map").val();
+		
+		if(map ==1)
+		{
+			$('html, body').animate({
+				scrollTop: $('#contact').offset().top
+				}, 500);
+		}
+	});
+</script>
+
 </head>
 <body class="containerAb">
     <jsp:include page="/WEB-INF/views/include/navigation.jsp" >
@@ -122,7 +135,7 @@
             <div class="box" data-aos="zoom-in" data-aos-delay="200">
               <span>02</span>
               <h4>생생한 후기</h4>
-              <p>웰딩을 선택한 고객분들의 생생한 스드메, 웨딩홀, 신혼여행, 상견례 후기를 확인하세요!<br/><br/></p>
+              <p>웰딩을 선택한 고객분들의 생생한 스드메, 웨딩홀 후기를 확인하세요!<br/><br/></p>
             </div>
           </div>
 
@@ -140,6 +153,7 @@
     </section>
     <!-- End Why Us Section -->
     
+    <input type="hidden" value="${map}" name="map" id="map" />
     
     <!-- 푸터 시작 -->
     <%@ include file="/WEB-INF/views/include/footer.jsp" %>

@@ -45,8 +45,6 @@ $(document).ready(function(){
 			$('html').css("overflow","auto");
 		 }
 	});*/
-	
-   $('html').css("overflow","auto");
    
    //검색버튼클릭
    $("#btnSearch").on("click", function(){
@@ -101,7 +99,7 @@ function expertView(eCo){
                 
                 <!-- 검색창 -->
                 <div class="col-lg-12">
-                    <div class="search-box search-box2">
+                    <div class="search-box search-box2" style="background:#fff;">
                         <form id="subscribe" action="" method="get">
                             <div class="row">
                                 <div class="col-lg-5">

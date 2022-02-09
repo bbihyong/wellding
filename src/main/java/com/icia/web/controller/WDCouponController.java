@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.icia.web.model.WDCoupon;
 import com.icia.web.service.WDCouponService;
 import com.icia.web.util.CookieUtil;
+import com.icia.web.util.HttpUtil;
 
 @Controller("WDCouponController")
 public class WDCouponController {
@@ -41,5 +42,72 @@ public class WDCouponController {
 		
 		return "/board/Coupon";
 	}
-
+	
+	//큐알팝업
+	@RequestMapping(value="/board/qrTest")
+	public String qrTest(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		
+		return "/board/qrTest";
+	}
+	
+	//신랑측 식권
+	@RequestMapping(value="/board/foodCpnM")
+	public String foodCpnM(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		String rezNo = HttpUtil.get(request, "rezNo", "");
+		
+		model.addAttribute("rezNo",rezNo);
+		
+		return "/board/foodCpnM";
+	}
+	
+	//신랑측 식권2
+	@RequestMapping(value="/board/foodCpnM2")
+	public String foodCpnM2(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		
+		String rezNo = HttpUtil.get(request, "rezNo", "");
+		
+		wdCouponService.qrCodeMPlus(rezNo);
+		
+		WDCoupon wdCoupon = null;
+		
+		wdCoupon = wdCouponService.cntSelect(rezNo);
+		
+		model.addAttribute("wdCoupon",wdCoupon);
+		
+		return "/board/foodCpnM2";
+	}
+	
+	//신부측 식권
+	@RequestMapping(value="/board/foodCpnF")
+	public String foodCpnF(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		String rezNo = HttpUtil.get(request, "rezNo", "");
+		
+		model.addAttribute("rezNo",rezNo);
+		
+		return "/board/foodCpnF";
+	}
+	
+	//신부측 식권2
+	@RequestMapping(value="/board/foodCpnF2")
+	public String foodCpnF2(ModelMap model, HttpServletRequest request, HttpServletResponse response)
+	{
+		
+		String rezNo = HttpUtil.get(request, "rezNo", "");
+		
+		wdCouponService.qrCodeFPlus(rezNo);
+		
+		WDCoupon wdCoupon = null;
+		
+		wdCoupon = wdCouponService.cntSelect(rezNo);
+		
+		model.addAttribute("wdCoupon",wdCoupon);
+		
+		return "/board/foodCpnF2";
+	}
+	
+	
 }

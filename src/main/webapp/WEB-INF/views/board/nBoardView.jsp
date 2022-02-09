@@ -67,7 +67,10 @@ $(document).ready(function(){
          <tbody>
             <tr>
                <td colspan="2" style="text-align:center">
-               <div style="padding: 30px 20px; text-align: left; font-size: 16px;"><div><c:out value="${nBoard.bContent}" /></div></div></td>
+               <div style="padding: 30px 20px; text-align: left; font-size: 16px;">
+               <div style="white-space: pre-line;">
+               	<c:out value="${nBoard.bContent}" />
+               </div></div></td>
             </tr>
          </tbody>
          <tfoot>

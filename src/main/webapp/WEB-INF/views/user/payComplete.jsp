@@ -19,6 +19,7 @@ $(document).ready(function() {
       
       location.href = "/user/wishlist";
    });
+   
 });
 </script>
 </head>
@@ -66,17 +67,8 @@ $(document).ready(function() {
                
                   
                         <table class="table tableWish">
-                     <tr>
-                        <div class="rez_sta">
-                           <h5 class="rez_date">예약일자 &nbsp;&nbsp; <span>${wdRez.rezDate}</span></h5>
-                           <h5 class="rez_number">예약번호&nbsp;&nbsp; <span>${wdRez.rezNo}</span></h5>
-                        </div>
-                     </tr>
+
                             <tr style="border-top: 3px solid #444;">
-                                <th>이미지</th>
-                                <th>상품정보</th>
-                                <th>참고사항</th>
-                                <th>총가격</th>
                             </tr>
 
                         </table>
@@ -85,18 +77,19 @@ $(document).ready(function() {
                </div>
                <!-- 경계선 종료 -->
                <div class="col-lg-1"></div>
-            `
+            
                <div class="col-lg-1"></div>
                <div class="col-lg-10">
                <!-- 쿠폰 가져오기 -->
                <div class="col-lg-10">
                </div>
                <div style="text-align: center;">
-               결제가 완료 되었습니다.
+               <img src="../resources/images/icons/check.png" style="width:100px; margin-bottom:50px;">
+               <p style="font-size:xx-large; font-weight:500;">결제가 완료 되었습니다.</p>
                </div>
-                  <div class="rez_sum">
-                     <button type="button" id="btnComplete" class="btn btn-primary" title="결제내역보러가기" style="border: solid 1px black; background:white; position:relative; top:-18px; color:black;">결제내역 보러가기</button>
-                     <button type="button" id="btnMyPage" class="btn btn-primary" title="마이페이지" style="border: solid 1px black; background:white; position:relative; top:-18px; color:black;">마이페이지</button>
+                  <div class="rez_sum3">
+                     <button type="button" id="btnComplete" class="btn btn-primary" title="결제내역보러가기" style="border: solid 1px black; background:white; position:relative; top:4px; color:black;">결제내역 보러가기</button>
+                     <!--button type="button" id="btnMyPage" class="btn btn-primary" title="장바구니" style="border: solid 1px black; background:white; position:relative; top:4px; color:black;">장바구니</button-->
                   </div>
                </div>
                

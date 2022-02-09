@@ -9,23 +9,23 @@ public class WDStudioFile  implements Serializable
 	
 	private long sSeq;
     private String sCode;
-    private long s_file_seq;
-    private String s_file_name;
-    private String s_file_org_name;
-    private String s_file_ext;
-    private long s_file_size;
-    private String reg_date;
+    private long sFileSeq;
+    private String sfileName;
+    private String sFileOrgName;
+    private String sFileExt;
+    private long sFileSize;
+    private String regDate;
     
     public WDStudioFile()
     {
     	sSeq = 0;
     	sCode = "";
-    	s_file_seq = 0;
-    	s_file_name = "";
-    	s_file_org_name = "";
-    	s_file_ext = "";
-    	s_file_size = 0;
-    	reg_date = "";
+    	sFileSeq = 0;
+    	sfileName = "";
+    	sFileOrgName = "";
+    	sFileExt = "";
+    	sFileSize = 0;
+    	regDate = "";
     }
 
 	public long getsSeq() {
@@ -44,52 +44,53 @@ public class WDStudioFile  implements Serializable
 		this.sCode = sCode;
 	}
 
-	public long getS_file_seq() {
-		return s_file_seq;
+	public long getsFileSeq() {
+		return sFileSeq;
 	}
 
-	public void setS_file_seq(long s_file_seq) {
-		this.s_file_seq = s_file_seq;
+	public void setsFileSeq(long sFileSeq) {
+		this.sFileSeq = sFileSeq;
 	}
 
-	public String getS_file_name() {
-		return s_file_name;
+	public String getSfileName() {
+		return sfileName;
 	}
 
-	public void setS_file_name(String s_file_name) {
-		this.s_file_name = s_file_name;
+	public void setSfileName(String sfileName) {
+		this.sfileName = sfileName;
 	}
 
-	public String getS_file_org_name() {
-		return s_file_org_name;
+	public String getsFileOrgName() {
+		return sFileOrgName;
 	}
 
-	public void setS_file_org_name(String s_file_org_name) {
-		this.s_file_org_name = s_file_org_name;
+	public void setsFileOrgName(String sFileOrgName) {
+		this.sFileOrgName = sFileOrgName;
 	}
 
-	public String getS_file_ext() {
-		return s_file_ext;
+	public String getsFileExt() {
+		return sFileExt;
 	}
 
-	public void setS_file_ext(String s_file_ext) {
-		this.s_file_ext = s_file_ext;
+	public void setsFileExt(String sFileExt) {
+		this.sFileExt = sFileExt;
 	}
 
-	public long getS_file_size() {
-		return s_file_size;
+	public long getsFileSize() {
+		return sFileSize;
 	}
 
-	public void setS_file_size(long s_file_size) {
-		this.s_file_size = s_file_size;
+	public void setsFileSize(long sFileSize) {
+		this.sFileSize = sFileSize;
 	}
 
-	public String getReg_date() {
-		return reg_date;
+	public String getRegDate() {
+		return regDate;
 	}
 
-	public void setReg_date(String reg_date) {
-		this.reg_date = reg_date;
+	public void setRegDate(String regDate) {
+		this.regDate = regDate;
 	}
     
+     
 }

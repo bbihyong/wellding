@@ -4,7 +4,6 @@
 <html>
 <head>
  	<%@ include file="/WEB-INF/views/include/head.jsp" %>
- 	<%@ include file="/WEB-INF/views/include/head2.jsp" %>
  <style>
  #prod{width:100px; height:100px;}
  </style>
@@ -221,6 +220,5 @@
       <input type="hidden" name="mCode" value="" /> 
 </form>    		
     <%@ include file="/WEB-INF/views/include/footer.jsp" %>
-    <%@ include file="/WEB-INF/views/include/footer2.jsp" %>
     </body>	
 </html>

@@ -12,6 +12,7 @@
 	<result column="M_CONTENT" property="mContent" />
 	<result column="M_PLUS" property="mPlus" />
 	<result column="M_DISCOUNT" property="mDiscount" />
+	<!-- result column="" property="wDate" /-->
 </resultMap>
 
 <!-- 첨부파일  시작 -->
@@ -29,7 +30,7 @@
 
 
 
-<!-- 메이크업 업체 총 수 확인 시작 -->
+<!-- 메이크업 업체 총 수 확인 시작1 -->
 <select id="makeUpListCount" parameterType="com.icia.web.model.WDMakeUp" resultType="long">
 SELECT
     COUNT(M_CODE)
@@ -50,10 +51,42 @@ AND
 	</choose>
 </if>
 </select>
+<!-- 메이크업 업체총수2 예약내역 제외 -->
+<select id="makeUpListCountmr" parameterType="com.icia.web.model.WDMakeUp" resultType="long">
+SELECT
+    COUNT(M_CODE)
+FROM
+    WD_MAKEUP
+WHERE 1=1
+<if test='wDate != null and wDate != ""'>
+AND
+   M_CODE NOT IN (SELECT
+                        NVL(M_CODE, ' ') AS M_CODE
+                    FROM
+                        WD_REZ
+                    WHERE
+                        WDATE = #{wDate}
+                    AND
+                            REZ_STATUS = 'Y'
+                    )
+</if>
+<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+	<choose>
+		<when test='searchType == "1"'>
+AND
+    M_NAME LIKE '%' || #{searchValue}|| '%'
+		</when>
+		<when test='searchType == "2"'>	  
+AND
+    M_LOCATION LIKE '%' || #{searchValue}|| '%'
+		</when>
+	</choose>
+</if>
+</select>
 <!-- 메이크업 업체 총 수 확인 종료 -->
 
 
-<!-- 메이크업 업체 정보 불러오기 시작 -->
+<!-- 메이크업 업체 정보 불러오기1 시작 -->
 <select id="makeUpList" parameterType="com.icia.web.model.WDMakeUp" resultMap="WDMakeUpMap">
 SELECT
     M_CODE,
@@ -110,6 +143,74 @@ WHERE
 AND
     RNUM <![CDATA[<=]]> #{endRow}
 </select>
+<!-- 리스트2 예약된거 제외하고 리스트 불러오기! -->
+<select id="makeUpListMinusRez" parameterType="com.icia.web.model.WDMakeUp" resultMap="WDMakeUpMap">
+SELECT
+    M_CODE,
+    M_NAME,
+    M_LOCATION,
+    M_NUMBER,
+    M_IMGNAME,
+    M_PRICE,
+    M_CONTENT,
+    M_PLUS,
+    M_DISCOUNT
+FROM(
+        SELECT 
+            ROWNUM AS RNUM,
+            M_CODE,
+            M_NAME,
+            M_LOCATION,
+            M_NUMBER,
+            M_IMGNAME,
+            M_PRICE,
+            M_CONTENT,
+            M_PLUS,
+            M_DISCOUNT
+        FROM(SELECT
+                    M_CODE,
+                    NVL(M_NAME, '') AS M_NAME,
+                    NVL(M_LOCATION, '') AS M_LOCATION,
+                    NVL(M_NUMBER, '') AS M_NUMBER,
+                    NVL(M_IMGNAME, '') AS M_IMGNAME,
+                    NVL(M_PRICE, 0) AS M_PRICE,
+                    NVL(M_CONTENT, '') AS M_CONTENT,
+                    NVL(M_PLUS, 0) AS M_PLUS,
+                    NVL(M_DISCOUNT, 0) AS M_DISCOUNT
+                FROM
+                    WD_MAKEUP
+                WHERE
+                    1 = 1
+<if test='wDate != null and wDate != ""'>
+                AND
+                   M_CODE NOT IN (SELECT
+                                        NVL(M_CODE, ' ') AS M_CODE
+                                    FROM
+                                        WD_REZ
+                                    WHERE
+                                        WDATE LIKE #{wDate}
+                                    AND
+                                        REZ_STATUS = 'Y') 
+</if>
+<if test='searchType != null and searchType != "" and searchValue != null and searchValue != ""'>
+	<choose>
+		<when test='searchType == "1"'>
+                AND
+                    M_NAME LIKE '%' || #{searchValue} || '%'  
+        </when>    
+        <when test='searchType == "2"'> 
+                AND
+                    M_LOCATION LIKE '%' || #{searchValue} || '%'
+		</when>
+	</choose>
+</if>
+                ORDER BY
+                    M_CODE ASC))
+WHERE
+    RNUM <![CDATA[>=]]> #{startRow}
+AND
+    RNUM <![CDATA[<=]]> #{endRow}
+</select>
 <!-- 메이크업 업체 정보 불러오기 종료 -->
 
 <!-- 메이트업 상세보기 시작 -->
@@ -130,4 +231,112 @@ WHERE
     M_CODE = #{value}
 </select>
 <!-- 메이크업 상세보기 끝 -->
+
+<!-- 메이크업 글쓰기 시작-->
+<insert id="makeupInsert" parameterType="com.icia.web.model.WDMakeUp" >
+ INSERT INTO WD_MAKEUP (
+    M_CODE,
+    M_NAME,
+    M_LOCATION,
+    M_NUMBER,
+    M_IMGNAME,
+    M_PRICE,
+    M_CONTENT,
+    M_PLUS,
+    M_DISCOUNT
+) VALUES (
+    #{mCode},
+    #{mName},
+    #{mLocation},
+    #{mNumber},
+    #{mImgName},
+    #{mPrice},
+    #{mContent},
+    #{mPlus},
+    #{mDiscount}
+)
+</insert>
+<!-- 메이크업 글쓰기 끝-->
+
+<!-- 업체코드 MAX 시작-->
+<select id="makeupMax" resultType="string">
+   SELECT
+    MAX(M_CODE)
+FROM
+    WD_MAKEUP
+</select>
+
+
+<!-- 업체코드 MAX 끝-->
+
+<!-- 메이크업 수정 시작 -->
+<update id="makeupUpdate" parameterType="com.icia.web.model.WDMakeUp">
+UPDATE WD_MAKEUP
+SET
+	M_NAME = #{mName},
+    M_LOCATION = #{mLocation},
+    M_NUMBER = #{mNumber},
+    M_PRICE = #{mPrice},
+    M_CONTENT = #{mContent},
+    M_PLUS = #{mPlus},
+    M_DISCOUNT = #{mDiscount}
+WHERE
+    M_CODE =  #{mCode}
+    </update>
+ <!-- 메이크업 수정 끝 -->
+ 
+ <!-- 메이크업 업체조회  -->
+<select id="onlyMakeupComSelect" parameterType="string" resultMap="WDMakeUpMap">
+SELECT
+    M_CODE,
+    M_NAME,
+    M_LOCATION,
+    M_NUMBER,
+    M_CONTENT
+FROM
+    WD_MAKEUP
+WHERE
+    M_CODE = #{value}
+</select>
+<!--  메이크업 업체조회 끝 -->
+
+<!-- 메이크업 업체 삭제 시작 -->
+<delete id="onlyMakeupComDelete" parameterType="string">
+DELETE FROM WD_MAKEUP
+WHERE
+        M_CODE = #{value}
+</delete>
+<!-- 메이크업 업체 삭제 끝 -->
+
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+<select id="maxImgName" resultType="string">
+SELECT
+    NVL(MAX(M_IMGNAME), 0) M_IMGNAME
+FROM
+    WD_MAKEUP
+</select>
+<!-- 이미지 가장 마지막 번호 가져오기 -->
+
+<!-- 메이크업 파일 등록 -->
+<insert id="makeupFileInsert" parameterType="com.icia.web.model.WDMakeUpFile">
+INSERT INTO WD_MAKEUP_FILE (
+    M_CODE,
+    M_FILE_SEQ,
+    M_FILE_NAME,
+    M_FILE_ORG_NAME,
+    M_FILE_EXT,
+    M_FILE_SIZE,
+    REG_DATE
+) VALUES (
+    #{mCode},
+    #{mFileSeq},
+    #{mFileName},
+    #{mFileOrgName},
+    #{mFileExt},
+    #{mFileSize},
+    SYSDATE
+)
+</insert>
+<!-- 메이크업 파일 등록 -->
+
 </mapper>

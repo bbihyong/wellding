@@ -25,7 +25,11 @@ $(document).ready(function(){
       if($.trim($("#hiBbsTitle").val()).length <=0 )
       {
          //값이 없음
-         alert("제목을 입력하세요.");
+        // alert("제목을 입력하세요.");
+         Swal.fire({ 
+            icon: 'warning',
+            text: '제목을 입력하세요.'
+         });
          $("#hiBbsTitle").val("");
          $("#hiBbsTitle").focus();
          
@@ -35,7 +39,11 @@ $(document).ready(function(){
       
       if($.trim($("#hiBbsContent").val()).length <=0)
       {
-         alert("내용을 입력하세요");
+         //alert("내용을 입력하세요");
+         Swal.fire({ 
+            icon: 'warning',
+            text: '내용을 입력하세요.'
+         });
          $("#hiBbsContent").val("");
          $("#hiBbsContent").focus();
          
@@ -67,11 +75,17 @@ $(document).ready(function(){
          {
             if(response.code == 0)
             {
-               alert("게시물이 등록되었습니다.");
+               //alert("게시물이 등록되었습니다.");
                //리스트 페이지로 돌아갈 때는 가져온 값을 가져가야 하지만,
                //글쓰기를 눌렀을 때는, 가져온 값을 가져가면 내가 쓴 글이 안보임
                //그래서 넣어줘서 보내지 않음
+               //location.href = "/board/fBoard";
+            Swal.fire({ 
+               icon: 'success',
+               text: '게시물이 등록되었습니다.'
+            }).then(function(){
                location.href = "/board/fBoard";
+            });
             }
             else if(response.code == 400)
             {
@@ -148,11 +162,17 @@ $(document).ready(function(){
             <div class="form-group">
                <textarea class="form-control" rows="10" name="hiBbsContent" id="hiBbsContent" style="ime-mode:active;" placeholder="내용을 입력해주세요" required></textarea>
             </div>
-            <input type="file" id="hiBbsFile" name="hiBbsFile" class="form-control mb-2"  placeholder="파일을 선택하세요." required style="/*display: none;*/"/>            
+            <!--input type="file" id="hiBbsFile" name="hiBbsFile" class="form-control mb-2"  placeholder="파일을 선택하세요." required style="/*display: none;*/"/-->
+			<div class="filebox bs3-primary preview-image">
+			    <input class="upload-name" value="파일선택" disabled="disabled">
+			
+			    <label for="hiBbsFile">업로드</label> 
+			    <input type="file" id="hiBbsFile" name="hiBbsFile" class="upload-hidden"> 
+			</div>        
             
             <div class="form-group row">
                <div class="col-sm-12">
-                  <button type="button" id="btnList" class="w-btn w-btn-green2" title="리스트">리스트</button>
+                  <button type="button" id="btnList" class="w-btn w-btn-green2" title="리스트" style="float: right; margin-left: 10px;">리스트</button>
                   <button type="button" id="btnWrite" class="w-btn w-btn-green" title="저장">저장</button>
                </div>
             </div>
